@@ -181,7 +181,7 @@ public class ExtraChecksAndTools
 		}
 		else if(target.getColor().equalsIgnoreCase("white")){
 			for(int i = 0; i < blackPieces.size(); i++){
-				if(canCapture(whitePieces.get(i), target, isDebug, gamestate, moveNo)){
+				if(canCapture(blackPieces.get(i), target, isDebug, gamestate, moveNo)){
 					pieceList.add(blackPieces.get(i));
 				}
 			}

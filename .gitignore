@@ -1,0 +1,5 @@
+# IDE specific files
+
+### Intellij ###
+.idea/
+CrazyChess.iml

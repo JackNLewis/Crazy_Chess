@@ -174,14 +174,7 @@ public class BasicValidityChecker
 				return utils.getPiece(x,y, isDebug, gamestate).getPosition();
 			}
 			else if(!(utils.getPiece(x, y, isDebug, gamestate) instanceof BlankPiece)){
-				if(!utils.getPiece(x,y, isDebug, gamestate).getColor().equalsIgnoreCase(p.getColor())){
-					//capture an enemy piece
-					return utils.getPiece(x,y, isDebug, gamestate).getPosition();
-				}
-				else{
-					//same color piece
-					return utils.getPiece(x+1,y-1, isDebug, gamestate).getPosition();
-				}
+				return utils.getPiece(x,y, isDebug, gamestate).getPosition();
 			}
 			else{//if none of the conditions are met, the function recurses with the next tile in the 
 				 //specified direction as input
@@ -199,14 +192,7 @@ public class BasicValidityChecker
 				return utils.getPiece(x,y, isDebug, gamestate).getPosition();
 			}
 			else if(!(utils.getPiece(x, y, isDebug, gamestate) instanceof BlankPiece)){
-				if(!utils.getPiece(x,y, isDebug, gamestate).getColor().equalsIgnoreCase(p.getColor())){
-					//capture an enemy piece
-					return utils.getPiece(x,y, isDebug, gamestate).getPosition();
-				}
-				else{
-					//same color piece
-					return utils.getPiece(x+1,y-1, isDebug, gamestate).getPosition();
-				}
+				return utils.getPiece(x,y, isDebug, gamestate).getPosition();
 			}
 			else{//if none of the conditions are met, the function recurses with the next tile in the 
 				 //specified direction as input
@@ -224,14 +210,7 @@ public class BasicValidityChecker
 				return utils.getPiece(x,y, isDebug, gamestate).getPosition();
 			}
 			else if(!(utils.getPiece(x, y, isDebug, gamestate) instanceof BlankPiece)){
-				if(!utils.getPiece(x,y, isDebug, gamestate).getColor().equalsIgnoreCase(p.getColor())){
-					//capture an enemy piece
-					return utils.getPiece(x,y, isDebug, gamestate).getPosition();
-				}
-				else{
-					//same color piece
-					return utils.getPiece(x+1,y-1, isDebug, gamestate).getPosition();
-				}
+				return utils.getPiece(x,y, isDebug, gamestate).getPosition();
 			}
 			else{//if none of the conditions are met, the function recurses with the next tile in the 
 				 //specified direction as input
@@ -249,14 +228,7 @@ public class BasicValidityChecker
 				return utils.getPiece(x,y, isDebug, gamestate).getPosition();
 			}
 			else if(!(utils.getPiece(x, y, isDebug, gamestate) instanceof BlankPiece)){
-				if(!utils.getPiece(x,y, isDebug, gamestate).getColor().equalsIgnoreCase(p.getColor())){
-					//capture an enemy piece
-					return utils.getPiece(x,y, isDebug, gamestate).getPosition();
-				}
-				else{
-					//same color piece
-					return utils.getPiece(x+1,y-1, isDebug, gamestate).getPosition();
-				}
+				return utils.getPiece(x,y, isDebug, gamestate).getPosition();
 			}
 			else{//if none of the conditions are met, the function recurses with the next tile in the 
 				 //specified direction as input
