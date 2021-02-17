@@ -204,17 +204,17 @@ public class MainLogic
 			return false;
 		}
 		//Check if the player is not under check
-//		if(ecat.isInCheck(currentTurn, isDebug, gamestate, turnNo)) {
-//			if(currentTurn.equalsIgnoreCase("white")) {
-//				isWhiteChecked=true;
-//				if(isDebug)
-//					System.out.println("White is under check!");
-//			}else {
-//				if(isDebug)
-//					System.out.println("Black is under check!");
-//				isBlackChecked=true;
-//			}
-//		}
+		if(ecat.isInCheck(currentTurn, isDebug, gamestate, turnNo)) {
+			if(currentTurn.equalsIgnoreCase("white")) {
+				isWhiteChecked=true;
+				if(isDebug)
+					System.out.println("White is under check!");
+			}else {
+				if(isDebug)
+					System.out.println("Black is under check!");
+				isBlackChecked=true;
+			}
+		}
 		
 		
 		//Save old position (to place a blank later)
