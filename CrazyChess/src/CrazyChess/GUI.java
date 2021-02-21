@@ -34,7 +34,8 @@ import CrazyChess.pieces.*;
 public class GUI extends Application {
 	
 	private BorderPane borderPane;
-	private GridPane board;  
+	private GridPane board;
+
 	//private int turnNumber; 
 	
 	private Position selectedSquare;
@@ -226,8 +227,11 @@ public class GUI extends Application {
 				rect.setStroke(Color.GREY);
 				rect.setStrokeWidth(3);
 				if((i%2==1&&j%2==1)||(i%2==0&&j%2==0)){
-				rect.setFill(Color.GREY);}
-					else {rect.setFill(Color.WHITE);}
+					rect.setFill(Color.GREY);
+				}
+				else {
+					rect.setFill(Color.WHITE);
+				}
 				board.add(rect, i, j);
 			}
 		}
@@ -237,7 +241,7 @@ public class GUI extends Application {
 			public void handle(MouseEvent event) {
 				squareClicked(getClickPos(event.getX(), event.getY()));
 			}
-			
+
 			//SOMEWHERE AROUND HERE IS WHERE YOU WOULD ADD THE AI MOVE
 			
 			
@@ -263,8 +267,11 @@ public class GUI extends Application {
 				rect.setStroke(Color.GREY);
 				rect.setStrokeWidth(3);
 				if(((i+1)%2==1&&(j+1)%2==1)||((i+1)%2==0&&(j+1)%2==0)){
-					rect.setFill(Color.GREY);}
-						else {rect.setFill(Color.WHITE);}
+					rect.setFill(Color.GREY);
+				}
+				else {
+					rect.setFill(Color.WHITE);
+				}
 				
 				board.add(rect, i+1, 8-j);
 				AbstractPiece p = chess.getPiece(new Position(i,j));
