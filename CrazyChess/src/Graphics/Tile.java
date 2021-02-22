@@ -2,6 +2,7 @@ package Graphics;
 
 import CrazyChess.logic.Position;
 import CrazyChess.pieces.AbstractPiece;
+import javafx.scene.control.Label;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.StackPane;
 import javafx.scene.paint.Color;
@@ -9,16 +10,14 @@ import javafx.scene.shape.Rectangle;
 
 public class Tile {
 
-    StackPane sp;
-    Rectangle background;
-    ImageView pieceImg;
-    Position pos;
-    AbstractPiece piece;
-    int tileSize;
+    private StackPane sp;
+    private Rectangle background;
+    private ImageView pieceImg;
+    private Position pos;
+
 
     public Tile(Position pos, int tileSize){
         this.pos = pos;
-        this.tileSize = tileSize;
         sp = new StackPane();
         background = new Rectangle(tileSize,tileSize);
         sp.getChildren().add(background);
@@ -37,8 +36,10 @@ public class Tile {
      * Removes the ImageView of the Piece from the tile
      *
      */
-    public void removeImg(ImageView img){
-        sp.getChildren().remove(pieceImg);
+    public void removeImg(){
+        if(pieceImg!=null){
+            sp.getChildren().remove(pieceImg);
+        }
     }
 
     /**
@@ -66,5 +67,8 @@ public class Tile {
     public Position getPos(){
         return this.pos;
     }
+
+
 }
+
 

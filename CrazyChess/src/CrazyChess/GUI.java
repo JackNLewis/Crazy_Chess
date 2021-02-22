@@ -153,8 +153,10 @@ public class GUI extends Application {
 			//Do move!
 			//first, get piece that is piece of prior selected square
 			AbstractPiece currentPiece = chess.getPiece(selectedSquare);
-
+			System.out.println(currentPiece.toString());
 			//Now the actual move check
+			System.out.println(currentPiece);
+			System.out.println(chess.getPiece(pos));
 			if(!chess.moveTo(currentPiece, pos.getXpos(), pos.getYpos())){
 				if(chess.isDebug())
 					System.out.print("Move not successful.");

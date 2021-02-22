@@ -1,11 +1,14 @@
 package Networking;
 
 import CrazyChess.logic.MainLogic;
+import CrazyChess.logic.Utilities;
 import CrazyChess.pieces.AbstractPiece;
+import CrazyChess.pieces.BlankPiece;
 
 import java.io.*;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.util.Arrays;
 import java.util.HashSet;
 
 public class Server implements Runnable{
@@ -14,6 +17,7 @@ public class Server implements Runnable{
     Socket whitePlayer;
     Socket blackPlayer;
     MainLogic game;
+    Utilities utils;
 
     ObjectInputStream whiteInput;
     ObjectInputStream blackInput;
@@ -22,7 +26,7 @@ public class Server implements Runnable{
     ObjectOutputStream whiteOutput;
     ObjectOutputStream blackOutput;
     public Server(){
-
+        utils = new Utilities();
     }
 
     @Override
@@ -30,6 +34,8 @@ public class Server implements Runnable{
         try{
             ss = new ServerSocket(5000);
             System.out.println("Listening on port 5000");
+            game = new MainLogic();
+            game.resetBoard();
 
             //Wait for White player to connect
             whitePlayer = ss.accept();
@@ -37,15 +43,21 @@ public class Server implements Runnable{
             whiteOutput = new ObjectOutputStream(whitePlayer.getOutputStream());
             System.out.println("White player connected");
 
-            /*//Wait for BlackPlayer to Connect
+            //Set white players turn to true
+            whiteOutput.writeObject(new GameState(game.getGamestate(),true));
+
+
+            //Wait for BlackPlayer to Connect
             blackPlayer = ss.accept();
             blackInput = new ObjectInputStream(blackPlayer.getInputStream());
             blackOutput = new ObjectOutputStream(blackPlayer.getOutputStream());
             System.out.println("Black player connected");
-            */
-            game = new MainLogic();
-            game.resetBoard();
-            game.printGameState();
+
+            //set black players turn to false
+            blackOutput.writeObject(new GameState(game.getGamestate(),false));
+
+
+            //wait for white to make a move
             waitWhite();
 
         }catch(Exception e){
@@ -53,17 +65,27 @@ public class Server implements Runnable{
         }
     }
 
-    public void waitWhite(){
-        while(true){
+    public void waitWhite() {
+        while (true) {
             try {
                 Move move = (Move) whiteInput.readObject();
-                AbstractPiece piece = game.getGamestate()[move.getStart().getXpos()][move.getStart().getYpos()];
+
+                AbstractPiece p = game.getPiece(move.getStart());
                 int endX = move.getEnd().getXpos();
-                int endY = move.getEnd().getXpos();
-                boolean moved = game.moveTo(piece, endX,endY);
-                if(moved){
+                int endY = move.getEnd().getYpos();
+
+                boolean moved = game.moveTo(game.getPiece(move.getStart()), endX, endY);
+
+                if (moved) {
                     System.out.println("Server: valid move");
-                }else{
+                    whiteOutput.reset();
+                    blackOutput.reset();
+                    whiteOutput.writeObject(new GameState(game.getGamestate(),false));
+                    blackOutput.writeObject(new GameState(game.getGamestate(),true));
+
+                    waitBlack();
+                } else {
+                    whiteOutput.writeObject(new GameState(game.getGamestate(),true));
                     System.out.println("Server: invalid move");
                 }
             } catch (IOException | ClassNotFoundException e) {
@@ -71,5 +93,65 @@ public class Server implements Runnable{
             }
         }
     }
+
+    public void waitBlack(){
+        while(true){
+            try {
+                Move move = (Move) blackInput.readObject();
+
+                AbstractPiece p = game.getPiece(move.getStart());
+                int endX = move.getEnd().getXpos();
+                int endY = move.getEnd().getYpos();
+
+                boolean moved = game.moveTo(game.getPiece(move.getStart()), endX,endY);
+
+                if(moved){
+                    System.out.println("Server: valid move");
+                    whiteOutput.reset();
+                    blackOutput.reset();
+                    whiteOutput.writeObject(new GameState(game.getGamestate(),true));
+                    blackOutput.writeObject(new GameState(game.getGamestate(),false));
+                    waitWhite();
+                }else{
+                    blackOutput.writeObject(new GameState(game.getGamestate(),true));
+                    System.out.println("Server: invalid move");
+                }
+            } catch (IOException | ClassNotFoundException e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
+
+    public void printGameState(AbstractPiece[][] gameState) {
+        String line =" ";
+        for(int i=0; i<8; i++) {
+            System.out.println(line);
+            line =" ";
+            for(int j=0; j<8; j++) {
+                String piece;
+                piece="[]";
+                if(!gameState[j][i].getColor().equalsIgnoreCase("blank")) {
+                    piece=twoLetterPiece(gameState[j][i]);
+                }
+
+                line=line+piece;
+            }
+        }
+        System.out.println(line);
+    }
+
+    protected String twoLetterPiece(AbstractPiece p) {
+        String result = " ";
+
+        if(p.getColor().equalsIgnoreCase("black")) {
+            result = "B";
+        }else result="W";
+
+        result=result+p.getClass().getSimpleName().charAt(0);
+
+        return result;
+    }
+
 }
 

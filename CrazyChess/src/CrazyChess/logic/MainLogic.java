@@ -314,11 +314,13 @@ public class MainLogic
 			return false;
 		int relX = x - p.getXpos();
 		int relY = y - p.getYpos();
+		System.out.println("RelX: "+ relX + " RelY: "+ relY);
 	//	if(!utils.isOnBoard(relX,relY))
 	//		return false;
 		return move(p, relX, relY);
 	}
-	
+
+
 	/**
 	 * Basically just a neat little wrapper for getPiece method in 
 	 * CrazyChess.logic.Utilities

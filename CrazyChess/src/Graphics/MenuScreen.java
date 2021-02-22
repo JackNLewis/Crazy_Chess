@@ -20,7 +20,7 @@ public class MenuScreen {
     public MenuScreen(Stage stage){
         buttons = new VBox();
         buttons.setAlignment(Pos.CENTER);
-        scene = new Scene(buttons,800,800);
+        scene = new Scene(buttons,500,800);
         this.stage = stage;
         addButtons(buttons);
 

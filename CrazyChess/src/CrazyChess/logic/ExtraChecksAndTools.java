@@ -235,7 +235,7 @@ public class ExtraChecksAndTools
 //					return true;
 //			}
 			King k = getKing("black", gamestate);
-			if(capturableBy(k, isDebug, gamestate, moveNo).isEmpty()) {
+			if(!capturableBy(k, isDebug, gamestate, moveNo).isEmpty()) {
 				return true;
 			}
 		}
@@ -246,7 +246,7 @@ public class ExtraChecksAndTools
 //					return true;
 //			}
 			King k = getKing("white", gamestate);
-			if(capturableBy(k, isDebug, gamestate, moveNo).isEmpty()) {
+			if(!capturableBy(k, isDebug, gamestate, moveNo).isEmpty()) {
 				return true;
 			}
 			

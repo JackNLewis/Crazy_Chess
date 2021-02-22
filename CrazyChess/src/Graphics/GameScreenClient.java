@@ -7,11 +7,11 @@ import CrazyChess.logic.Position;
 import CrazyChess.pieces.AbstractPiece;
 import CrazyChess.pieces.BlankPiece;
 import Networking.Client;
+import Networking.GameState;
 import Networking.Move;
 import javafx.event.EventHandler;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
-
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
@@ -19,30 +19,39 @@ import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
 
 import java.util.ArrayList;
+import java.util.concurrent.Semaphore;
 
 public class GameScreenClient {
 
     private Scene scene;
     private StackPane root;
-    ArrayList<Tile> tiles; // All the tiles on board
-    MainLogic game;
-    boolean selected; // shows if a tile is already selected
-    Position startPosition; //Position of tile which is clicked
-    Position endPosition; //Position of Tile want to move piece to
-    Client client;
+    //private MainLogic game;
+    private boolean selected; // shows if a tile is already selected
+    private Tile startTile; //Position of tile which is clicked
+    private Tile endTile; //Position of Graphics.Tile want to move piece to
+    private Client client;
+    private ArrayList<Tile> tiles;
 
     public GameScreenClient(){
-        game = new MainLogic();
-        game.resetBoard();
 
-        root = new StackPane();
-        scene = new Scene(root,800,800);
-        initBoard();
-
-        renderGameState(tiles, game.getGamestate());
-        client = new Client();
+        Semaphore semaphore = new Semaphore(0);
+        client = new Client(semaphore,this);
         Thread thread = new Thread(client);
         thread.start();
+
+        root = new StackPane();
+        scene = new Scene(root,500,800);
+
+        try {
+            semaphore.acquire();
+            initBoard(client.isTurn());
+            renderGameState(client.getCurrentGameState());
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+
+
+
     }
 
     /**
@@ -51,11 +60,10 @@ public class GameScreenClient {
      * on the board
      *
      */
-    public void initBoard() {
+    public void initBoard(boolean isTurn) {
         int squareSize = 60;
         GridPane board = new GridPane();
-        board.setGridLinesVisible(true);
-        tiles = new ArrayList<>();
+        tiles = new ArrayList<Tile>();
 
         for (int i=0; i<8; i++) {
                 board.getColumnConstraints().add(new ColumnConstraints(squareSize));
@@ -64,14 +72,19 @@ public class GameScreenClient {
         for (int i = 0; i < 8; i++) {
             for (int j = 0; j < 8; j++) {
                 Tile tile = new Tile(new Position(i,j), squareSize);
+                tiles.add(tile);
                 StackPane sp = tile.getSP();
                 if ((i % 2 == 1 && j % 2 == 1) || ((i % 2 == 0) && (j % 2 == 0))) {
                     tile.setbgColor(Color.WHITE);
                 } else {
                     tile.setbgColor(Color.GREY);
                 }
-                board.add(sp,i,7-j);
-                tiles.add(tile);
+
+                if(isTurn){
+                    board.add(sp,i,7-j);
+                }else{
+                    board.add(sp,i,j);
+                }
             }
         }
 
@@ -85,13 +98,12 @@ public class GameScreenClient {
      * Method that renders a gamestate to the board
      *
      */
-    public void renderGameState(ArrayList<Tile> tiles,AbstractPiece[][] gamesState){
+    public void renderGameState(AbstractPiece[][] gamesState){
         for(Tile tile : tiles){
             int x = tile.getPos().getXpos();
             int y = tile.getPos().getYpos();
-
-            System.out.println("X: " + x + "Y: " + y);
             AbstractPiece piece = gamesState[x][y];
+            tile.removeImg();
             if(!(piece instanceof BlankPiece)){
                 ImageView img = getImageView(piece);
                 tile.addImg(img);
@@ -99,24 +111,63 @@ public class GameScreenClient {
         }
     }
 
+
     public void addMoveListeners(){
         for(Tile tile: tiles){
             tile.getSP().setOnMouseClicked(new EventHandler<MouseEvent>() {
                 @Override
                 public void handle(MouseEvent event) {
+                    //Doesn't let you select if its not your turn
+                    if(!client.isTurn()){
+                        System.out.println("Not your turn");
+                        return;
+                    }
                     if(!selected){
+                        int x = tile.getPos().getXpos();
+                        int y = tile.getPos().getYpos();
+                        String pieceColor = client.getCurrentGameState()[x][y].getColor();
+                        String playerColor = client.getPlayer();
+
+                        //Checks that player chooses a piece that belongs to them
+                        if(!pieceColor.equalsIgnoreCase(playerColor)){
+                            System.out.println("You cannot choose that tile");
+                            return;
+                        }
+                        //client.getCurrentGameState()[tile.getPos().getXpos()][tile.getPos().getYpos()];
                         tile.setbgColor(Color.GREEN);
-                        startPosition = tile.getPos();
+                        startTile = tile;
                         selected = true;
                     }else{
-                        endPosition = tile.getPos();
-                        client.sendMove(new Move(startPosition,endPosition));
-                        System.out.println("Move from: " + startPosition.toString() + " to : " + endPosition.toString());
-                        //Server will get reply
+                        //Deselect
+                        if(startTile.equals(tile)){
+                            setDefaultColor(tile);
+                            selected = false;
+                            return;
+                        }
+
+                        //Send move to server
+                        endTile = tile;
+                        client.sendMove(new Move(startTile.getPos(),endTile.getPos()));
+
+                        //Recieve Move from server
+                        GameState gs = client.reciveGameState();
+                        renderGameState(gs.getGameState());
+                        setDefaultColor(startTile);
                         selected = false;
+
+                        client.gameStateListener();
                     }
                 }
             });
+        }
+    }
+
+    private void setDefaultColor(Tile tile){
+        if ((tile.getPos().getXpos() % 2 == 1 && tile.getPos().getYpos() % 2 == 1)
+                || ((tile.getPos().getXpos() % 2 == 0) && (tile.getPos().getYpos() % 2 == 0))) {
+            tile.setbgColor(Color.WHITE);
+        } else {
+            tile.setbgColor(Color.GREY);
         }
     }
 
@@ -134,9 +185,9 @@ public class GameScreenClient {
         }else if (p.getColor().equalsIgnoreCase("black")) {
             color="B_";
         }else if(p.getColor().equalsIgnoreCase("blank")) {
-            if(game.isDebug()) {
+            /*if(game.isDebug()) {
                 System.out.println("Can't get an image for an empty square");
-            }
+            }*/
             return null;
         }
         String filename = color+name+".png";
@@ -147,6 +198,7 @@ public class GameScreenClient {
         imgView.setImage(new Image("/resources/pieces/"+filename));
         return imgView;
     }
+
 
     public Scene getScene(){
         return this.scene;
