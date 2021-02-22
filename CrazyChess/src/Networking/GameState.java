@@ -7,8 +7,7 @@ import java.io.Serializable;
 public class GameState implements Serializable {
     private AbstractPiece[][] gameState;
     private boolean isTurn;
-    private String debug;
-
+    private String player;
 
     public GameState(AbstractPiece[][] gameState,boolean isTurn){
         this.gameState = gameState;
@@ -18,14 +17,14 @@ public class GameState implements Serializable {
     public GameState(AbstractPiece[][] gameState,boolean isTurn,String debug){
         this.gameState = gameState;
         this.isTurn = isTurn;
-        this.debug = debug;
+        this.player = debug;
     }
     public boolean isTurn() {
         return isTurn;
     }
 
-    public String getDebug() {
-        return debug;
+    public String getPlayer() {
+        return player;
     }
 
     public AbstractPiece[][] getGameState() {

@@ -44,7 +44,7 @@ public class Server implements Runnable{
             System.out.println("White player connected");
 
             //Set white players turn to true
-            whiteOutput.writeObject(new GameState(game.getGamestate(),true));
+            whiteOutput.writeObject(new GameState(game.getGamestate(),true,"white"));
 
 
             //Wait for BlackPlayer to Connect
@@ -54,7 +54,7 @@ public class Server implements Runnable{
             System.out.println("Black player connected");
 
             //set black players turn to false
-            blackOutput.writeObject(new GameState(game.getGamestate(),false));
+            blackOutput.writeObject(new GameState(game.getGamestate(),false,"black"));
 
 
             //wait for white to make a move

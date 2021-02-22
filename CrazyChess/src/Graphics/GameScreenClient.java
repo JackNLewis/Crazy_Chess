@@ -42,16 +42,14 @@ public class GameScreenClient {
         root = new StackPane();
         scene = new Scene(root,500,800);
 
+
         try {
             semaphore.acquire();
-            initBoard(client.isTurn());
-            renderGameState(client.getCurrentGameState());
+            initBoard(client.getPlayer());
+            renderGameState(client.getCurrentGameState(),true);
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
-
-
-
     }
 
     /**
@@ -60,7 +58,7 @@ public class GameScreenClient {
      * on the board
      *
      */
-    public void initBoard(boolean isTurn) {
+    public void initBoard(String player) {
         int squareSize = 60;
         GridPane board = new GridPane();
         tiles = new ArrayList<Tile>();
@@ -80,10 +78,13 @@ public class GameScreenClient {
                     tile.setbgColor(Color.GREY);
                 }
 
-                if(isTurn){
+                if(player.equalsIgnoreCase("white")){
                     board.add(sp,i,7-j);
-                }else{
+                }else if(player.equalsIgnoreCase("black")){
                     board.add(sp,i,j);
+                }
+                else{
+                    System.out.println("doesnt recognise player for init");
                 }
             }
         }
@@ -98,7 +99,7 @@ public class GameScreenClient {
      * Method that renders a gamestate to the board
      *
      */
-    public void renderGameState(AbstractPiece[][] gamesState){
+    public void renderGameState(AbstractPiece[][] gamesState,boolean successMove){
         for(Tile tile : tiles){
             int x = tile.getPos().getXpos();
             int y = tile.getPos().getYpos();
@@ -107,6 +108,10 @@ public class GameScreenClient {
             if(!(piece instanceof BlankPiece)){
                 ImageView img = getImageView(piece);
                 tile.addImg(img);
+            }
+            if (successMove){
+                setDefaultColor(tile);
+                selected = false;
             }
         }
     }
@@ -133,6 +138,7 @@ public class GameScreenClient {
                             System.out.println("You cannot choose that tile");
                             return;
                         }
+
                         //client.getCurrentGameState()[tile.getPos().getXpos()][tile.getPos().getYpos()];
                         tile.setbgColor(Color.GREEN);
                         startTile = tile;
@@ -150,12 +156,15 @@ public class GameScreenClient {
                         client.sendMove(new Move(startTile.getPos(),endTile.getPos()));
 
                         //Recieve Move from server
-                        GameState gs = client.reciveGameState();
-                        renderGameState(gs.getGameState());
-                        setDefaultColor(startTile);
-                        selected = false;
+                        //GameState gs = client.reciveGameState();
+                        //renderGameState(gs.getGameState());
+                        /*
+                        //ONLY DESELECT TILE IF MOVE WAS SUCCESSFUL
+                        if(!gs.isTurn()){
+                            setDefaultColor(startTile);
+                            selected = false;
+                        }*/
 
-                        client.gameStateListener();
                     }
                 }
             });

@@ -15,15 +15,18 @@ import java.util.concurrent.Semaphore;
 
 public class Client implements Runnable{
     Socket socket;
-    ObjectOutputStream output;
-    ObjectInputStream input;
     String address = "localhost";
-    AbstractPiece[][] currrentGameState;
     int port = 5000;
-    boolean isTurn;
+    ObjectOutputStream output;
+
     Semaphore semaphore;
-    String player;
+
     GameScreenClient gameScreen;
+    ClientReciever clientReciever;
+    String player;
+    boolean isTurn;
+    AbstractPiece[][] currrentGameState;
+
 
     public Client(Semaphore semaphore,GameScreenClient gameScreen){
         this.semaphore = semaphore;
@@ -38,13 +41,17 @@ public class Client implements Runnable{
 
             //Set up output stream
             output = new ObjectOutputStream(socket.getOutputStream());
-            input = new ObjectInputStream(socket.getInputStream());
+            //input = new ObjectInputStream(socket.getInputStream());
 
-            System.out.println("Initialized input and output stream");
+            init();
+
+
+            /*
             //Recieve first game state used to initialise the game
             GameState gs = reciveGameState();
             currrentGameState = gs.getGameState();
-
+            */
+            /*/
             if(gs.isTurn()){
                 player = "White";
                 semaphore.release();
@@ -54,11 +61,26 @@ public class Client implements Runnable{
                 gameStateListener();
 
             }
+             */
 
 
         } catch (Exception e) {
             e.printStackTrace();
         }
+    }
+
+    public void init() throws IOException, ClassNotFoundException {
+        ObjectInputStream input = new ObjectInputStream(socket.getInputStream());
+        GameState initialGameState = (GameState) input.readObject();
+        this.player = initialGameState.getPlayer();
+        this.isTurn = initialGameState.isTurn();
+        currrentGameState = initialGameState.getGameState();
+        System.out.println("Initilaized Client");
+        semaphore.release();
+        //Creates a client reader thread to recieve gamestates
+        clientReciever = new ClientReciever(input ,gameScreen,this);
+        Thread thread = new Thread(clientReciever);
+        thread.start();
     }
 
     public void sendMove(Move move){
@@ -72,6 +94,7 @@ public class Client implements Runnable{
         }
     }
 
+    /*
     public void gameStateListener(){
         try {
             GameState gs = (GameState) input.readObject();
@@ -91,6 +114,7 @@ public class Client implements Runnable{
         }
     }
 
+    /*
     public GameState reciveGameState() {
         try {
             GameState gs = (GameState) input.readObject();
@@ -103,23 +127,34 @@ public class Client implements Runnable{
         }
         return null;
     }
+     */
 
-
+/*
     public void setTurn(boolean isTurn){
         this.isTurn = isTurn;
     }
-
+*/
     public boolean isTurn() {
         return isTurn;
     }
 
+    public void setTurn(boolean turn){
+        this.isTurn = turn;
+    }
+
     public AbstractPiece[][] getCurrentGameState() {
-        return currrentGameState;
+        return this.currrentGameState;
+    }
+
+    public void setCurrrentGameState(AbstractPiece[][] currrentGameState) {
+        this.currrentGameState = currrentGameState;
     }
 
     public String getPlayer() {
-        return player;
+        return this.player;
     }
+
+
 
     public void close(){
         try {
