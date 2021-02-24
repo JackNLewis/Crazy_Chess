@@ -94,46 +94,7 @@ public class Client implements Runnable{
         }
     }
 
-    /*
-    public void gameStateListener(){
-        try {
-            GameState gs = (GameState) input.readObject();
-            isTurn = gs.isTurn();
-            //UPDATE BLACK PLAYERS board
-            System.out.println("Black recieved new board");
-            Platform.runLater(new Runnable() {
-                @Override
-                public void run() {
-                    gameScreen.renderGameState(gs.getGameState());
-                }
-            });
-        } catch (IOException e) {
-            e.printStackTrace();
-        } catch (ClassNotFoundException e) {
-            e.printStackTrace();
-        }
-    }
 
-    /*
-    public GameState reciveGameState() {
-        try {
-            GameState gs = (GameState) input.readObject();
-            isTurn = gs.isTurn();
-            this.currrentGameState = gs.getGameState();
-        } catch (IOException e) {
-            e.printStackTrace();
-        } catch (ClassNotFoundException e) {
-            e.printStackTrace();
-        }
-        return null;
-    }
-     */
-
-/*
-    public void setTurn(boolean isTurn){
-        this.isTurn = isTurn;
-    }
-*/
     public boolean isTurn() {
         return isTurn;
     }
@@ -165,33 +126,4 @@ public class Client implements Runnable{
         }
     }
 
-    public void printGameState(GameState gameState) {
-        String line =" ";
-        for(int i=0; i<8; i++) {
-            System.out.println(line);
-            line =" ";
-            for(int j=0; j<8; j++) {
-                String piece;
-                piece="[]";
-                if(!gameState.getGameState()[j][i].getColor().equalsIgnoreCase("blank")) {
-                    piece=twoLetterPiece(gameState.getGameState()[j][i]);
-                }
-
-                line=line+piece;
-            }
-        }
-        System.out.println(line);
-    }
-
-    protected String twoLetterPiece(AbstractPiece p) {
-        String result = " ";
-
-        if(p.getColor().equalsIgnoreCase("black")) {
-            result = "B";
-        }else result="W";
-
-        result=result+p.getClass().getSimpleName().charAt(0);
-
-        return result;
-    }
 }

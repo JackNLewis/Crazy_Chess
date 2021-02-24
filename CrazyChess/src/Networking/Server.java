@@ -3,13 +3,9 @@ package Networking;
 import CrazyChess.logic.MainLogic;
 import CrazyChess.logic.Utilities;
 import CrazyChess.pieces.AbstractPiece;
-import CrazyChess.pieces.BlankPiece;
-
 import java.io.*;
 import java.net.ServerSocket;
 import java.net.Socket;
-import java.util.Arrays;
-import java.util.HashSet;
 
 public class Server implements Runnable{
 
@@ -123,35 +119,6 @@ public class Server implements Runnable{
     }
 
 
-    public void printGameState(AbstractPiece[][] gameState) {
-        String line =" ";
-        for(int i=0; i<8; i++) {
-            System.out.println(line);
-            line =" ";
-            for(int j=0; j<8; j++) {
-                String piece;
-                piece="[]";
-                if(!gameState[j][i].getColor().equalsIgnoreCase("blank")) {
-                    piece=twoLetterPiece(gameState[j][i]);
-                }
-
-                line=line+piece;
-            }
-        }
-        System.out.println(line);
-    }
-
-    protected String twoLetterPiece(AbstractPiece p) {
-        String result = " ";
-
-        if(p.getColor().equalsIgnoreCase("black")) {
-            result = "B";
-        }else result="W";
-
-        result=result+p.getClass().getSimpleName().charAt(0);
-
-        return result;
-    }
 
 }
 

@@ -1,13 +1,9 @@
 package Graphics;
 
-
-import CrazyChess.logic.MainLogic;
 import CrazyChess.logic.Position;
-
 import CrazyChess.pieces.AbstractPiece;
 import CrazyChess.pieces.BlankPiece;
 import Networking.Client;
-import Networking.GameState;
 import Networking.Move;
 import javafx.event.EventHandler;
 import javafx.geometry.Pos;
@@ -17,7 +13,6 @@ import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
-
 import java.util.ArrayList;
 import java.util.concurrent.Semaphore;
 
@@ -25,7 +20,6 @@ public class GameScreenClient {
 
     private Scene scene;
     private StackPane root;
-    //private MainLogic game;
     private boolean selected; // shows if a tile is already selected
     private Tile startTile; //Position of tile which is clicked
     private Tile endTile; //Position of Graphics.Tile want to move piece to
