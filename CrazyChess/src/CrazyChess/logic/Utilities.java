@@ -232,10 +232,97 @@ public class Utilities
 		int oldX=p.getXpos();
 		int oldY=p.getYpos();
 		
-		AbstractPiece[][] newGamestate = gamestate; //not sure if I need this
-		newGamestate[newPos.getXpos()][newPos.getYpos()]=p;
+		AbstractPiece[][] newGamestate = safeCopyGamestate(gamestate); //not sure if I need this
+		AbstractPiece newPiece = safeCopyPiece(p);
+		newPiece.setPosition(newPos);
+		newGamestate[newPos.getXpos()][newPos.getYpos()]=newPiece;
 		newGamestate[oldX][oldY]=new BlankPiece("Blank", oldX, oldY);
 		
 		return newGamestate;
 	}
+	
+	
+	public AbstractPiece[][] safeCopyGamestate(AbstractPiece[][] gamestate){
+		AbstractPiece[][] copy = new AbstractPiece[8][8];
+		for(int i=0; i<8;i++) {
+			for(int j=0; j<8; j++) {
+				copy[j][i]=safeCopyPiece(gamestate[j][i]);
+				
+			}
+		}
+		return copy;
+	}
+	
+	
+	
+	public AbstractPiece safeCopyPiece(AbstractPiece p) {
+		String pieceType = p.getClass().getSimpleName();
+		//System.out.println("Copying piece type: "+pieceType);
+		AbstractPiece copy = null;
+		switch(pieceType) {
+			case "Pawn":
+				Pawn pawnCast=(Pawn) p;
+				Pawn pawnCopy=new Pawn(p.getColor(),p.getPosition());
+				pawnCopy.setDoublejump(pawnCast.getDoublejump());
+				return pawnCopy;
+				//break;
+			case "Rook":
+				copy=new Rook(p.getColor(),p.getPosition());
+				break;
+			case "Knight":
+				copy=new Knight(p.getColor(),p.getPosition());
+				break;
+			case "Bishop":
+				copy=new Bishop(p.getColor(),p.getPosition());
+				break;
+			case "Queen":
+				copy=new Queen(p.getColor(),p.getPosition());
+				break;
+			case "King":
+				King kingCast=(King) p;
+				King kingCopy=new King(p.getColor(),p.getPosition());
+				kingCopy.setWasMoved(kingCast.getWasMoved());
+				kingCopy.setIsChecked(kingCast.getIsChecked());
+				return kingCopy;
+				//break;
+			case "BlankPiece":
+				copy=new BlankPiece(p.getColor(),p.getPosition());
+				break;
+			
+		}
+		return copy;
+	}
+	
+	protected String twoLetterPiece(AbstractPiece p) {
+		String result = " ";
+		
+		if(p.getColor().equalsIgnoreCase("black")) {
+			result = "B";
+		}else result="W";
+		
+		result=result+p.getClass().getSimpleName().charAt(0);
+		
+		return result;
+	}
+	
+	
+	public void printGameState(AbstractPiece[][] gamestate) {
+		String line =" ";
+		for(int i=0; i<8; i++) {
+			System.out.println(line);
+			line =" ";
+			for(int j=0; j<8; j++) {
+				String piece;
+				piece="[]";
+				if(!gamestate[j][i].getColor().equalsIgnoreCase("blank")) {
+					piece=twoLetterPiece(gamestate[j][i]);
+				}
+				
+				line=line+piece;
+			}
+		}
+		System.out.println(line);
+	}
 }
+
+
