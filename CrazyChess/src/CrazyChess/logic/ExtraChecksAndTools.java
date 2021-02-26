@@ -37,8 +37,8 @@ public class ExtraChecksAndTools
 		ArrayList<AbstractPiece> temp = new ArrayList<AbstractPiece>();
 		for(int i=0; i<8; i++) {
 			for(int j=0; j<8; j++) {
-				if(!(gamestate[i][j] instanceof BlankPiece)) {
-					temp.add(gamestate[i][j]);
+				if(!(gamestate[j][i] instanceof BlankPiece)) {
+					temp.add(gamestate[j][i]);
 				}
 			}
 		}
@@ -76,6 +76,7 @@ public class ExtraChecksAndTools
 		ArrayList<AbstractPiece> blackPieces = new ArrayList<AbstractPiece>();
 		
 		for(AbstractPiece p : allPieces) {
+			//System.out.println(p);
 			if(p.getColor().equalsIgnoreCase("black")) {
 				blackPieces.add(p);
 			}
@@ -268,11 +269,11 @@ public class ExtraChecksAndTools
 		ArrayList<Position> movesList = new ArrayList<Position>();
 		for(int i=0; i<8; i++) {
 			for(int j=0; j<8; j++) {
-				AbstractPiece targetTile = gamestate[i][j];
+				AbstractPiece targetTile = gamestate[j][i];
 				if(!(p.getXpos()==targetTile.getXpos()&&p.getYpos()==targetTile.getYpos())) {
 					if(bvc.moveCheckAssigner(p, targetTile.getXpos()-p.getXpos(), targetTile.getYpos()-p.getYpos(), isDebug, gamestate, moveNo)) {
 						if(!targetTile.getColor().equalsIgnoreCase(p.getColor())){ //checks if the candidate tile doesn't have a piece of the same color on it
-							movesList.add(new Position(i, j));
+							movesList.add(new Position(j, i));
 						}
 					}
 				}
@@ -295,16 +296,19 @@ public class ExtraChecksAndTools
 	 */
 	
 	public ArrayList<AbstractPiece[][]> possibleGamestatesAfterNextMove (String whoseTurn, boolean isDebug, AbstractPiece[][] gamestate, int moveNo){
+		System.out.println("HELLO");
 		if(whoseTurn.equalsIgnoreCase("white")) {
 			ArrayList<AbstractPiece[][]> listOfGamestates = new ArrayList<AbstractPiece[][]>();
+			System.out.println("Getting white pieces");
 			ArrayList<AbstractPiece> whitePieces = getWhitePieces(gamestate);
+			System.out.println("Got the white pieces");
 			for(AbstractPiece p : whitePieces) {
 				ArrayList<Position> validPositions = validMoves(p, isDebug, gamestate, moveNo);
 				for(Position vp : validPositions) {
 					//generate gamestate for each one. Excluding moves where you capture enemy king
-					AbstractPiece[][] newGamestate = gamestate;
-					if(!(vp.getXpos()==getKing("black", gamestate).getXpos()&&vp.getYpos()==getKing("black", gamestate).getXpos())) {
-						newGamestate=utils.relocatePiece(p, gamestate, vp.getXpos(), vp.getYpos()); //might cause some bugs
+					AbstractPiece[][] newGamestate = utils.safeCopyGamestate(gamestate);
+					if(!(vp.getXpos()==getKing("black", newGamestate).getXpos()&&vp.getYpos()==getKing("black", newGamestate).getXpos())) {
+						newGamestate=utils.relocatePiece(p, newGamestate, vp.getXpos(), vp.getYpos()); //might cause some bugs
 						listOfGamestates.add(newGamestate);
 					}
 					
@@ -319,9 +323,9 @@ public class ExtraChecksAndTools
 				ArrayList<Position> validPositions = validMoves(p, isDebug, gamestate, moveNo);
 				for(Position vp : validPositions) {
 					//generate gamestate for each one. Excluding moves where you capture enemy king
-					AbstractPiece[][] newGamestate = gamestate;
-					if(!(vp.getXpos()==getKing("white", gamestate).getXpos()&&vp.getYpos()==getKing("white", gamestate).getXpos())) {
-						newGamestate=utils.relocatePiece(p, gamestate, vp.getXpos(), vp.getYpos()); //might cause some bugs
+					AbstractPiece[][] newGamestate = utils.safeCopyGamestate(gamestate);
+					if(!(vp.getXpos()==getKing("white", newGamestate).getXpos()&&vp.getYpos()==getKing("white", newGamestate).getXpos())) {
+						newGamestate=utils.relocatePiece(p, newGamestate, vp.getXpos(), vp.getYpos()); //might cause some bugs
 						listOfGamestates.add(newGamestate);
 					}
 					
@@ -347,16 +351,19 @@ public class ExtraChecksAndTools
 	 */
 	public boolean isInCheckmate(String color, boolean isDebug, AbstractPiece[][] gamestate, int moveNo){
 		
+		boolean isMated = false;
+		
 		//just to be safe, check for a check
 		if(isInCheck(color, isDebug, gamestate, moveNo)) {
+			isMated=true;
 			ArrayList<AbstractPiece[][]> nextMoveGamestates = possibleGamestatesAfterNextMove(color, isDebug, gamestate, moveNo);
 			for(AbstractPiece[][] g : nextMoveGamestates) {
 				if(!isInCheck(color, isDebug, g, moveNo)) {
-					return false;
+					isMated =  false;
 				}
 			}
 		}
 		
-		return true;
+		return isMated;
 	}
 }
