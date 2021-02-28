@@ -366,4 +366,50 @@ public class ExtraChecksAndTools
 		
 		return isMated;
 	}
+
+	/**
+	 * This method checks if the game state is in draw
+	 * @param color       color of the player the moves recently
+	 * @param isDebug     is debug mode activated
+	 * @param gamestate   game state to be examined
+	 * @param moveNo      current move number
+	 * @return            true if the game state is in draw, false if it still has possible moves
+	 */
+	public boolean isInDraw(String currentTurn, boolean isDebug, AbstractPiece[][] gamestate, int moveNo){
+
+		ArrayList<AbstractPiece> piecesToCheck;
+		ArrayList<AbstractPiece> currentPieces = gamestateToPieceArrayList(gamestate);
+
+		// Check if there are only kings left on the board
+		if (currentPieces.size() == 2) {
+			boolean isKings = true;
+			for (AbstractPiece piece : currentPieces) {
+				isKings = isKings && (piece instanceof King);
+			}
+			
+			if (isKings) {
+				return true;
+			} else {
+				System.out.println("Unexpected Game State: There is only one king on the board!");
+			}
+		}
+
+		// Determine pieces to check against based on the last move
+		if (currentTurn.equalsIgnoreCase("white")) {
+			piecesToCheck = getBlackPieces(gamestate);
+		} else {
+			piecesToCheck = getWhitePieces(gamestate);
+		}
+
+		// Check whether valid move exists
+		ArrayList<Position> validMoves = new ArrayList<Position>;
+		for (AbstractPiece piece : piecesToCheck) {
+			validMoves.addAll(bvc.getPieceValidMove(piece, isDebug, gamestate));
+		}
+		if (validMoves.isEmpty()) {
+			return true;
+		}
+
+		return false;
+	}
 }

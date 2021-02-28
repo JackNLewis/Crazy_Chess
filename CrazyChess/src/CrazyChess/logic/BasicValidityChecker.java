@@ -1,6 +1,9 @@
 package CrazyChess.logic;
 
 import CrazyChess.pieces.*;
+
+import java.util.ArrayList;
+
 /**
  * This class performs some basic checks to see if a
  * move on the board is at least somewhat valid.
@@ -506,6 +509,20 @@ public class BasicValidityChecker
 			return true;
 		}
 		return false;
+	}
+
+	// TODO: Finish the function
+	/**
+	 * Get all valid moves for a given piece.
+	 * @param p           the piece to be checked
+	 * @param isDebug     is debug mode activated
+	 * @param gamestate   the current game state
+	 * @return            ArrayList of all possible valid position
+	 */
+	public ArrayList<Position> getPieceValidMove(AbstractPiece p, boolean isDebug, AbstractPiece[][] gamestate) {
+		ArrayList<Position> validMoves = new ArrayList<Position>();
+
+		return validMoves;
 	}
 	
 }

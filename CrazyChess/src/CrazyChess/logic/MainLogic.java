@@ -367,6 +367,15 @@ public class MainLogic
 				isEndgame = true;
 			}
 		}
+
+		// Checks if the new gamestate will be a draw
+		if (ecat.isInDraw(currentTurn, isDebug, newGamestate, turnNo + 1)) {
+			if (isDebug) {
+				System.out.println("The game has ended in a draw!");
+			}
+			isDraw = true;
+			isEndgame = true;
+		}
 				
 		gamestate = newGamestate;
 		return true;
