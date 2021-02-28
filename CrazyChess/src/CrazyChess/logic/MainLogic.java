@@ -314,7 +314,7 @@ public class MainLogic
 					System.out.println("Invalid move: King is still under check");
 				}
 				copiedPiece.setPosition(oldPos);//resets piece's position because the move is invalid(?)
-				gamestate=newGamestate;
+				gamestate = newGamestate;
 				return false;
 			}
 		}
@@ -324,7 +324,7 @@ public class MainLogic
 					System.out.println("Invalid move: King is still under check");
 				}
 				copiedPiece.setPosition(oldPos);//resets piece's position because the move is invalid(?)
-				gamestate=newGamestate;
+				gamestate = newGamestate;
 				return false;
 			}
 		}
@@ -335,7 +335,7 @@ public class MainLogic
 			if(ecat.isInCheck("black", isDebug, newGamestate, turnNo+1)) {
 				if(isDebug) {
 					System.out.println("Black king is now checked!");
-					isBlackChecked=true;
+					isBlackChecked = true;
 				}
 			}
 		}
@@ -343,7 +343,7 @@ public class MainLogic
 			if(ecat.isInCheck("white", isDebug, newGamestate, turnNo+1)) {
 				if(isDebug) {
 					System.out.println("White king is now checked!");
-					isWhiteChecked=true;
+					isWhiteChecked = true;
 				}
 			}
 		}
@@ -354,7 +354,8 @@ public class MainLogic
 				if(isDebug) {
 					System.out.println("White checkmated black");
 				}
-				isBlackMated=true;
+				isBlackMated = true;
+				isEndgame = true;
 			}
 		}
 		if(currentTurn.equalsIgnoreCase("black")) {
@@ -362,7 +363,8 @@ public class MainLogic
 				if(isDebug) {
 					System.out.println("Black checkmated white");
 				}
-				isWhiteMated=true;
+				isWhiteMated = true;
+				isEndgame = true;
 			}
 		}
 				
