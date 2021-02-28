@@ -24,6 +24,9 @@ public class MainLogic
 	
 	protected boolean isWhiteChecked;  //boolean to show if the white player is under check
 	protected boolean isWhiteMated;    //boolean to show if the white player is mated
+
+	protected boolean isDraw;		   //boolean to show if the game is draw
+	protected boolean isEndgame;       //boolean to show if the game is ended
 	
 	Utilities utils = new Utilities();
 	BasicValidityChecker bvc = new BasicValidityChecker();
@@ -45,11 +48,12 @@ public class MainLogic
 		currentTurn = "White";
 		turnNo = 1;
 		
-		isBlackChecked=false;
-		isBlackMated=false;
-		isWhiteChecked=false;
-		isWhiteMated=false;
-		
+		isBlackChecked = false;
+		isBlackMated = false;
+		isWhiteChecked = false;
+		isWhiteMated = false;
+		isDraw = false;
+		isEndgame = false;
 	}
 	
 	/**
@@ -301,72 +305,68 @@ public class MainLogic
 		newGamestate=utils.placePiece(copiedPiece, isDebug, newGamestate);//place it according to the new position
 		//and set the old position to a Blank place
 		newGamestate=utils.placePiece(new BlankPiece("Blank",oldPos.getXpos(), oldPos.getYpos()), isDebug, newGamestate);
-		
-		
-		
-		
-		
-		
+
+
 		//if king was under check, it checks if the king escaped check in the new gamestate
-				if(isWhiteChecked&&currentTurn.equalsIgnoreCase("white")) {
-					if(ecat.isInCheck(currentTurn, isDebug, newGamestate, turnNo+1)) {
-						if(isDebug) {
-							System.out.println("Invalid move: King is still under check");
-						}
-						copiedPiece.setPosition(oldPos);//resets piece's position because the move is invalid(?)
-						gamestate=newGamestate;
-						return false;
-					}
+		if(isWhiteChecked&&currentTurn.equalsIgnoreCase("white")) {
+			if(ecat.isInCheck(currentTurn, isDebug, newGamestate, turnNo+1)) {
+				if(isDebug) {
+					System.out.println("Invalid move: King is still under check");
 				}
-				if(isBlackChecked&&currentTurn.equalsIgnoreCase("black")) {
-					if(ecat.isInCheck(currentTurn, isDebug, newGamestate, turnNo+1)) {
-						if(isDebug) {
-							System.out.println("Invalid move: King is still under check");
-						}
-						copiedPiece.setPosition(oldPos);//resets piece's position because the move is invalid(?)
-						gamestate=newGamestate;
-						return false;
-					}
+				copiedPiece.setPosition(oldPos);//resets piece's position because the move is invalid(?)
+				gamestate=newGamestate;
+				return false;
+			}
+		}
+		if(isBlackChecked&&currentTurn.equalsIgnoreCase("black")) {
+			if(ecat.isInCheck(currentTurn, isDebug, newGamestate, turnNo+1)) {
+				if(isDebug) {
+					System.out.println("Invalid move: King is still under check");
 				}
+				copiedPiece.setPosition(oldPos);//resets piece's position because the move is invalid(?)
+				gamestate=newGamestate;
+				return false;
+			}
+		}
 		
 		
 		//Check if the player is not under check
-				if(currentTurn.equalsIgnoreCase("white")) {
-					if(ecat.isInCheck("black", isDebug, newGamestate, turnNo+1)) {
-						if(isDebug) {
-							System.out.println("Black king is now checked!");
-							isBlackChecked=true;
-						}
-					}
+		if(currentTurn.equalsIgnoreCase("white")) {
+			if(ecat.isInCheck("black", isDebug, newGamestate, turnNo+1)) {
+				if(isDebug) {
+					System.out.println("Black king is now checked!");
+					isBlackChecked=true;
 				}
-				if(currentTurn.equalsIgnoreCase("black")) {
-					if(ecat.isInCheck("white", isDebug, newGamestate, turnNo+1)) {
-						if(isDebug) {
-							System.out.println("White king is now checked!");
-							isWhiteChecked=true;
-						}
-					}
+			}
+		}
+		if(currentTurn.equalsIgnoreCase("black")) {
+			if(ecat.isInCheck("white", isDebug, newGamestate, turnNo+1)) {
+				if(isDebug) {
+					System.out.println("White king is now checked!");
+					isWhiteChecked=true;
 				}
+			}
+		}
 		
 		//checks if the new gamestate will be a checkmate for the oponent
-				if(currentTurn.equalsIgnoreCase("white")) {
-					if(ecat.isInCheckmate("black", isDebug, newGamestate, turnNo+1)) {
-						if(isDebug) {
-							System.out.println("White checkmated black");
-						}
-						isBlackMated=true;
-					}
+		if(currentTurn.equalsIgnoreCase("white")) {
+			if(ecat.isInCheckmate("black", isDebug, newGamestate, turnNo+1)) {
+				if(isDebug) {
+					System.out.println("White checkmated black");
 				}
-				if(currentTurn.equalsIgnoreCase("black")) {
-					if(ecat.isInCheckmate("white", isDebug, newGamestate, turnNo+1)) {
-						if(isDebug) {
-							System.out.println("Black checkmated white");
-						}
-						isWhiteMated=true;
-					}
-				}		
+				isBlackMated=true;
+			}
+		}
+		if(currentTurn.equalsIgnoreCase("black")) {
+			if(ecat.isInCheckmate("white", isDebug, newGamestate, turnNo+1)) {
+				if(isDebug) {
+					System.out.println("Black checkmated white");
+				}
+				isWhiteMated=true;
+			}
+		}
 				
-		gamestate=newGamestate;
+		gamestate = newGamestate;
 		return true;
 	}
 
