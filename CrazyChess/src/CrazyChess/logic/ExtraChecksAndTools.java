@@ -402,14 +402,14 @@ public class ExtraChecksAndTools
 		}
 
 		// Check whether valid move exists
-		ArrayList<Position> validMoves = new ArrayList<Position>;
+		ArrayList<Position> allValidMoves = new ArrayList<Position>;
 		for (AbstractPiece piece : piecesToCheck) {
-			validMoves.addAll(bvc.getPieceValidMove(piece, isDebug, gamestate));
-		}
-		if (validMoves.isEmpty()) {
-			return true;
+			allValidMoves.addAll(validMoves(piece, isDebug, gamestate, moveNo));
 		}
 
+		if (allValidMoves.isEmpty()) {
+			return true;
+		}
 		return false;
 	}
 }
