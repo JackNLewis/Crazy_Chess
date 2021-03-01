@@ -510,19 +510,5 @@ public class BasicValidityChecker
 		}
 		return false;
 	}
-
-	// TODO: Finish the function
-	/**
-	 * Get all valid moves for a given piece.
-	 * @param p           the piece to be checked
-	 * @param isDebug     is debug mode activated
-	 * @param gamestate   the current game state
-	 * @return            ArrayList of all possible valid position
-	 */
-	public ArrayList<Position> getPieceValidMove(AbstractPiece p, boolean isDebug, AbstractPiece[][] gamestate) {
-		ArrayList<Position> validMoves = new ArrayList<Position>();
-
-		return validMoves;
-	}
 	
 }
