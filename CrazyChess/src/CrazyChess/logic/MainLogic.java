@@ -352,55 +352,55 @@ public class MainLogic
 //				}
 		
 		
-		//Check if the player is not under check
-		if(currentTurn.equalsIgnoreCase("white")) {
-			if(ecat.isInCheck("black", isDebug, newGamestate, turnNo+1)) {
-				if(isDebug) {
-					System.out.println("Black king is now checked!");
-					isBlackChecked = true;
+			//Check if the player is not under check
+			if(currentTurn.equalsIgnoreCase("white")) {
+				if(ecat.isInCheck("black", isDebug, newGamestate, turnNo+1)) {
+					if(isDebug) {
+						System.out.println("Black king is now checked!");
+						isBlackChecked = true;
+					}
 				}
 			}
-		}
-		if(currentTurn.equalsIgnoreCase("black")) {
-			if(ecat.isInCheck("white", isDebug, newGamestate, turnNo+1)) {
-				if(isDebug) {
-					System.out.println("White king is now checked!");
-					isWhiteChecked = true;
+			if(currentTurn.equalsIgnoreCase("black")) {
+				if(ecat.isInCheck("white", isDebug, newGamestate, turnNo+1)) {
+					if(isDebug) {
+						System.out.println("White king is now checked!");
+						isWhiteChecked = true;
+					}
 				}
 			}
-		}
-		
-		//checks if the new gamestate will be a checkmate for the oponent
-		if(currentTurn.equalsIgnoreCase("white")) {
-			if(ecat.isInCheckmate("black", isDebug, newGamestate, turnNo+1)) {
-				if(isDebug) {
-					System.out.println("White checkmated black");
-				}
-				isBlackMated = true;
-				isEndgame = true;
-			}else if(isBlackChecked) System.out.println(ecat.validMoves(ecat.getKing("black", newGamestate), isDebug, newGamestate, turnNo).size());
-		}
-		if(currentTurn.equalsIgnoreCase("black")) {
-			if(ecat.isInCheckmate("white", isDebug, newGamestate, turnNo+1)) {
-				if(isDebug) {
-					System.out.println("Black checkmated white");
-				}
-				isWhiteMated = true;
-				isEndgame = true;
-			}else if(isWhiteChecked) System.out.println(ecat.validMoves(ecat.getKing("white", newGamestate), isDebug, newGamestate, turnNo).size());
-		}
 
-		//checks if the new gamestate will be a draw
-		if (ecat.isInDraw(currentTurn, isDebug, newGamestate, turnNo+1) && !isEndgame) {
-			if (isDebug) {
-				System.out.println("The game resulted in a draw");
+			//checks if the new gamestate will be a checkmate for the oponent
+			if(currentTurn.equalsIgnoreCase("white")) {
+				if(ecat.isInCheckmate("black", isDebug, newGamestate, turnNo+1)) {
+					if(isDebug) {
+						System.out.println("White checkmated black");
+					}
+					isBlackMated = true;
+					isEndgame = true;
+				}else if(isBlackChecked) System.out.println(ecat.validMoves(ecat.getKing("black", newGamestate), isDebug, newGamestate, turnNo).size());
 			}
-			isDraw = true;
-			isEndgame = true;
-		}
-				
-		gamestate = newGamestate;
-		return true;
+			if(currentTurn.equalsIgnoreCase("black")) {
+				if(ecat.isInCheckmate("white", isDebug, newGamestate, turnNo+1)) {
+					if(isDebug) {
+						System.out.println("Black checkmated white");
+					}
+					isWhiteMated = true;
+					isEndgame = true;
+				}else if(isWhiteChecked) System.out.println(ecat.validMoves(ecat.getKing("white", newGamestate), isDebug, newGamestate, turnNo).size());
+			}
+
+			// Check if the new gamestate will be a draw
+			if (ecat.isInDraw(currentTurn, isDebug, newGamestate, turnNo+1) && !isEndgame) {
+				if (isDebug) {
+					System.out.println("The game resulted in a draw");
+				}
+				isDraw = true;
+				isEndgame = true;
+			}
+
+			gamestate = newGamestate;
+			return true;
 		}
 		return false;
 	}
