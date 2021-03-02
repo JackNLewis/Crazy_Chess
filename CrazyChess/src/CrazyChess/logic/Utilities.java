@@ -323,6 +323,20 @@ public class Utilities
 		}
 		System.out.println(line);
 	}
+	
+	/**
+	 *Returns the opposite of the input color 
+	 * @param col    input color
+	 * @return       the opposite of the input color, null if the input color is neither black nor white
+	 */
+	public String oppositeColor(String col) {
+		String newCol = null;
+		if(col.equalsIgnoreCase("black")) {
+			newCol="white";
+		}else newCol="black";
+		
+		return newCol;
+	}
 }
 
 

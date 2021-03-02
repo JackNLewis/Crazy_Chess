@@ -1,5 +1,7 @@
 package CrazyChess.logic;
 
+import java.util.ArrayList;
+
 import CrazyChess.pieces.*;
 
 
@@ -229,17 +231,32 @@ public class MainLogic
 			return false;
 		}
 
-		if(!bvc.moveCheckAssigner(p, xRel, yRel, isDebug, gamestate, turnNo)){
+//		if(!bvc.moveCheckAssigner(p, xRel, yRel, isDebug, gamestate, turnNo)){
+//			if(isDebug)
+//				System.out.println("Bad move! Illegal move for " + p.getClass().getSimpleName() + ".");
+//			return false;
+//		}
+		
+		//Checks the move validity
+		ArrayList<Position> moveList = ecat.validMoves(p, isDebug, gamestate, turnNo);
+		if(moveList.isEmpty()) {
 			if(isDebug)
-				System.out.println("Bad move! Illegal move for " + p.getClass().getSimpleName() + ".");
+				System.out.println("Piece has no valid moves");
 			return false;
 		}
-
-		if(newPiece instanceof King){
-			if(isDebug)
-				System.out.println("Bad move! Kings cannot be captured.");
-			return false;
+		boolean isValid=false;
+		for(Position pos : moveList) {
+			if(newPiece.getPosition().equals(pos)) {
+				isValid=true;
+			}
 		}
+		
+//
+//		if(newPiece instanceof King){
+//			if(isDebug)
+//				System.out.println("Bad move! Kings cannot be captured.");
+//			return false;
+//		}
 		
 		//sets up new potential gamestate
 //		AbstractPiece pp = utils.safeCopyPiece(p);
@@ -295,12 +312,13 @@ public class MainLogic
 		//gamestate=utils.placePiece(new BlankPiece("Blank",oldPos.getXpos(), oldPos.getYpos()), isDebug, gamestate);
 		
 		//Constructing new possible gamestate
-		AbstractPiece[][] newGamestate = utils.safeCopyGamestate(gamestate);
-		AbstractPiece copiedPiece = utils.getPiece(p.getPosition(), isDebug, newGamestate);
-		copiedPiece.setPosition(newPiece.getXpos(), newPiece.getYpos());
-		newGamestate=utils.placePiece(copiedPiece, isDebug, newGamestate);//place it according to the new position
-		//and set the old position to a Blank place
-		newGamestate=utils.placePiece(new BlankPiece("Blank",oldPos.getXpos(), oldPos.getYpos()), isDebug, newGamestate);
+		if(isValid) {
+			AbstractPiece[][] newGamestate = utils.safeCopyGamestate(gamestate);
+			AbstractPiece copiedPiece = utils.getPiece(p.getPosition(), isDebug, newGamestate);
+			copiedPiece.setPosition(newPiece.getXpos(), newPiece.getYpos());
+			newGamestate=utils.placePiece(copiedPiece, isDebug, newGamestate);//place it according to the new position
+			//and set the old position to a Blank place
+			newGamestate=utils.placePiece(new BlankPiece("Blank",oldPos.getXpos(), oldPos.getYpos()), isDebug, newGamestate);
 		
 		
 		
@@ -308,26 +326,26 @@ public class MainLogic
 		
 		
 		//if king was under check, it checks if the king escaped check in the new gamestate
-				if(isWhiteChecked&&currentTurn.equalsIgnoreCase("white")) {
-					if(ecat.isInCheck(currentTurn, isDebug, newGamestate, turnNo+1)) {
-						if(isDebug) {
-							System.out.println("Invalid move: King is still under check");
-						}
-						copiedPiece.setPosition(oldPos);//resets piece's position because the move is invalid(?)
-						gamestate=newGamestate;
-						return false;
-					}
-				}
-				if(isBlackChecked&&currentTurn.equalsIgnoreCase("black")) {
-					if(ecat.isInCheck(currentTurn, isDebug, newGamestate, turnNo+1)) {
-						if(isDebug) {
-							System.out.println("Invalid move: King is still under check");
-						}
-						copiedPiece.setPosition(oldPos);//resets piece's position because the move is invalid(?)
-						gamestate=newGamestate;
-						return false;
-					}
-				}
+//				if(isWhiteChecked&&currentTurn.equalsIgnoreCase("white")) {
+//					if(ecat.isInCheck(currentTurn, isDebug, newGamestate, turnNo+1)) {
+//						if(isDebug) {
+//							System.out.println("Invalid move: King is still under check");
+//						}
+//						copiedPiece.setPosition(oldPos);//resets piece's position because the move is invalid(?)
+//						gamestate=newGamestate;
+//						return false;
+//					}
+//				}
+//				if(isBlackChecked&&currentTurn.equalsIgnoreCase("black")) {
+//					if(ecat.isInCheck(currentTurn, isDebug, newGamestate, turnNo+1)) {
+//						if(isDebug) {
+//							System.out.println("Invalid move: King is still under check");
+//						}
+//						copiedPiece.setPosition(oldPos);//resets piece's position because the move is invalid(?)
+//						gamestate=newGamestate;
+//						return false;
+//					}
+//				}
 		
 		
 		//Check if the player is not under check
@@ -355,7 +373,7 @@ public class MainLogic
 							System.out.println("White checkmated black");
 						}
 						isBlackMated=true;
-					}
+					}else if(isBlackChecked) System.out.println(ecat.validMoves(ecat.getKing("black", newGamestate), isDebug, newGamestate, turnNo).size());
 				}
 				if(currentTurn.equalsIgnoreCase("black")) {
 					if(ecat.isInCheckmate("white", isDebug, newGamestate, turnNo+1)) {
@@ -363,11 +381,13 @@ public class MainLogic
 							System.out.println("Black checkmated white");
 						}
 						isWhiteMated=true;
-					}
+					}else if(isWhiteChecked) System.out.println(ecat.validMoves(ecat.getKing("white", newGamestate), isDebug, newGamestate, turnNo).size());
 				}		
 				
 		gamestate=newGamestate;
 		return true;
+		}
+		return false;
 	}
 
 
