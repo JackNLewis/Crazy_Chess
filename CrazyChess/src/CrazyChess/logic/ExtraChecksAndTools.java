@@ -269,11 +269,19 @@ public class ExtraChecksAndTools
 		ArrayList<Position> movesList = new ArrayList<Position>();
 		for(int i=0; i<8; i++) {
 			for(int j=0; j<8; j++) {
-				AbstractPiece targetTile = gamestate[j][i];
+				AbstractPiece targetTile = utils.safeCopyPiece(gamestate[j][i]);
 				if(!(p.getXpos()==targetTile.getXpos()&&p.getYpos()==targetTile.getYpos())) {
 					if(bvc.moveCheckAssigner(p, targetTile.getXpos()-p.getXpos(), targetTile.getYpos()-p.getYpos(), isDebug, gamestate, moveNo)) {
 						if(!targetTile.getColor().equalsIgnoreCase(p.getColor())){ //checks if the candidate tile doesn't have a piece of the same color on it
-							movesList.add(new Position(j, i));
+							AbstractPiece[][] newGamestate = utils.safeCopyGamestate(gamestate);
+							newGamestate=utils.relocatePiece(p, newGamestate, targetTile.getPosition());
+							if(!isInCheck(p.getColor(), isDebug, newGamestate, moveNo)) {//check if the new possition doesn't put the player in check
+								if(!targetTile.getPosition().equals(getKing(utils.oppositeColor(p.getColor()), newGamestate).getPosition())) {
+									//checks if the new position isn't an enemy king (because you can't capture kings)
+									//If all checks pass, move is valid :)
+									movesList.add(new Position(j, i));
+								}
+							}
 						}
 					}
 				}
@@ -360,6 +368,7 @@ public class ExtraChecksAndTools
 			for(AbstractPiece[][] g : nextMoveGamestates) {
 				if(!isInCheck(color, isDebug, g, moveNo)) {
 					isMated =  false;
+					utils.printGameState(g);
 				}
 			}
 		}
@@ -402,7 +411,7 @@ public class ExtraChecksAndTools
 		}
 
 		// Check whether valid move exists
-		ArrayList<Position> allValidMoves = new ArrayList<Position>;
+		ArrayList<Position> allValidMoves = new ArrayList<Position>();
 		for (AbstractPiece piece : piecesToCheck) {
 			allValidMoves.addAll(validMoves(piece, isDebug, gamestate, moveNo));
 		}
