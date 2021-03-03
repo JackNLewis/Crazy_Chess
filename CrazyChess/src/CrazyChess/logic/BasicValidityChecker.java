@@ -1,6 +1,9 @@
 package CrazyChess.logic;
 
 import CrazyChess.pieces.*;
+
+import java.util.ArrayList;
+
 /**
  * This class performs some basic checks to see if a
  * move on the board is at least somewhat valid.
@@ -255,7 +258,7 @@ public class BasicValidityChecker
 			if(xRel == 0 && yRel == -1 && !utils.getTargetPiece(p,xRel,yRel,isDebug,gamestate).getColor().equalsIgnoreCase("white"))
 				return true;
 			//first turn jump
-			else if(xRel == 0 && yRel == -2 && p.getYpos() == 6){
+			else if(xRel == 0 && yRel == -2 && p.getYpos() == 6&&utils.getPiece(p.getXpos()+xRel, p.getYpos()+yRel, isDebug, gamestate).getColor().equalsIgnoreCase("blank")){
 				p.setDoublejump(turnNo);
 				return true;
 			}
@@ -294,7 +297,7 @@ public class BasicValidityChecker
 			if(xRel == 0 && yRel == 1 && !utils.getTargetPiece(p,xRel,yRel,isDebug,gamestate).getColor().equalsIgnoreCase("black"))
 				return true;
 			//first turn jump
-			else if(xRel == 0 && yRel == 2 && p.getYpos() == 1){
+			else if(xRel == 0 && yRel == 2 && p.getYpos() == 1&&utils.getPiece(p.getXpos()+xRel, p.getYpos()+yRel, isDebug, gamestate).getColor().equalsIgnoreCase("blank")){
 				p.setDoublejump(turnNo);
 				return true;
 			}
