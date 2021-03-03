@@ -1,6 +1,9 @@
 package CrazyChess.logic;
 
 import CrazyChess.pieces.*;
+
+import java.util.ArrayList;
+
 /**
  * This class performs some basic checks to see if a
  * move on the board is at least somewhat valid.
