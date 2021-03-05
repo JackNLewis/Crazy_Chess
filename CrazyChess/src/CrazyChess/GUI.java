@@ -18,6 +18,8 @@ import javafx.scene.shape.Rectangle;
 
 import javafx.stage.Stage;
 
+import java.util.ArrayList;
+
 import CrazyChess.logic.*;
 import CrazyChess.pieces.*;
 
@@ -43,7 +45,7 @@ public class GUI extends Application {
 	private MainLogic chess; //Object for the "server". All chess logic computation should happen in here,
 							//and the purpose of the GUI is mainly to reflect the game state produced by this
 							//and to pass mouseclicks on the GUI board to it.
-	
+	private AI ai = new AI();
 	
 	
     public static void main(String[] args) {
@@ -160,14 +162,17 @@ public class GUI extends Application {
 				chess.printGameState();
 				return;
 			}
-			//Move done, do updates
-
+			
 			updateBoard();
 			lookingForMove = false;
 			selectedSquare.setXpos(-1);
 			selectedSquare.setYpos(-1);
 			chess.changeTurn();
-
+			
+			AbstractPiece[][] aiMove = ai.AI(chess);
+			//chess.setGamestate(aiMove);
+			//updateBoard();
+			//chess.changeTurn();
 			return;
 		}
 		else if(!lookingForMove){//Nothing selected, needs move
