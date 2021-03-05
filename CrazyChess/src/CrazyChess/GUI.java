@@ -57,6 +57,10 @@ public class GUI extends Application {
      * If we need to initialize new values in the future, do it here.
      * 
      */
+	
+	    // sound initialization
+    private music music = new music();
+	
     @Override
 	public void init(){
 		//initialize the chess API
@@ -153,6 +157,8 @@ public class GUI extends Application {
 			//first, get piece that is piece of prior selected square
 			AbstractPiece currentPiece = chess.getPiece(selectedSquare);
 
+			music.chessmove();
+			
 			//Now the actual move check
 			if(!chess.moveTo(currentPiece, pos.getXpos(), pos.getYpos())){
 				if(chess.isDebug())
