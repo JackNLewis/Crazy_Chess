@@ -32,6 +32,7 @@ public class ClientReciever implements Runnable{
                client.setCurrrentGameState(gs.getGameState());
                boolean success = client.isTurn() != gs.isTurn();
                client.setTurn(gs.isTurn());
+               client.setTurnNo(gs.getTurnNo());
                Platform.runLater(new Runnable() {
                    @Override
                    public void run() {

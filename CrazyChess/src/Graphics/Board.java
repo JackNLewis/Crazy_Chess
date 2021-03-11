@@ -7,6 +7,7 @@ import Networking.Client;
 import Networking.Move;
 import Networking.Server;
 import javafx.event.EventHandler;
+import javafx.geometry.Pos;
 import javafx.scene.control.Label;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
@@ -114,11 +115,17 @@ public class Board {
                         //client.getCurrentGameState()[tile.getPos().getXpos()][tile.getPos().getYpos()];
                         tile.setbgColor(Color.GREEN);
                         startTile = tile;
+
+                        //Get available move and display them
+                        ArrayList<Position> validMoves = client.getMoves(tile.getPos());
+                        showMoves(validMoves);
                         selected = true;
                     }else{
                         //Deselect
                         if(startTile.equals(tile)){
-                            setDefaultColor(tile);
+                            for(Tile tile: tiles){
+                                setDefaultColor(tile);
+                            }
                             selected = false;
                             return;
                         }
@@ -160,6 +167,16 @@ public class Board {
             tile.setbgColor(Color.WHITE);
         } else {
             tile.setbgColor(Color.GREY);
+        }
+    }
+
+    private void showMoves(ArrayList<Position> validMoves){
+        for(Tile tile: tiles){
+            for(Position pos: validMoves){
+                if(tile.getPos().equals(pos)){
+                    tile.setbgColor(Color.RED);
+                }
+            }
         }
     }
 

@@ -1,5 +1,7 @@
 package Networking;
 
+import CrazyChess.logic.ExtraChecksAndTools;
+import CrazyChess.logic.Position;
 import CrazyChess.pieces.AbstractPiece;
 import Graphics.GameScreen;
 import java.io.IOException;
@@ -7,6 +9,7 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.net.ConnectException;
 import java.net.Socket;
+import java.util.ArrayList;
 import java.util.concurrent.Semaphore;
 
 public class Client implements Runnable{
@@ -17,12 +20,12 @@ public class Client implements Runnable{
     Semaphore semaphore;
     ObjectOutputStream output;
     ClientReciever clientReciever;
-
+    int turnNo;
     String player;
     boolean isTurn;
     boolean isConnected = false;
     AbstractPiece[][] currrentGameState;
-
+    private ExtraChecksAndTools ect;
     GameScreen gameScreen;
     
     public Client(Semaphore semaphore){
@@ -35,7 +38,7 @@ public class Client implements Runnable{
         try {
             socket = new Socket(address, port);
             isConnected = true;
-
+            ect = new ExtraChecksAndTools();
             //Set up output stream
             output = new ObjectOutputStream(socket.getOutputStream());
             init();
@@ -106,6 +109,25 @@ public class Client implements Runnable{
         return isConnected;
     }
 
+    public void setTurnNo(int turnNo){
+        this.turnNo = turnNo;
+    }
+
+    public ArrayList<Position> getMoves(Position pos){
+        AbstractPiece piece = currrentGameState[pos.getXpos()][pos.getYpos()];
+        System.out.println(piece.toString());
+
+        ArrayList<Position> validMoves = ect.validMoves(piece,true,currrentGameState,turnNo);
+        System.out.println("Turn No:" + turnNo);
+        System.out.println("Show Available Moves:");
+        if(validMoves.isEmpty()){
+            System.out.println("Empty list");
+        }
+        for(Position p: validMoves){
+            System.out.println(p.toString());
+        }
+        return validMoves;
+    }
 
     public void close(){
         try {

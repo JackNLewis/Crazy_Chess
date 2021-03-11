@@ -14,7 +14,7 @@ public class Server implements Runnable{
     Socket blackPlayer;
     MainLogic game;
     Utilities utils;
-
+    int turnNo;
     ObjectInputStream whiteInput;
     ObjectInputStream blackInput;
 
@@ -32,6 +32,7 @@ public class Server implements Runnable{
             System.out.println("Listening on port 5000");
             game = new MainLogic();
             game.resetBoard();
+            turnNo = game.getTurnNo();
 
             //Wait for White player to connect
             whitePlayer = ss.accept();
@@ -76,12 +77,12 @@ public class Server implements Runnable{
                     System.out.println("Server: valid move");
                     whiteOutput.reset();
                     blackOutput.reset();
-                    whiteOutput.writeObject(new GameState(game.getGamestate(),false));
-                    blackOutput.writeObject(new GameState(game.getGamestate(),true));
+                    whiteOutput.writeObject(new GameState(game.getGamestate(),false, game.getTurnNo()));
+                    blackOutput.writeObject(new GameState(game.getGamestate(),true, game.getTurnNo()));
 
                     waitBlack();
                 } else {
-                    whiteOutput.writeObject(new GameState(game.getGamestate(),true));
+                    whiteOutput.writeObject(new GameState(game.getGamestate(),true, game.getTurnNo()));
                     System.out.println("Server: invalid move");
                 }
             } catch (IOException e) {
@@ -104,16 +105,15 @@ public class Server implements Runnable{
                 int endY = move.getEnd().getYpos();
 
                 boolean moved = game.moveTo(game.getPiece(move.getStart()), endX,endY);
-
                 if(moved){
                     System.out.println("Server: valid move");
                     whiteOutput.reset();
                     blackOutput.reset();
-                    whiteOutput.writeObject(new GameState(game.getGamestate(),true));
-                    blackOutput.writeObject(new GameState(game.getGamestate(),false));
+                    whiteOutput.writeObject(new GameState(game.getGamestate(),true,game.getTurnNo()));
+                    blackOutput.writeObject(new GameState(game.getGamestate(),false, game.getTurnNo()));
                     waitWhite();
                 }else{
-                    blackOutput.writeObject(new GameState(game.getGamestate(),true));
+                    blackOutput.writeObject(new GameState(game.getGamestate(),true, game.getTurnNo()));
                     System.out.println("Server: invalid move");
                 }
             } catch (IOException e) {

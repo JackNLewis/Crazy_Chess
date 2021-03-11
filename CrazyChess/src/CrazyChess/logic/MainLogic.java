@@ -445,6 +445,9 @@ public class MainLogic
 	public void printGameState() {
 		utils.printGameState(gamestate);
 	}
-	
+
+	public int getTurnNo(){
+		return turnNo;
+	}
 	
 }
