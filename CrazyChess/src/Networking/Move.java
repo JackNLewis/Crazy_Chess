@@ -21,4 +21,5 @@ public class Move implements Serializable {
     public Position getEnd() {
         return end;
     }
+
 }

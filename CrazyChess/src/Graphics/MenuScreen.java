@@ -92,7 +92,7 @@ public class MenuScreen {
                     }
                 });
 
-                //==============================================================================//
+                //=====================================================================================//
                 //Create the host button
                 Button host = new Button("Host");
                 host.setOnMouseClicked(new EventHandler<MouseEvent>() {

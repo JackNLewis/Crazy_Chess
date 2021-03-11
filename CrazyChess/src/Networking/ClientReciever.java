@@ -11,22 +11,27 @@ public class ClientReciever implements Runnable{
 
     ObjectInputStream input;
     GameScreen gameScreen;
-    Client parentClient;
+    Client client;
 
-    public ClientReciever(ObjectInputStream input,Client parentClient){
+    public ClientReciever(ObjectInputStream input,Client client){
         this.input = input;
-        this.parentClient = parentClient;
+        this.client = client;
     }
 
     @Override
     public void run() {
         try {
             System.out.println("Created Client Reciever");
-           while(true){
+            while(true){
                GameState gs = (GameState) input.readObject();
-               parentClient.setCurrrentGameState(gs.getGameState());
-               boolean success = parentClient.isTurn() != gs.isTurn();
-               parentClient.setTurn(gs.isTurn());
+               if(checkClose(gs)){
+                   System.out.println("Closing client");
+                   return;
+               }
+
+               client.setCurrrentGameState(gs.getGameState());
+               boolean success = client.isTurn() != gs.isTurn();
+               client.setTurn(gs.isTurn());
                Platform.runLater(new Runnable() {
                    @Override
                    public void run() {
@@ -37,13 +42,31 @@ public class ClientReciever implements Runnable{
 
            }
 
-        } catch (IOException | ClassNotFoundException e) {
+        } catch (IOException e) {
+            System.out.println("Server socket has closed, Closing client");
+            client.close();
+            Platform.runLater(new Runnable() {
+                @Override
+                public void run() {
+                    //Send back to menu screen
+                    gameScreen.close();
+                }
+            });
+        }catch(ClassNotFoundException e){
             e.printStackTrace();
         }
     }
 
     public void setGameScreen(GameScreen gameScreen){
         this.gameScreen = gameScreen;
+    }
+
+    private boolean checkClose(GameState gs){
+        if(gs.getGameState() == null){
+            client.close();
+            return true;
+        }
+        return false;
     }
 
 }

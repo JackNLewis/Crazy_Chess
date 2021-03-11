@@ -109,6 +109,7 @@ public class Client implements Runnable{
 
     public void close(){
         try {
+            System.out.println("Closing client");
             output.close();
             socket.close();
         } catch (IOException e) {

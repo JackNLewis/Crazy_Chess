@@ -84,7 +84,11 @@ public class Server implements Runnable{
                     whiteOutput.writeObject(new GameState(game.getGamestate(),true));
                     System.out.println("Server: invalid move");
                 }
-            } catch (IOException | ClassNotFoundException e) {
+            } catch (IOException e) {
+                System.out.println("Server: Black disconnetced");
+                close("black");
+                return;
+            }catch(ClassNotFoundException e){
                 e.printStackTrace();
             }
         }
@@ -112,15 +116,29 @@ public class Server implements Runnable{
                     blackOutput.writeObject(new GameState(game.getGamestate(),true));
                     System.out.println("Server: invalid move");
                 }
-            } catch (IOException | ClassNotFoundException e) {
+            } catch (IOException e) {
+                System.out.println("Server: White disconnetced");
+                close("white");
+                return;
+            }catch(ClassNotFoundException e){
                 e.printStackTrace();
             }
         }
     }
 
-//    private boolean checkClose(Move move, String color){
-//
-//    }
+    public void close(String player){
+        try {
+            if(player.equalsIgnoreCase("black")){
+                whiteOutput.close();
+                whiteInput.close();
+            }else{
+                blackInput.close();
+                blackOutput.close();
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
 
 
 

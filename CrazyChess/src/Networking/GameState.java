@@ -8,16 +8,18 @@ public class GameState implements Serializable {
     private AbstractPiece[][] gameState;
     private boolean isTurn;
     private String player;
+    private boolean checkMate;
+    private boolean check;
 
     public GameState(AbstractPiece[][] gameState,boolean isTurn){
         this.gameState = gameState;
         this.isTurn = isTurn;
     }
 
-    public GameState(AbstractPiece[][] gameState,boolean isTurn,String debug){
+    public GameState(AbstractPiece[][] gameState,boolean isTurn,String player){
         this.gameState = gameState;
         this.isTurn = isTurn;
-        this.player = debug;
+        this.player = player;
     }
     public boolean isTurn() {
         return isTurn;
@@ -30,4 +32,6 @@ public class GameState implements Serializable {
     public AbstractPiece[][] getGameState() {
         return gameState;
     }
+
+
 }
