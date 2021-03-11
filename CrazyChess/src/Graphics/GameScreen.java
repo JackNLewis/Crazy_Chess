@@ -8,42 +8,48 @@ import Networking.Move;
 import javafx.event.EventHandler;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
+import javafx.scene.control.Label;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
+import javafx.stage.Stage;
+import javafx.stage.WindowEvent;
+
 import java.util.ArrayList;
 import java.util.concurrent.Semaphore;
 
-public class GameScreenClient {
+public class GameScreen {
 
     private Scene scene;
-    private StackPane root;
+    private BorderPane root;
     private boolean selected; // shows if a tile is already selected
     private Tile startTile; //Position of tile which is clicked
     private Tile endTile; //Position of Graphics.Tile want to move piece to
     private Client client;
     private ArrayList<Tile> tiles;
+    private Label playerLabel;
 
-    public GameScreenClient(){
 
-        Semaphore semaphore = new Semaphore(0);
-        client = new Client(semaphore,this);
-        Thread thread = new Thread(client);
-        thread.start();
+    public GameScreen(Stage stage, Client client){
 
-        root = new StackPane();
+        this.client = client;
+        root = new BorderPane();
         scene = new Scene(root,500,800);
 
+        playerLabel = new Label("White");
+        root.setTop(playerLabel);
 
-        try {
-            semaphore.acquire();
-            initBoard(client.getPlayer());
-            renderGameState(client.getCurrentGameState(),true);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
+        initBoard(client.getPlayer());
+        renderGameState(client.getCurrentGameState(),true);
+
+        stage.setOnCloseRequest(new EventHandler<WindowEvent>() {
+            @Override
+            public void handle(WindowEvent event) {
+                client.close();
+            }
+        });
     }
 
     /**
@@ -53,6 +59,8 @@ public class GameScreenClient {
      *
      */
     public void initBoard(String player) {
+
+
         int squareSize = 60;
         GridPane board = new GridPane();
         tiles = new ArrayList<Tile>();
@@ -84,9 +92,10 @@ public class GameScreenClient {
         }
 
         board.setMaxSize(60*8,60*8);
-        board.setAlignment(Pos.CENTER);
-        root.getChildren().addAll(board);
+        root.setCenter(board);
         addMoveListeners();
+
+        renderGameState(client.getCurrentGameState(),true);
     }
 
     /**
@@ -110,7 +119,10 @@ public class GameScreenClient {
         }
     }
 
-
+    /**
+     * Method that adds the mouse listeners to the tiles on the board
+     *
+     */
     public void addMoveListeners(){
         for(Tile tile: tiles){
             tile.getSP().setOnMouseClicked(new EventHandler<MouseEvent>() {
@@ -121,6 +133,7 @@ public class GameScreenClient {
                         System.out.println("Not your turn");
                         return;
                     }
+                    //If it is correct turn
                     if(!selected){
                         int x = tile.getPos().getXpos();
                         int y = tile.getPos().getYpos();
@@ -149,22 +162,16 @@ public class GameScreenClient {
                         endTile = tile;
                         client.sendMove(new Move(startTile.getPos(),endTile.getPos()));
 
-                        //Recieve Move from server
-                        //GameState gs = client.reciveGameState();
-                        //renderGameState(gs.getGameState());
-                        /*
-                        //ONLY DESELECT TILE IF MOVE WAS SUCCESSFUL
-                        if(!gs.isTurn()){
-                            setDefaultColor(startTile);
-                            selected = false;
-                        }*/
-
                     }
                 }
             });
         }
     }
 
+    /**
+     * Method that sets a tile to its deafult colour
+     *
+     */
     private void setDefaultColor(Tile tile){
         if ((tile.getPos().getXpos() % 2 == 1 && tile.getPos().getYpos() % 2 == 1)
                 || ((tile.getPos().getXpos() % 2 == 0) && (tile.getPos().getYpos() % 2 == 0))) {
@@ -202,8 +209,17 @@ public class GameScreenClient {
         return imgView;
     }
 
-
     public Scene getScene(){
         return this.scene;
     }
+
+    public void updateMoveLabel(){
+        if(playerLabel.getText().equalsIgnoreCase("White")){
+            playerLabel.setText("Black");
+        }else{
+            playerLabel.setText("White");
+        }
+    }
+
+
 }

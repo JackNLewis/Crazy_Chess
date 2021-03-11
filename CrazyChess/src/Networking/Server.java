@@ -118,6 +118,10 @@ public class Server implements Runnable{
         }
     }
 
+//    private boolean checkClose(Move move, String color){
+//
+//    }
+
 
 
 }

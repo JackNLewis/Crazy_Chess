@@ -1,23 +1,19 @@
 package Networking;
 
-import CrazyChess.pieces.AbstractPiece;
-import Graphics.GameScreenClient;
+import Graphics.GameScreen;
 import javafx.application.Platform;
 
 import java.io.IOException;
 import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
-import java.net.Socket;
-import java.util.concurrent.Semaphore;
+
 
 public class ClientReciever implements Runnable{
 
     ObjectInputStream input;
-    GameScreenClient gameScreen;
+    GameScreen gameScreen;
     Client parentClient;
 
-    public ClientReciever(ObjectInputStream input,GameScreenClient gameScreen,Client parentClient){
-        this.gameScreen = gameScreen;
+    public ClientReciever(ObjectInputStream input,Client parentClient){
         this.input = input;
         this.parentClient = parentClient;
     }
@@ -35,6 +31,7 @@ public class ClientReciever implements Runnable{
                    @Override
                    public void run() {
                        gameScreen.renderGameState(gs.getGameState(),success);
+                       gameScreen.updateMoveLabel();
                    }
                });
 
@@ -45,5 +42,8 @@ public class ClientReciever implements Runnable{
         }
     }
 
+    public void setGameScreen(GameScreen gameScreen){
+        this.gameScreen = gameScreen;
+    }
 
 }
