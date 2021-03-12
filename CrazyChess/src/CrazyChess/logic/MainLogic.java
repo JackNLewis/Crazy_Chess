@@ -2,6 +2,7 @@ package CrazyChess.logic;
 
 import java.util.ArrayList;
 
+import CrazyChess.logic.powerups.PowerupMain;
 import CrazyChess.pieces.*;
 
 
@@ -30,9 +31,13 @@ public class MainLogic
 	protected boolean isDraw;		   //boolean to show if the game is draw
 	protected boolean isEndgame;       //boolean to show if the game is ended
 	
+	ArrayList<String> whitePowerUps = new ArrayList<String>();  //ArrayList to store white's powerups
+	ArrayList<String> blackPowerUps = new ArrayList<String>();  //ArrayList tp store black's powerups
+	
 	Utilities utils = new Utilities();
 	BasicValidityChecker bvc = new BasicValidityChecker();
 	ExtraChecksAndTools ecat = new ExtraChecksAndTools();
+	PowerupMain pwrUp = new PowerupMain();
 	/**
 	 * Constructor for the MainLogic class.
 	 * Initiates the gamestate as an empty board.
@@ -137,14 +142,20 @@ public class MainLogic
 		if(currentTurn.equalsIgnoreCase("White")){
 			currentTurn = "Black";
 			turnNo++;
+			gamestate=pwrUp.powerupSpawn(gamestate, turnNo, isDebug);
 			if(isDebug)
-				System.out.println("It is now Black's turn.");
+				if(isDebug) {
+					System.out.println("It is now Black's turn.");
+					System.out.println("Black's powerups: "+blackPowerUps.toString());}
 		}
 		else{
 			currentTurn = "White";
 			turnNo++;
-			if(isDebug)
+			gamestate=pwrUp.powerupSpawn(gamestate, turnNo, isDebug);
+			
+			if(isDebug) {
 				System.out.println("It is now White's turn.");
+				System.out.println("White's powerups: "+whitePowerUps.toString());}
 		}
 	}
 	
@@ -183,6 +194,11 @@ public class MainLogic
 
 		utils.placePiece( new King("Black",  3,7), isDebug, gamestate );
 		utils.placePiece( new Queen("Black", 4,7), isDebug, gamestate );
+		
+		//Code to show that usePowerup is working
+//		whitePowerUps.add("Teleport");
+//		usePowerup(0, new Position(0,0), new Position(4,0));
+		
 
 	}
 	
@@ -400,6 +416,12 @@ public class MainLogic
 			}
 
 			gamestate = newGamestate;
+			
+			if(newPiece instanceof Powerup) {
+				if(currentTurn.equalsIgnoreCase("white")) whitePowerUps.add(pwrUp.randomPowerup(isDebug));
+				if(currentTurn.equalsIgnoreCase("black")) blackPowerUps.add(pwrUp.randomPowerup(isDebug));
+			}
+			
 			return true;
 		}
 		return false;
@@ -446,5 +468,33 @@ public class MainLogic
 		utils.printGameState(gamestate);
 	}
 	
+	/**
+	 * Method for using powerups. Returns true if the use of the powerup process was successful, false if not.
+	 * If using a powerup was successful, it will also alter the current gamestate.
+	 * @param powerupIndex    index (in whitePowerUps or blackPowerUps) of the powerup to be used 
+	 * @param target1         position of the first piece to be used in the powerup
+	 * @param target2         position of the second piece to be used in the powerup (can be NULL)
+	 * @return                true if the use of the powerup process was successful, false if not
+	 */
+	public boolean usePowerup(int powerupIndex, Position target1, Position target2) {
+		
+		ArrayList<String> listToUse=null;
+		if(currentTurn.equalsIgnoreCase("white")) {
+			listToUse=whitePowerUps;
+		}else listToUse=blackPowerUps;
+		
+		AbstractPiece[][] copiedGamestate = utils.safeCopyGamestate(gamestate);
+		
+		AbstractPiece[][] gamestateAfterPowerup = pwrUp.powerupAssigner(listToUse.get(powerupIndex).toLowerCase(), copiedGamestate, target1, target2, turnNo, currentTurn, isDebug);
+		
+		if(gamestateAfterPowerup!=null) {
+			if (isDebug) System.out.println(currentTurn+" just used a powerup: "+listToUse.get(powerupIndex));
+			gamestate=gamestateAfterPowerup;
+			listToUse.remove(powerupIndex);
+			return true;
+		}
+		
+		return false;
+	}
 	
 }

@@ -148,10 +148,10 @@ public class ExtraChecksAndTools
 		if(!bvc.moveCheckAssigner(attacker, defender.getXpos() - attacker.getXpos(), defender.getYpos() - attacker.getYpos(), isDebug, gamestate, moveNo)){
 			return false;
 		}//the 2 if statements bellow check if attacker and defender are different colors
-		if(defender.getColor().equalsIgnoreCase("white") && attacker.getColor().equalsIgnoreCase("black")) {
+		if((defender.getColor().equalsIgnoreCase("white")||defender.getColor().equalsIgnoreCase("powerup")) && attacker.getColor().equalsIgnoreCase("black")) {
 			return true;
 		}
-		else if(defender.getColor().equalsIgnoreCase("black") && attacker.getColor().equalsIgnoreCase("white")) {
+		else if((defender.getColor().equalsIgnoreCase("black")||defender.getColor().equalsIgnoreCase("powerup")) && attacker.getColor().equalsIgnoreCase("white")) {
 			return true;
 		}
 		else
@@ -184,6 +184,18 @@ public class ExtraChecksAndTools
 			for(int i = 0; i < blackPieces.size(); i++){
 				if(canCapture(blackPieces.get(i), target, isDebug, gamestate, moveNo)){
 					pieceList.add(blackPieces.get(i));
+				}
+			}
+		}
+		else if(target.getColor().equalsIgnoreCase("powerup")){
+			for(int i = 0; i < blackPieces.size(); i++){
+				if(canCapture(blackPieces.get(i), target, isDebug, gamestate, moveNo)){
+					pieceList.add(blackPieces.get(i));
+				}
+			}
+			for(int i = 0; i < whitePieces.size(); i++){
+				if(canCapture(whitePieces.get(i), target, isDebug, gamestate, moveNo)){
+					pieceList.add(whitePieces.get(i));
 				}
 			}
 		}
