@@ -5,10 +5,7 @@ import CrazyChess.pieces.AbstractPiece;
 import CrazyChess.pieces.BlankPiece;
 import Networking.Client;
 import Networking.Move;
-import Networking.Server;
 import javafx.event.EventHandler;
-import javafx.geometry.Pos;
-import javafx.scene.control.Label;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
@@ -28,6 +25,7 @@ public class Board {
     private ArrayList<Tile> tiles;
     private GridPane board;
     private Client client;
+    private double boardSize;
 
     public Board(Client client){
         this.client = client;
@@ -36,7 +34,8 @@ public class Board {
     }
 
     public void initBoard(String player) {
-        int squareSize = 60;
+        int squareSize = 50;
+        boardSize = 50*8;
         board = new GridPane();
         tiles = new ArrayList<Tile>();
 
@@ -49,11 +48,6 @@ public class Board {
                 Tile tile = new Tile(new Position(i,j), squareSize);
                 tiles.add(tile);
                 StackPane sp = tile.getSP();
-                if ((i % 2 == 1 && j % 2 == 1) || ((i % 2 == 0) && (j % 2 == 0))) {
-                    tile.setbgColor(Color.WHITE);
-                } else {
-                    tile.setbgColor(Color.GREY);
-                }
 
                 if(player.equalsIgnoreCase("white")){
                     board.add(sp,i,7-j);
@@ -65,8 +59,10 @@ public class Board {
                 }
             }
         }
+        board.setHgap(5);
+        board.setVgap(5);
+        board.setMaxSize(boardSize,boardSize);
 
-        board.setMaxSize(60*8,60*8);
         addMoveListeners();
 
         renderGameState(client.getCurrentGameState(),true);
@@ -113,11 +109,11 @@ public class Board {
                         }
 
                         //client.getCurrentGameState()[tile.getPos().getXpos()][tile.getPos().getYpos()];
-                        tile.setbgColor(Color.GREEN);
+                        tile.setbgColor(Color.web("#EF476F"));
                         startTile = tile;
 
                         //Get available move and display them
-                        ArrayList<Position> validMoves = client.getMoves(tile.getPos());
+                        ArrayList<Position> validMoves = client.getAvilableMoves(tile.getPos());
                         showMoves(validMoves);
                         selected = true;
                     }else{
@@ -129,7 +125,6 @@ public class Board {
                             selected = false;
                             return;
                         }
-
                         //Send move to server
                         endTile = tile;
                         client.sendMove(new Move(startTile.getPos(),endTile.getPos()));
@@ -154,8 +149,6 @@ public class Board {
         String filename = color+name+".png";
 
         ImageView imgView = new ImageView();
-        imgView.setFitWidth(60);
-        imgView.setFitHeight(60);
         imgView.setImage(new Image("/resources/pieces/"+filename));
         return imgView;
     }
@@ -164,9 +157,9 @@ public class Board {
     private void setDefaultColor(Tile tile){
         if ((tile.getPos().getXpos() % 2 == 1 && tile.getPos().getYpos() % 2 == 1)
                 || ((tile.getPos().getXpos() % 2 == 0) && (tile.getPos().getYpos() % 2 == 0))) {
-            tile.setbgColor(Color.WHITE);
+            tile.setbgColor(Color.web("#06D6A0"));
         } else {
-            tile.setbgColor(Color.GREY);
+            tile.setbgColor(Color.web("#118AB2"));
         }
     }
 
@@ -174,11 +167,12 @@ public class Board {
         for(Tile tile: tiles){
             for(Position pos: validMoves){
                 if(tile.getPos().equals(pos)){
-                    tile.setbgColor(Color.RED);
+                    tile.setbgColor(Color.web("#FFD166"));
                 }
             }
         }
     }
+
 
     public GridPane getBoard(){
         return this.board;

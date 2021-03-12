@@ -53,7 +53,6 @@ public class Server implements Runnable{
             //set black players turn to false
             blackOutput.writeObject(new GameState(game.getGamestate(),false,"black"));
 
-
             //wait for white to make a move
             waitWhite();
 
@@ -86,8 +85,7 @@ public class Server implements Runnable{
                     System.out.println("Server: invalid move");
                 }
             } catch (IOException e) {
-                System.out.println("Server: Black disconnetced");
-                close("black");
+                e.printStackTrace();
                 return;
             }catch(ClassNotFoundException e){
                 e.printStackTrace();
@@ -116,27 +114,9 @@ public class Server implements Runnable{
                     blackOutput.writeObject(new GameState(game.getGamestate(),true, game.getTurnNo()));
                     System.out.println("Server: invalid move");
                 }
-            } catch (IOException e) {
-                System.out.println("Server: White disconnetced");
-                close("white");
-                return;
-            }catch(ClassNotFoundException e){
+            } catch (IOException | ClassNotFoundException e) {
                 e.printStackTrace();
             }
-        }
-    }
-
-    public void close(String player){
-        try {
-            if(player.equalsIgnoreCase("black")){
-                whiteOutput.close();
-                whiteInput.close();
-            }else{
-                blackInput.close();
-                blackOutput.close();
-            }
-        } catch (IOException e) {
-            e.printStackTrace();
         }
     }
 

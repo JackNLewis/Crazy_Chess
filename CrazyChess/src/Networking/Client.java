@@ -4,6 +4,8 @@ import CrazyChess.logic.ExtraChecksAndTools;
 import CrazyChess.logic.Position;
 import CrazyChess.pieces.AbstractPiece;
 import Graphics.GameScreen;
+import javafx.application.Platform;
+
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
@@ -93,12 +95,16 @@ public class Client implements Runnable{
         this.isTurn = turn;
     }
 
-    public AbstractPiece[][] getCurrentGameState() {
-        return this.currrentGameState;
+    public ArrayList<Position> getAvilableMoves(Position pos){
+        AbstractPiece piece = currrentGameState[pos.getXpos()][pos.getYpos()];
+        System.out.println(piece.toString());
+
+        ArrayList<Position> validMoves = ect.validMoves(piece,false,currrentGameState,turnNo);
+        return validMoves;
     }
 
-    public void setCurrrentGameState(AbstractPiece[][] currrentGameState) {
-        this.currrentGameState = currrentGameState;
+    public AbstractPiece[][] getCurrentGameState() {
+        return this.currrentGameState;
     }
 
     public String getPlayer() {
@@ -109,34 +115,13 @@ public class Client implements Runnable{
         return isConnected;
     }
 
+    public void setCurrrentGameState(AbstractPiece[][] currrentGameState) {
+        this.currrentGameState = currrentGameState;
+    }
+
     public void setTurnNo(int turnNo){
         this.turnNo = turnNo;
     }
 
-    public ArrayList<Position> getMoves(Position pos){
-        AbstractPiece piece = currrentGameState[pos.getXpos()][pos.getYpos()];
-        System.out.println(piece.toString());
-
-        ArrayList<Position> validMoves = ect.validMoves(piece,true,currrentGameState,turnNo);
-        System.out.println("Turn No:" + turnNo);
-        System.out.println("Show Available Moves:");
-        if(validMoves.isEmpty()){
-            System.out.println("Empty list");
-        }
-        for(Position p: validMoves){
-            System.out.println(p.toString());
-        }
-        return validMoves;
-    }
-
-    public void close(){
-        try {
-            System.out.println("Closing client");
-            output.close();
-            socket.close();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
 
 }

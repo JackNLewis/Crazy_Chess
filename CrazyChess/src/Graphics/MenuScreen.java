@@ -23,10 +23,10 @@ public class MenuScreen {
     public MenuScreen(Stage stage){
         buttons = new VBox();
         buttons.setAlignment(Pos.CENTER);
-        scene = new Scene(buttons,500,800);
+        scene = new Scene(buttons,500,600);
         this.stage = stage;
         addButtons(buttons);
-
+        stage.setResizable(false);
     }
 
     public void addButtons(VBox root){

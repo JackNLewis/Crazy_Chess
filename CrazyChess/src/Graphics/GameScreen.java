@@ -1,50 +1,45 @@
 package Graphics;
 
-import CrazyChess.logic.Position;
 import CrazyChess.pieces.AbstractPiece;
-import CrazyChess.pieces.BlankPiece;
 import Networking.Client;
-import Networking.Move;
 import javafx.event.EventHandler;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.control.Label;
-import javafx.scene.image.Image;
-import javafx.scene.image.ImageView;
-import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.*;
-import javafx.scene.paint.Color;
 import javafx.stage.Stage;
 import javafx.stage.WindowEvent;
-
-import java.util.ArrayList;
-import java.util.concurrent.Semaphore;
 
 public class GameScreen {
 
     private Scene scene;
-    private BorderPane root;
+    private VBox root;
     private Client client;
     private Label playerLabel;
     private Board board;
+    private HBox boardContainer;
     Stage stage;
 
     public GameScreen(Stage stage, Client client){
         this.stage = stage;
         this.client = client;
-        root = new BorderPane();
-        scene = new Scene(root,500,800);
+        root = new VBox();
+        root.setSpacing(20);
+        scene = new Scene(root,500,600);
+        scene.getStylesheets().add("/Graphics/css/board.css");
 
-        playerLabel = new Label("White");
-        root.setTop(playerLabel);
+        addBanner();
 
         board = new Board(client);
-        root.setCenter(board.getBoard());
+        boardContainer = new HBox();
+        boardContainer.getChildren().add(board.getBoard());
+        boardContainer.setAlignment(Pos.CENTER);
+        root.getChildren().add(boardContainer);
 
         stage.setOnCloseRequest(new EventHandler<WindowEvent>() {
             @Override
             public void handle(WindowEvent event) {
-                client.close();
+               //add close action
             }
         });
     }
@@ -57,12 +52,31 @@ public class GameScreen {
         return this.scene;
     }
 
+    public void addBanner(){
+        HBox hbox = new HBox();
+        hbox.getStyleClass().add("banner");
+        playerLabel = new Label();
+        updateMoveLabel();
+        playerLabel.getStyleClass().add("banner-text");
+        hbox.setAlignment(Pos.CENTER);
+        hbox.getChildren().add(playerLabel);
+
+
+        root.getChildren().add(hbox);
+    }
+
     public void updateMoveLabel(){
+        if(client.isTurn()){
+            playerLabel.setText("Your Turn");
+        }else{
+            playerLabel.setText("Waiting");
+        }
+        /*
         if(playerLabel.getText().equalsIgnoreCase("White")){
             playerLabel.setText("Black");
         }else{
             playerLabel.setText("White");
-        }
+        }*/
     }
 
     public void close(){

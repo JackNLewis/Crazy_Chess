@@ -24,10 +24,6 @@ public class ClientReciever implements Runnable{
             System.out.println("Created Client Reciever");
             while(true){
                GameState gs = (GameState) input.readObject();
-               if(checkClose(gs)){
-                   System.out.println("Closing client");
-                   return;
-               }
 
                client.setCurrrentGameState(gs.getGameState());
                boolean success = client.isTurn() != gs.isTurn();
@@ -43,17 +39,7 @@ public class ClientReciever implements Runnable{
 
            }
 
-        } catch (IOException e) {
-            System.out.println("Server socket has closed, Closing client");
-            client.close();
-            Platform.runLater(new Runnable() {
-                @Override
-                public void run() {
-                    //Send back to menu screen
-                    gameScreen.close();
-                }
-            });
-        }catch(ClassNotFoundException e){
+        } catch (IOException | ClassNotFoundException e) {
             e.printStackTrace();
         }
     }
@@ -62,12 +48,5 @@ public class ClientReciever implements Runnable{
         this.gameScreen = gameScreen;
     }
 
-    private boolean checkClose(GameState gs){
-        if(gs.getGameState() == null){
-            client.close();
-            return true;
-        }
-        return false;
-    }
 
 }
