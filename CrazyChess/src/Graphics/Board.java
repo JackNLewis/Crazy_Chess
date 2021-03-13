@@ -157,9 +157,9 @@ public class Board {
     private void setDefaultColor(Tile tile){
         if ((tile.getPos().getXpos() % 2 == 1 && tile.getPos().getYpos() % 2 == 1)
                 || ((tile.getPos().getXpos() % 2 == 0) && (tile.getPos().getYpos() % 2 == 0))) {
-            tile.setbgColor(Color.web("#06D6A0"));
-        } else {
             tile.setbgColor(Color.web("#118AB2"));
+        } else {
+            tile.setbgColor(Color.web("#06D6A0"));
         }
     }
 

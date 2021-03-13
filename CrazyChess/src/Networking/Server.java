@@ -33,7 +33,7 @@ public class Server implements Runnable{
             game = new MainLogic();
             game.resetBoard();
             turnNo = game.getTurnNo();
-
+            game.printGameState();
             //Wait for White player to connect
             whitePlayer = ss.accept();
             whiteInput = new ObjectInputStream(whitePlayer.getInputStream());
@@ -71,17 +71,36 @@ public class Server implements Runnable{
                 int endY = move.getEnd().getYpos();
 
                 boolean moved = game.moveTo(game.getPiece(move.getStart()), endX, endY);
+                boolean check = game.getCheckStatus("black");
+                boolean checkMate = game.getMateStatus("black");
 
                 if (moved) {
                     System.out.println("Server: valid move");
                     whiteOutput.reset();
                     blackOutput.reset();
-                    whiteOutput.writeObject(new GameState(game.getGamestate(),false, game.getTurnNo()));
-                    blackOutput.writeObject(new GameState(game.getGamestate(),true, game.getTurnNo()));
+
+                    GameState whiteGs = new GameState(game.getGamestate(),false,game.getTurnNo());
+                    GameState blackGs = new GameState(game.getGamestate(),true, game.getTurnNo());
+
+
+                    if(check){
+                        //black is in check
+                        System.out.println("Server: black is in check");
+                        whiteGs.setCheck("black");
+                        blackGs.setCheck("black");
+                    }
+
+                    whiteOutput.writeObject(whiteGs);
+                    blackOutput.writeObject(blackGs);
 
                     waitBlack();
                 } else {
-                    whiteOutput.writeObject(new GameState(game.getGamestate(),true, game.getTurnNo()));
+                    whiteOutput.reset();
+                    GameState gs = new GameState(game.getGamestate(),true, game.getTurnNo());
+                    if (check) {
+                        gs.setCheck("black");
+                    }
+                    whiteOutput.writeObject(gs);
                     System.out.println("Server: invalid move");
                 }
             } catch (IOException e) {
@@ -103,15 +122,36 @@ public class Server implements Runnable{
                 int endY = move.getEnd().getYpos();
 
                 boolean moved = game.moveTo(game.getPiece(move.getStart()), endX,endY);
+                boolean check = game.getCheckStatus("white");
+                boolean checkMate = game.getMateStatus("white");
+
                 if(moved){
+
                     System.out.println("Server: valid move");
                     whiteOutput.reset();
                     blackOutput.reset();
-                    whiteOutput.writeObject(new GameState(game.getGamestate(),true,game.getTurnNo()));
-                    blackOutput.writeObject(new GameState(game.getGamestate(),false, game.getTurnNo()));
+
+                    GameState whiteGs = new GameState(game.getGamestate(),true,game.getTurnNo());
+                    GameState blackGs = new GameState(game.getGamestate(),false, game.getTurnNo());
+
+
+                    if(check){
+                        //black is in check
+                        System.out.println("Server: white is in check");
+                        whiteGs.setCheck("white");
+                        blackGs.setCheck("white");
+                    }
+
+                    whiteOutput.writeObject(whiteGs);
+                    blackOutput.writeObject(blackGs);
                     waitWhite();
                 }else{
-                    blackOutput.writeObject(new GameState(game.getGamestate(),true, game.getTurnNo()));
+                    blackOutput.reset();
+                    GameState gs = new GameState(game.getGamestate(),true, game.getTurnNo());
+                    if(check){
+                        gs.setCheck("white");
+                    }
+                    blackOutput.writeObject(gs);
                     System.out.println("Server: invalid move");
                 }
             } catch (IOException | ClassNotFoundException e) {

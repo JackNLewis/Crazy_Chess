@@ -9,8 +9,8 @@ public class GameState implements Serializable {
     private int turnNo;
     private boolean isTurn;
     private String player;
-    private boolean checkMate;
-    private boolean check;
+    private String checkMate;
+    private String check;
 
     public GameState(AbstractPiece[][] gameState,boolean isTurn,int turnNo){
         this.gameState = gameState;
@@ -39,4 +39,21 @@ public class GameState implements Serializable {
         return gameState;
     }
 
+    public GameState setCheckMate(String player){
+        this.checkMate = player;
+        return this;
+    }
+
+    public GameState setCheck(String player){
+        this.check = player;
+        return this;
+    }
+
+    public String getCheckMate(){
+        return checkMate;
+    }
+
+    public String getCheck(){
+        return check;
+    }
 }

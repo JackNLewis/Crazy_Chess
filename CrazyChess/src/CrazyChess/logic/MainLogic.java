@@ -178,11 +178,11 @@ public class MainLogic
 		utils.placePiece( new Bishop("Black",5,7), isDebug, gamestate );
 		utils.placePiece( new Bishop("Black",2,7), isDebug, gamestate );
 
-		utils.placePiece( new King("White",  3,0), isDebug, gamestate );
-		utils.placePiece( new Queen("White", 4,0), isDebug, gamestate );
+		utils.placePiece( new King("White",  4,0), isDebug, gamestate );
+		utils.placePiece( new Queen("White", 3,0), isDebug, gamestate );
 
-		utils.placePiece( new King("Black",  3,7), isDebug, gamestate );
-		utils.placePiece( new Queen("Black", 4,7), isDebug, gamestate );
+		utils.placePiece( new King("Black",  4,7), isDebug, gamestate );
+		utils.placePiece( new Queen("Black", 3,7), isDebug, gamestate );
 
 	}
 	

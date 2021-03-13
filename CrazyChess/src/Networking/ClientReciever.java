@@ -24,14 +24,28 @@ public class ClientReciever implements Runnable{
             System.out.println("Created Client Reciever");
             while(true){
                GameState gs = (GameState) input.readObject();
-
+               if(gs.getCheck()!=null){
+                   System.out.println(gs.getCheck() + " is in check");
+               }
                client.setCurrrentGameState(gs.getGameState());
                boolean success = client.isTurn() != gs.isTurn();
+               String winner;
+               if(gs.getCheckMate() != null){
+                   winner = (gs.getCheckMate().equals("white")) ? "Black" : "White";
+               }else{
+                   winner = null;
+               }
                client.setTurn(gs.isTurn());
                client.setTurnNo(gs.getTurnNo());
                Platform.runLater(new Runnable() {
                    @Override
                    public void run() {
+                       if(gs.getCheck()!=null){
+                          gameScreen.setInfoMessage(gs.getCheck() + " in check");
+                       }
+                       if(winner != null){
+                           gameScreen.setInfoMessage(winner + " Wins!");
+                       }
                        gameScreen.renderGameState(gs.getGameState(),success);
                        gameScreen.updateMoveLabel();
                    }

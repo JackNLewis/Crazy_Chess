@@ -19,22 +19,31 @@ public class GameScreen {
     private Board board;
     private HBox boardContainer;
     Stage stage;
+    private Label infoMessage;
 
     public GameScreen(Stage stage, Client client){
         this.stage = stage;
         this.client = client;
         root = new VBox();
-        root.setSpacing(20);
+        //root.setSpacing(20);
         scene = new Scene(root,500,600);
         scene.getStylesheets().add("/Graphics/css/board.css");
 
+        //Add top banner
         addBanner();
 
+        //Add the info message
+        infoMessage = new Label();
+        infoMessage.getStyleClass().add("info-message");
+        root.getChildren().add(infoMessage);
+        infoMessage.setText("Debug text");
+        //Add actuall board
         board = new Board(client);
         boardContainer = new HBox();
         boardContainer.getChildren().add(board.getBoard());
         boardContainer.setAlignment(Pos.CENTER);
         root.getChildren().add(boardContainer);
+
 
         stage.setOnCloseRequest(new EventHandler<WindowEvent>() {
             @Override
@@ -79,6 +88,9 @@ public class GameScreen {
         }*/
     }
 
+    public void setInfoMessage(String message){
+        this.infoMessage.setText(message);
+    }
     public void close(){
         MenuScreen menu = new MenuScreen(stage);
         stage.setScene(menu.getScene());
