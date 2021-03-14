@@ -99,6 +99,7 @@ public class Server implements Runnable{
                     whiteOutput.writeObject(whiteGs);
                     blackOutput.writeObject(blackGs);
 
+
                     waitBlack();
                 } else {
                     whiteOutput.reset();
