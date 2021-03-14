@@ -33,7 +33,13 @@ public class MenuScreen {
 
         //Add New Game
         Button newButton = new Button("Local Game");
-
+        newButton.setOnMouseClicked(new EventHandler<MouseEvent>() {
+            @Override
+            public void handle(MouseEvent event) {
+                SinglePlayer sp = new SinglePlayer(stage);
+                stage.setScene(sp.getScene());
+            }
+        });
 
         //Add Multiplayer Mode
         Button multiplayer = new Button("Multiplayer");

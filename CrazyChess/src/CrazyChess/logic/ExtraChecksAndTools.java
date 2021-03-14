@@ -276,7 +276,16 @@ public class ExtraChecksAndTools
 							AbstractPiece[][] newGamestate = utils.safeCopyGamestate(gamestate);
 							newGamestate=utils.relocatePiece(p, newGamestate, targetTile.getPosition());
 							if(!isInCheck(p.getColor(), isDebug, newGamestate, moveNo)) {//check if the new possition doesn't put the player in check
-								if(!targetTile.getPosition().equals(getKing(utils.oppositeColor(p.getColor()), newGamestate).getPosition())) {
+
+								String oppColor = utils.oppositeColor(p.getColor());
+
+								King enemyKing = getKing(oppColor, newGamestate);
+								if(enemyKing == null){
+									System.out.println("Opp Color : " + oppColor);
+									System.out.println("enemy king is null");
+								}
+
+								if(!targetTile.getPosition().equals(enemyKing.getPosition())) {
 									//checks if the new position isn't an enemy king (because you can't capture kings)
 									//If all checks pass, move is valid :)
 									movesList.add(new Position(j, i));

@@ -70,7 +70,10 @@ public class Server implements Runnable{
                 int endX = move.getEnd().getXpos();
                 int endY = move.getEnd().getYpos();
 
+                game.printGameState();
+                System.out.println("Move: (" + move.getStart().getXpos() + "," + move.getStart().getYpos() + ") -> " + "(" + move.getEnd().getXpos() + "," + move.getEnd().getYpos()+")");
                 boolean moved = game.moveTo(game.getPiece(move.getStart()), endX, endY);
+
                 boolean check = game.getCheckStatus("black");
                 boolean checkMate = game.getMateStatus("black");
 
@@ -88,6 +91,9 @@ public class Server implements Runnable{
                         System.out.println("Server: black is in check");
                         whiteGs.setCheck("black");
                         blackGs.setCheck("black");
+                    }
+                    if(checkMate){
+                        System.out.println("Server: black is in check mate");
                     }
 
                     whiteOutput.writeObject(whiteGs);
@@ -121,7 +127,10 @@ public class Server implements Runnable{
                 int endX = move.getEnd().getXpos();
                 int endY = move.getEnd().getYpos();
 
+                System.out.println("Move: (" + move.getStart().getXpos() + "," + move.getStart().getYpos() + ") -> " + "(" + move.getEnd().getXpos() + "," + move.getEnd().getYpos()+")");
                 boolean moved = game.moveTo(game.getPiece(move.getStart()), endX,endY);
+
+
                 boolean check = game.getCheckStatus("white");
                 boolean checkMate = game.getMateStatus("white");
 
@@ -140,6 +149,10 @@ public class Server implements Runnable{
                         System.out.println("Server: white is in check");
                         whiteGs.setCheck("white");
                         blackGs.setCheck("white");
+                    }
+
+                    if(checkMate){
+                        System.out.println("Server: white is in check mate");
                     }
 
                     whiteOutput.writeObject(whiteGs);

@@ -36,7 +36,7 @@ public class Client implements Runnable{
 
     @Override
     public void run() {
-        System.out.println("Created Client");
+        //System.out.println("Created Client");
         try {
             socket = new Socket(address, port);
             isConnected = true;
@@ -63,7 +63,7 @@ public class Client implements Runnable{
         this.isTurn = initialGameState.isTurn();
         currrentGameState = initialGameState.getGameState();
 
-        System.out.println("Initilaized Client");
+        //System.out.println("Initilaized Client");
 
         //Creates a client reader thread to recieve gamestates
         clientReciever = new ClientReciever(input,this);
