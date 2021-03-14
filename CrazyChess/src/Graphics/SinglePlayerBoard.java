@@ -4,8 +4,10 @@ import CrazyChess.logic.ExtraChecksAndTools;
 import CrazyChess.logic.MainLogic;
 import CrazyChess.logic.Position;
 import CrazyChess.logic.Utilities;
+import CrazyChess.logic.powerups.PowerupMain;
 import CrazyChess.pieces.AbstractPiece;
 import CrazyChess.pieces.BlankPiece;
+import CrazyChess.pieces.Powerup;
 import javafx.event.EventHandler;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
@@ -32,6 +34,9 @@ public class SinglePlayerBoard {
     private Utilities util;
     private ArrayList<Position> validMoves;
     private SinglePlayer singlePlayer;
+    private PowerUpMenu powerUps;
+    private PowerUpMenu pwrUp;
+    private PowerupMain powerMain;
 
     public SinglePlayerBoard(MainLogic game, SinglePlayer singlePlayer){
         initBoard("white");
@@ -40,6 +45,8 @@ public class SinglePlayerBoard {
         selected = false;
         ect = new ExtraChecksAndTools();
         util = new Utilities();
+        powerUps = singlePlayer.getPwrUpMenu();
+        powerMain = new PowerupMain();
     }
 
     public void initBoard(String player) {
@@ -85,6 +92,7 @@ public class SinglePlayerBoard {
             setDefaultColor(tile);
             tile.removeImg();
             if(!(piece instanceof BlankPiece)){
+                //System.out.println(piece.toString());
                 ImageView img = getImageView(piece);
                 tile.addImg(img);
             }
@@ -108,8 +116,13 @@ public class SinglePlayerBoard {
                             selected = true;
                             tile.setbgColor(Color.web("#EF476F"));
                             selectedTile = tile;
-                            validMoves = ect.validMoves(game.getPiece(tile.getPos()),false,game.getGamestate(),game.getTurnNo());
-                            showMoves(validMoves);
+
+                            if(powerUps.getSelectedIndex() != -1){
+                                showPoweredMoves();
+                            }else{
+                                showMoves();
+                            }
+
                         }
                     }
                     //code for executing a move
@@ -124,15 +137,27 @@ public class SinglePlayerBoard {
                             return;
                         }
 
+                        //check if a power up is selected
+                        if(powerUps.getSelectedIndex() != -1){
+                            game.usePowerup(powerUps.getSelectedIndex(), selectedTile.getPos(), tile.getPos());
+
+                            game.changeTurn();
+                            powerUps.showPowers(game.getTurn());
+                            renderGameState(game.getGamestate());
+                            return;
+                        }
+
                         boolean moved = game.moveTo(game.getPiece(selectedTile.getPos()),tile.getPos().getXpos(),tile.getPos().getYpos());
                         if(moved){
                             System.out.println("Successful move");
                             selectedTile = null;
                             validMoves = null;
                             selected = false;
+                            game.printGameState();
                             String oppColor = util.oppositeColor(game.getTurn());
 
                             singlePlayer.setInfoMessage("");
+                            System.out.println("Opposite color: " + oppColor);
                             if(game.getCheckStatus(oppColor)){
                                 System.out.println(oppColor + " is in check");
                                 singlePlayer.setInfoMessage(oppColor + " is in check");
@@ -141,13 +166,20 @@ public class SinglePlayerBoard {
                                 singlePlayer.setInfoMessage(game.getTurn() + " wins!");
                                 System.out.println(oppColor + " is in check mate");
                             }
+
+                            ArrayList<String> powerUpList = game.getPowerUps(game.getTurn());
+                            powerUps.setPowerUps(powerUpList,game.getTurn());
+
                             game.changeTurn();
+                            powerUps.showPowers(game.getTurn());
+
                             singlePlayer.updateMoveLabel(game.getTurn());
                         }else{
                             System.out.println("Unsuccessful move");
                         }
 
                         renderGameState(game.getGamestate());
+
 
                     }
 
@@ -161,15 +193,20 @@ public class SinglePlayerBoard {
     public ImageView getImageView(AbstractPiece p) {
         String name = p.getClass().getSimpleName().toLowerCase();
         String color=" ";
-
+        String filename = "";
         if(p.getColor().equalsIgnoreCase("white")) {
             color="W_";
+            filename = color+name+".png";
         }else if (p.getColor().equalsIgnoreCase("black")) {
             color="B_";
-        }else if(p.getColor().equalsIgnoreCase("blank")) {
+            filename = color+name+".png";
+        }else if(p instanceof Powerup){
+            filename = "PowerUp.png";
+        }
+        else if(p.getColor().equalsIgnoreCase("blank")) {
             return null;
         }
-        String filename = color+name+".png";
+
 
         ImageView imgView = new ImageView();
         imgView.setImage(new Image("/resources/pieces/"+filename));
@@ -186,7 +223,9 @@ public class SinglePlayerBoard {
         }
     }
 
-    private void showMoves(ArrayList<Position> validMoves){
+    public void showMoves(){
+        renderGameState(game.getGamestate());
+        validMoves = ect.validMoves(game.getPiece(selectedTile.getPos()),false,game.getGamestate(),game.getTurnNo());
         for(Tile tile: tiles){
             for(Position pos: validMoves){
                 if(tile.getPos().equals(pos)){
@@ -196,8 +235,26 @@ public class SinglePlayerBoard {
         }
     }
 
+    public void showPoweredMoves(){
+        renderGameState(game.getGamestate());
+        int powerIndex = powerUps.getSelectedIndex();
+        String power = game.getPowerUps(game.getTurn()).get(powerIndex);
+        ArrayList<Position> poweredMoves = powerMain.validPowerupMoves(power,game.getGamestate(), selectedTile.getPos(), false);
+        for(Tile tile: tiles){
+            for(Position pos: poweredMoves){
+                if(tile.getPos().equals(pos)){
+                    tile.setbgColor(Color.web("#FFD166"));
+                }
+            }
+        }
+        //showMoves(powerMain.validPowerupMoves(power,game.getGamestate(), selectedTile.getPos(), false));
+    }
 
     public GridPane getBoard(){
         return this.board;
+    }
+
+    public boolean isSelected(){
+        return selected;
     }
 }

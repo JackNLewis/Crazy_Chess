@@ -1,6 +1,6 @@
 package Networking;
 
-import Graphics.GameScreen;
+import Graphics.multiplayer.GameScreen;
 import javafx.application.Platform;
 
 import java.io.IOException;

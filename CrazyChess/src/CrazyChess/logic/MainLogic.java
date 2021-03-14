@@ -340,7 +340,7 @@ public class MainLogic
 			copiedPiece.setPosition(newPiece.getXpos(), newPiece.getYpos());
 			newGamestate=utils.placePiece(copiedPiece, isDebug, newGamestate);//place it according to the new position
 			//and set the old position to a Blank place
-			newGamestate=utils.placePiece(new BlankPiece("Blank",oldPos.getXpos(), oldPos.getYpos()), isDebug, newGamestate);
+			newGamestate=utils.placePiece(new BlankPiece("Blank",oldPos.getXpos(), oldPos.getYpos()), isDebug, newGamestate); // <------------------ BUG COULD BE HERE
 		
 		
 		
@@ -409,6 +409,7 @@ public class MainLogic
 			}
 
 			// Check if the new gamestate will be a draw
+
 			if (ecat.isInDraw(currentTurn, isDebug, newGamestate, turnNo+1) && !isEndgame) {
 				if (isDebug) {
 					System.out.println("The game resulted in a draw");
@@ -416,6 +417,8 @@ public class MainLogic
 				isDraw = true;
 				isEndgame = true;
 			}
+
+
 
 			gamestate = newGamestate;
 			
@@ -443,7 +446,7 @@ public class MainLogic
 			return false;
 		int relX = x - p.getXpos();
 		int relY = y - p.getYpos();
-		System.out.println("RelX: "+ relX + " RelY: "+ relY);
+		//System.out.println("RelX: "+ relX + " RelY: "+ relY);
 	//	if(!utils.isOnBoard(relX,relY))
 	//		return false;
 		return move(p, relX, relY);
@@ -504,5 +507,13 @@ public class MainLogic
 		
 		return false;
 	}
-	
+
+	public ArrayList<String> getPowerUps(String player){
+		if(player.equalsIgnoreCase("black")){
+			return blackPowerUps;
+		}else{
+			return whitePowerUps;
+		}
+	}
+
 }

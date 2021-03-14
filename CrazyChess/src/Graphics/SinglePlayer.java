@@ -2,6 +2,7 @@ package Graphics;
 
 import CrazyChess.logic.MainLogic;
 import CrazyChess.pieces.AbstractPiece;
+import CrazyChess.pieces.Powerup;
 import Networking.Client;
 import javafx.event.EventHandler;
 import javafx.geometry.Pos;
@@ -21,13 +22,14 @@ public class SinglePlayer {
     private Stage stage;
     private MainLogic game;
     private Label infoMessage;
+    private PowerUpMenu pwrUpMenu;
 
     public SinglePlayer(Stage stage){
         game = new MainLogic();
 
         this.stage = stage;
         root = new VBox();
-        scene = new Scene(root,500,600);
+        scene = new Scene(root,700,600);
         scene.getStylesheets().add("/Graphics/css/board.css");
 
         //Add top banner
@@ -39,6 +41,9 @@ public class SinglePlayer {
         root.getChildren().add(infoMessage);
         //infoMessage.setText("Debug text");
 
+        //make power up menu
+        pwrUpMenu = new PowerUpMenu(this);
+
         //Add actuall board
         board = new SinglePlayerBoard(game, this);
         game.resetBoard();
@@ -46,8 +51,9 @@ public class SinglePlayer {
         board.renderGameState(game.getGamestate());
 
 
+
         boardContainer = new HBox();
-        boardContainer.getChildren().add(board.getBoard());
+        boardContainer.getChildren().addAll(board.getBoard(), pwrUpMenu.getPowerUpMenu());
         boardContainer.setAlignment(Pos.CENTER);
         root.getChildren().add(boardContainer);
 
@@ -94,4 +100,14 @@ public class SinglePlayer {
         stage.setScene(menu.getScene());
     }
 
+
+    public PowerUpMenu getPwrUpMenu(){
+        return pwrUpMenu;
+    }
+
+    public SinglePlayerBoard getBoard(){
+        return this.board;
+    }
+
+    public void selectPower(String powerUp){}
 }

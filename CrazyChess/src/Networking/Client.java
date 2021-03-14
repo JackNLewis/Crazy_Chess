@@ -3,8 +3,7 @@ package Networking;
 import CrazyChess.logic.ExtraChecksAndTools;
 import CrazyChess.logic.Position;
 import CrazyChess.pieces.AbstractPiece;
-import Graphics.GameScreen;
-import javafx.application.Platform;
+import Graphics.multiplayer.GameScreen;
 
 import java.io.IOException;
 import java.io.ObjectInputStream;

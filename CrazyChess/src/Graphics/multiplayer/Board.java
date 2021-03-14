@@ -1,8 +1,9 @@
-package Graphics;
+package Graphics.multiplayer;
 
 import CrazyChess.logic.Position;
 import CrazyChess.pieces.AbstractPiece;
 import CrazyChess.pieces.BlankPiece;
+import Graphics.Tile;
 import Networking.Client;
 import Networking.Move;
 import javafx.event.EventHandler;

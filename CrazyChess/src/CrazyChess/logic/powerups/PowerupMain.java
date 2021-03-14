@@ -105,8 +105,7 @@ public class PowerupMain
 			}
 		}
 		
-		
-		
+
 		return moves;
 	}
 }

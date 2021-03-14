@@ -2,9 +2,7 @@ package CrazyChess.logic;
 
 import java.util.ArrayList;
 import CrazyChess.pieces.*;
-
-
-
+import com.sun.xml.internal.ws.api.model.wsdl.WSDLOutput;
 
 
 /**
@@ -442,4 +440,5 @@ public class ExtraChecksAndTools
 		}
 		return false;
 	}
+
 }

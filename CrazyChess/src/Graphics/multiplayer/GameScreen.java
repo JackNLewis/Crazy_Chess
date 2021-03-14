@@ -1,6 +1,7 @@
-package Graphics;
+package Graphics.multiplayer;
 
 import CrazyChess.pieces.AbstractPiece;
+import Graphics.MenuScreen;
 import Networking.Client;
 import javafx.event.EventHandler;
 import javafx.geometry.Pos;
