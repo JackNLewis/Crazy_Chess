@@ -189,15 +189,17 @@ public class MainLogic
 		utils.placePiece( new Bishop("Black",5,7), isDebug, gamestate );
 		utils.placePiece( new Bishop("Black",2,7), isDebug, gamestate );
 
-		utils.placePiece( new King("White",  3,0), isDebug, gamestate );
-		utils.placePiece( new Queen("White", 4,0), isDebug, gamestate );
+		utils.placePiece( new King("White",  4,0), isDebug, gamestate );
+		utils.placePiece( new Queen("White", 3,0), isDebug, gamestate );
 
-		utils.placePiece( new King("Black",  3,7), isDebug, gamestate );
-		utils.placePiece( new Queen("Black", 4,7), isDebug, gamestate );
+		utils.placePiece( new King("Black",  4,7), isDebug, gamestate );
+		utils.placePiece( new Queen("Black", 3,7), isDebug, gamestate );
 		
 		//Code to show that usePowerup is working
 //		whitePowerUps.add("Teleport");
-//		usePowerup(0, new Position(0,0), new Position(4,0));
+//		usePowerup(0, new Position(0,0), new Position(5,7));
+		
+		//System.out.println("Possible teleports for Rook at (0,0): "+pwrUp.validPowerupMoves("teleport", gamestate, new Position(0,0), isDebug).toString());
 		
 
 	}

@@ -77,7 +77,8 @@ public class Server implements Runnable{
                     whiteOutput.reset();
                     blackOutput.reset();
                     whiteOutput.writeObject(new GameState(game.getGamestate(),false));
-                    blackOutput.writeObject(new GameState(game.getGamestate(),true));
+                    blackOutput.writeObject(new GameState(game.getGamestate(),true));                
+                    
 
                     waitBlack();
                 } else {

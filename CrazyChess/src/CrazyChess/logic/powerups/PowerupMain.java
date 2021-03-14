@@ -2,12 +2,15 @@ package CrazyChess.logic.powerups;
 
 import CrazyChess.pieces.*;
 import CrazyChess.logic.*;
+
+import java.util.ArrayList;
 import java.util.concurrent.ThreadLocalRandom;
 
 
 public class PowerupMain
 {
 	Utilities utils = new Utilities();
+	ExtraChecksAndTools ecat = new ExtraChecksAndTools();
 	/**
 	 * Uses the desired   powerup and returns an altered gamestate
 	 * @param powerup     powerup to be used
@@ -76,5 +79,34 @@ public class PowerupMain
 		
 		if (isDebug) System.out.println("Something went wrong when returning a random powerup. Returning NULL");
 		return null;  
+	}
+	
+	public ArrayList<Position> validPowerupMoves (String powerup, AbstractPiece[][] gamestate, Position target1, boolean isDebug){
+		
+		ArrayList<Position> moves = new ArrayList<Position>(); //ArrayList to store valid moves
+		
+		if(powerup.equalsIgnoreCase("teleport")) {
+			AbstractPiece target = utils.getPiece(target1, isDebug, gamestate); //The piece power up is used on
+			if(target.getColor().equalsIgnoreCase("white")) {		
+				ArrayList<AbstractPiece> wp = ecat.getWhitePieces(gamestate);
+				for(AbstractPiece p : wp) {
+					if(!p.getPosition().equals(target.getPosition())) {//add all of the positions of the pieces of the same color as target, except the position of target itself
+						moves.add(p.getPosition());
+					}
+				}
+			}else if (target.getColor().equalsIgnoreCase("black")){
+				ArrayList<AbstractPiece> bp = ecat.getBlackPieces(gamestate);
+				for(AbstractPiece p : bp) {
+					if(!p.getPosition().equals(target.getPosition())) {//add all of the positions of the pieces of the same color as target, except the position of target itself
+						moves.add(p.getPosition());
+					}
+				}
+				
+			}
+		}
+		
+		
+		
+		return moves;
 	}
 }
