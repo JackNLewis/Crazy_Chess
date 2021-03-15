@@ -1,76 +1,54 @@
-package Graphics;
+package Graphics.multiplayer;
 
 import CrazyChess.logic.Position;
 import CrazyChess.pieces.AbstractPiece;
 import CrazyChess.pieces.BlankPiece;
+import Graphics.Tile;
 import Networking.Client;
 import Networking.Move;
 import javafx.event.EventHandler;
-import javafx.geometry.Pos;
-import javafx.scene.Scene;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
-import javafx.scene.layout.*;
+import javafx.scene.layout.ColumnConstraints;
+import javafx.scene.layout.GridPane;
+import javafx.scene.layout.RowConstraints;
+import javafx.scene.layout.StackPane;
 import javafx.scene.paint.Color;
+
 import java.util.ArrayList;
-import java.util.concurrent.Semaphore;
 
-public class GameScreenClient {
+public class Board {
 
-    private Scene scene;
-    private StackPane root;
     private boolean selected; // shows if a tile is already selected
     private Tile startTile; //Position of tile which is clicked
     private Tile endTile; //Position of Graphics.Tile want to move piece to
-    private Client client;
     private ArrayList<Tile> tiles;
+    private GridPane board;
+    private Client client;
+    private double boardSize;
 
-    public GameScreenClient(){
+    public Board(Client client){
+        this.client = client;
+        initBoard(client.getPlayer());
 
-        Semaphore semaphore = new Semaphore(0);
-        client = new Client(semaphore,this);
-        Thread thread = new Thread(client);
-        thread.start();
-
-        root = new StackPane();
-        scene = new Scene(root,500,800);
-
-
-        try {
-            semaphore.acquire();
-            initBoard(client.getPlayer());
-            renderGameState(client.getCurrentGameState(),true);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
     }
 
-    /**
-     * Initializes the board variable as a GridPane and
-     * fills it with empty squares. Then waits for mouseclicks
-     * on the board
-     *
-     */
     public void initBoard(String player) {
-        int squareSize = 60;
-        GridPane board = new GridPane();
+        int squareSize = 50;
+        boardSize = 50*8;
+        board = new GridPane();
         tiles = new ArrayList<Tile>();
 
         for (int i=0; i<8; i++) {
-                board.getColumnConstraints().add(new ColumnConstraints(squareSize));
-                board.getRowConstraints().add(new RowConstraints(squareSize));
+            board.getColumnConstraints().add(new ColumnConstraints(squareSize));
+            board.getRowConstraints().add(new RowConstraints(squareSize));
         }
         for (int i = 0; i < 8; i++) {
             for (int j = 0; j < 8; j++) {
                 Tile tile = new Tile(new Position(i,j), squareSize);
                 tiles.add(tile);
                 StackPane sp = tile.getSP();
-                if ((i % 2 == 1 && j % 2 == 1) || ((i % 2 == 0) && (j % 2 == 0))) {
-                    tile.setbgColor(Color.WHITE);
-                } else {
-                    tile.setbgColor(Color.GREY);
-                }
 
                 if(player.equalsIgnoreCase("white")){
                     board.add(sp,i,7-j);
@@ -82,18 +60,16 @@ public class GameScreenClient {
                 }
             }
         }
+        board.setHgap(5);
+        board.setVgap(5);
+        board.setMaxSize(boardSize,boardSize);
 
-        board.setMaxSize(60*8,60*8);
-        board.setAlignment(Pos.CENTER);
-        root.getChildren().addAll(board);
         addMoveListeners();
+
+        renderGameState(client.getCurrentGameState(),true);
     }
 
-    /**
-     * Method that renders a gamestate to the board
-     *
-     */
-    public void renderGameState(AbstractPiece[][] gamesState,boolean successMove){
+    public void renderGameState(AbstractPiece[][] gamesState, boolean successMove){
         for(Tile tile : tiles){
             int x = tile.getPos().getXpos();
             int y = tile.getPos().getYpos();
@@ -110,7 +86,6 @@ public class GameScreenClient {
         }
     }
 
-
     public void addMoveListeners(){
         for(Tile tile: tiles){
             tile.getSP().setOnMouseClicked(new EventHandler<MouseEvent>() {
@@ -121,6 +96,7 @@ public class GameScreenClient {
                         System.out.println("Not your turn");
                         return;
                     }
+                    //If it is correct turn
                     if(!selected){
                         int x = tile.getPos().getXpos();
                         int y = tile.getPos().getYpos();
@@ -134,51 +110,32 @@ public class GameScreenClient {
                         }
 
                         //client.getCurrentGameState()[tile.getPos().getXpos()][tile.getPos().getYpos()];
-                        tile.setbgColor(Color.GREEN);
+                        tile.setbgColor(Color.web("#EF476F"));
                         startTile = tile;
+
+                        //Get available move and display them
+                        ArrayList<Position> validMoves = client.getAvilableMoves(tile.getPos());
+                        showMoves(validMoves);
                         selected = true;
                     }else{
                         //Deselect
                         if(startTile.equals(tile)){
-                            setDefaultColor(tile);
+                            for(Tile tile: tiles){
+                                setDefaultColor(tile);
+                            }
                             selected = false;
                             return;
                         }
-
                         //Send move to server
                         endTile = tile;
                         client.sendMove(new Move(startTile.getPos(),endTile.getPos()));
-
-                        //Recieve Move from server
-                        //GameState gs = client.reciveGameState();
-                        //renderGameState(gs.getGameState());
-                        /*
-                        //ONLY DESELECT TILE IF MOVE WAS SUCCESSFUL
-                        if(!gs.isTurn()){
-                            setDefaultColor(startTile);
-                            selected = false;
-                        }*/
-
                     }
                 }
             });
         }
     }
 
-    private void setDefaultColor(Tile tile){
-        if ((tile.getPos().getXpos() % 2 == 1 && tile.getPos().getYpos() % 2 == 1)
-                || ((tile.getPos().getXpos() % 2 == 0) && (tile.getPos().getYpos() % 2 == 0))) {
-            tile.setbgColor(Color.WHITE);
-        } else {
-            tile.setbgColor(Color.GREY);
-        }
-    }
 
-    /**
-     * Method that returns an image view of the inputed piece
-     * @param p   piece to be inputed
-     * @return    ImageView of the piece
-     */
     public ImageView getImageView(AbstractPiece p) {
         String name = p.getClass().getSimpleName().toLowerCase();
         String color=" ";
@@ -188,22 +145,37 @@ public class GameScreenClient {
         }else if (p.getColor().equalsIgnoreCase("black")) {
             color="B_";
         }else if(p.getColor().equalsIgnoreCase("blank")) {
-            /*if(game.isDebug()) {
-                System.out.println("Can't get an image for an empty square");
-            }*/
             return null;
         }
         String filename = color+name+".png";
 
         ImageView imgView = new ImageView();
-        imgView.setFitWidth(60);
-        imgView.setFitHeight(60);
         imgView.setImage(new Image("/resources/pieces/"+filename));
         return imgView;
     }
 
 
-    public Scene getScene(){
-        return this.scene;
+    private void setDefaultColor(Tile tile){
+        if ((tile.getPos().getXpos() % 2 == 1 && tile.getPos().getYpos() % 2 == 1)
+                || ((tile.getPos().getXpos() % 2 == 0) && (tile.getPos().getYpos() % 2 == 0))) {
+            tile.setbgColor(Color.web("#118AB2"));
+        } else {
+            tile.setbgColor(Color.web("#06D6A0"));
+        }
+    }
+
+    private void showMoves(ArrayList<Position> validMoves){
+        for(Tile tile: tiles){
+            for(Position pos: validMoves){
+                if(tile.getPos().equals(pos)){
+                    tile.setbgColor(Color.web("#FFD166"));
+                }
+            }
+        }
+    }
+
+
+    public GridPane getBoard(){
+        return this.board;
     }
 }

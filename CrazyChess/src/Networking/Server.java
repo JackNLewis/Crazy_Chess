@@ -14,7 +14,7 @@ public class Server implements Runnable{
     Socket blackPlayer;
     MainLogic game;
     Utilities utils;
-
+    int turnNo;
     ObjectInputStream whiteInput;
     ObjectInputStream blackInput;
 
@@ -32,7 +32,8 @@ public class Server implements Runnable{
             System.out.println("Listening on port 5000");
             game = new MainLogic();
             game.resetBoard();
-
+            turnNo = game.getTurnNo();
+            game.printGameState();
             //Wait for White player to connect
             whitePlayer = ss.accept();
             whiteInput = new ObjectInputStream(whitePlayer.getInputStream());
@@ -52,7 +53,6 @@ public class Server implements Runnable{
             //set black players turn to false
             blackOutput.writeObject(new GameState(game.getGamestate(),false,"black"));
 
-
             //wait for white to make a move
             waitWhite();
 
@@ -70,21 +70,50 @@ public class Server implements Runnable{
                 int endX = move.getEnd().getXpos();
                 int endY = move.getEnd().getYpos();
 
+                game.printGameState();
+                System.out.println("Move: (" + move.getStart().getXpos() + "," + move.getStart().getYpos() + ") -> " + "(" + move.getEnd().getXpos() + "," + move.getEnd().getYpos()+")");
                 boolean moved = game.moveTo(game.getPiece(move.getStart()), endX, endY);
+
+                boolean check = game.getCheckStatus("black");
+                boolean checkMate = game.getMateStatus("black");
 
                 if (moved) {
                     System.out.println("Server: valid move");
                     whiteOutput.reset();
                     blackOutput.reset();
-                    whiteOutput.writeObject(new GameState(game.getGamestate(),false));
-                    blackOutput.writeObject(new GameState(game.getGamestate(),true));
+
+                    GameState whiteGs = new GameState(game.getGamestate(),false,game.getTurnNo());
+                    GameState blackGs = new GameState(game.getGamestate(),true, game.getTurnNo());
+
+
+                    if(check){
+                        //black is in check
+                        System.out.println("Server: black is in check");
+                        whiteGs.setCheck("black");
+                        blackGs.setCheck("black");
+                    }
+                    if(checkMate){
+                        System.out.println("Server: black is in check mate");
+                    }
+
+                    whiteOutput.writeObject(whiteGs);
+                    blackOutput.writeObject(blackGs);
+
 
                     waitBlack();
                 } else {
-                    whiteOutput.writeObject(new GameState(game.getGamestate(),true));
+                    whiteOutput.reset();
+                    GameState gs = new GameState(game.getGamestate(),true, game.getTurnNo());
+                    if (check) {
+                        gs.setCheck("black");
+                    }
+                    whiteOutput.writeObject(gs);
                     System.out.println("Server: invalid move");
                 }
-            } catch (IOException | ClassNotFoundException e) {
+            } catch (IOException e) {
+                e.printStackTrace();
+                return;
+            }catch(ClassNotFoundException e){
                 e.printStackTrace();
             }
         }
@@ -99,17 +128,44 @@ public class Server implements Runnable{
                 int endX = move.getEnd().getXpos();
                 int endY = move.getEnd().getYpos();
 
+                System.out.println("Move: (" + move.getStart().getXpos() + "," + move.getStart().getYpos() + ") -> " + "(" + move.getEnd().getXpos() + "," + move.getEnd().getYpos()+")");
                 boolean moved = game.moveTo(game.getPiece(move.getStart()), endX,endY);
 
+
+                boolean check = game.getCheckStatus("white");
+                boolean checkMate = game.getMateStatus("white");
+
                 if(moved){
+
                     System.out.println("Server: valid move");
                     whiteOutput.reset();
                     blackOutput.reset();
-                    whiteOutput.writeObject(new GameState(game.getGamestate(),true));
-                    blackOutput.writeObject(new GameState(game.getGamestate(),false));
+
+                    GameState whiteGs = new GameState(game.getGamestate(),true,game.getTurnNo());
+                    GameState blackGs = new GameState(game.getGamestate(),false, game.getTurnNo());
+
+
+                    if(check){
+                        //black is in check
+                        System.out.println("Server: white is in check");
+                        whiteGs.setCheck("white");
+                        blackGs.setCheck("white");
+                    }
+
+                    if(checkMate){
+                        System.out.println("Server: white is in check mate");
+                    }
+
+                    whiteOutput.writeObject(whiteGs);
+                    blackOutput.writeObject(blackGs);
                     waitWhite();
                 }else{
-                    blackOutput.writeObject(new GameState(game.getGamestate(),true));
+                    blackOutput.reset();
+                    GameState gs = new GameState(game.getGamestate(),true, game.getTurnNo());
+                    if(check){
+                        gs.setCheck("white");
+                    }
+                    blackOutput.writeObject(gs);
                     System.out.println("Server: invalid move");
                 }
             } catch (IOException | ClassNotFoundException e) {

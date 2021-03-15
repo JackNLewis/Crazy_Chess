@@ -14,12 +14,17 @@ public class Tile {
     private Rectangle background;
     private ImageView pieceImg;
     private Position pos;
+    private int tileSize;
 
 
     public Tile(Position pos, int tileSize){
         this.pos = pos;
+        this.tileSize = tileSize;
         sp = new StackPane();
         background = new Rectangle(tileSize,tileSize);
+        background.setArcHeight(10);
+        background.setArcWidth(10);
+
         sp.getChildren().add(background);
     }
 
@@ -29,6 +34,8 @@ public class Tile {
      */
     public void addImg(ImageView img){
         this.pieceImg = img;
+        img.setFitWidth(tileSize-5);
+        img.setFitHeight(tileSize-5);
         sp.getChildren().add(pieceImg);
     }
 

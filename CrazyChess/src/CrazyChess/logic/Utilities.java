@@ -193,8 +193,7 @@ public class Utilities
 	/**
 	 * Very brute function to move a piece in the game state and return the new game state.
 	 * Does not take into consideration any restrictions or rules on movement, will literally
-	 * move any piece anywhere on the board. DOES NOT CHANGE THE COORDINATES IN THE PEACE
-	 * OBJECT ITSELF!
+	 * move any piece anywhere on the board. 
 	 * 
 	 * !!!BE VERY CAREFUL WHEN USING THIS!!!
 	 * @param p           piece to be moved
@@ -209,8 +208,10 @@ public class Utilities
 		int oldX=p.getXpos();
 		int oldY=p.getYpos();
 		
-		AbstractPiece[][] newGamestate = gamestate; //not sure if I need this
-		newGamestate[xNew][yNew]=p;
+		AbstractPiece[][] newGamestate = safeCopyGamestate(gamestate); //not sure if I need this
+		AbstractPiece newPiece = safeCopyPiece(p);
+		newPiece.setPosition(xNew, yNew);
+		newGamestate[xNew][yNew]=newPiece;
 		newGamestate[oldX][oldY]=new BlankPiece("Blank", oldX, oldY);
 		
 		return newGamestate;
@@ -241,6 +242,11 @@ public class Utilities
 		return newGamestate;
 	}
 	
+	/**
+	 * Safely copies the inputed gamestate
+	 * @param gamestate    gamestate to be copied
+	 * @return             the copied gamestate
+	 */
 	
 	public AbstractPiece[][] safeCopyGamestate(AbstractPiece[][] gamestate){
 		AbstractPiece[][] copy = new AbstractPiece[8][8];
@@ -253,7 +259,11 @@ public class Utilities
 		return copy;
 	}
 	
-	
+	/**
+	 * Safely copies the inputed piece
+	 * @param gamestate    piece to be copied
+	 * @return             the copied piece
+	 */
 	
 	public AbstractPiece safeCopyPiece(AbstractPiece p) {
 		String pieceType = p.getClass().getSimpleName();
@@ -288,6 +298,9 @@ public class Utilities
 			case "BlankPiece":
 				copy=new BlankPiece(p.getColor(),p.getPosition());
 				break;
+			case "Powerup":
+				copy=new Powerup(p.getPosition());
+				break;
 			
 		}
 		return copy;
@@ -298,7 +311,9 @@ public class Utilities
 		
 		if(p.getColor().equalsIgnoreCase("black")) {
 			result = "B";
-		}else result="W";
+		}else if(p.getColor().equalsIgnoreCase("white")) {
+			result="W";
+		}else result = "P";
 		
 		result=result+p.getClass().getSimpleName().charAt(0);
 		
