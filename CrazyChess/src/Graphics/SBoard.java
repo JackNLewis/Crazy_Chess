@@ -45,6 +45,8 @@ public class SBoard {
     private ArrayList<Position> validMoves;
     private PowerUpMenu powerUps;
     private PowerupMain powerMain; // Used to see valid powered moves
+    
+    private music sound; // Used to play sound
 
     public SBoard(MainLogic game, SGameScreen SGameScreen){
         initBoard("white");
@@ -149,6 +151,7 @@ public class SBoard {
                             boolean poweredMove = game.usePowerup(powerUps.getSelectedIndex(), selectedTile.getPos(), tile.getPos());
                             if(poweredMove){
                                 // SUCCESFFUL POWERED MOVE
+                                sound.Teleport();
                                 System.out.println("Successful powered up move");
                                 powerUps.setSelectedIndex(-1);
                             }else{
@@ -161,6 +164,7 @@ public class SBoard {
                             boolean normalMove = game.moveTo(game.getPiece(selectedTile.getPos()),tile.getPos().getXpos(),tile.getPos().getYpos());
                             //Normal move was successful
                             if(normalMove){
+                                sound.chessmove();
                                 System.out.println("Successful move");
                                 String oppColor = util.oppositeColor(game.getTurn());
 
