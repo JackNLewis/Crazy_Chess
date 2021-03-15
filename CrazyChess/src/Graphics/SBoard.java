@@ -57,6 +57,7 @@ public class SBoard {
         util = new Utilities();
         powerUps = SGameScreen.getPwrUpMenu();
         powerMain = new PowerupMain();
+        sound = new music();
     }
 
     public void initBoard(String player) {
