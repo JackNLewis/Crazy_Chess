@@ -15,16 +15,17 @@ public class PowerUpMenu {
     private VBox container;
     private ObservableList<String> whitePowers;
     private ObservableList<String> blackPowers;
-    private ListView powerList;
+    private final ListView<String> powerList;
     private SGameScreen gameScreen;
     private int selectedIndex = -1;
+
     public PowerUpMenu(SGameScreen gameScreen){
         this.gameScreen = gameScreen;
         container = new VBox();
-        powerList = new ListView();
+        powerList = new ListView<String>();
         whitePowers = FXCollections.observableArrayList();
         blackPowers = FXCollections.observableArrayList();
-        showPowers("white");
+        //showPowers("white");
 
         powerList.setOnMouseClicked(new EventHandler<MouseEvent>() {
             @Override
@@ -58,7 +59,9 @@ public class PowerUpMenu {
         if(player.equalsIgnoreCase("black")){
             blackPowers.clear();
             blackPowers.addAll(powers);
+            powerList.setItems(whitePowers);
         }else{
+            powerList.setItems(blackPowers);
             whitePowers.clear();
             whitePowers.addAll(powers);
         }
@@ -67,15 +70,7 @@ public class PowerUpMenu {
     public VBox getPowerUpMenu(){
         return container;
     }
-
-    public void showPowers(String player){
-        if(player.equalsIgnoreCase("black")){
-            powerList.setItems(blackPowers);
-        }else{
-            powerList.setItems(whitePowers);
-        }
-    }
-
+    
     public int getSelectedIndex(){
         return selectedIndex;
     }
