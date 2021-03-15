@@ -33,8 +33,6 @@ public class MainLogic
 	
 	ArrayList<String> whitePowerUps = new ArrayList<String>();  //ArrayList to store white's powerups
 	ArrayList<String> blackPowerUps = new ArrayList<String>();  //ArrayList tp store black's powerups
-
-	protected music sound = new music(); //music for playing sound
 	
 	Utilities utils = new Utilities();
 	BasicValidityChecker bvc = new BasicValidityChecker();
@@ -425,17 +423,9 @@ public class MainLogic
 			gamestate = newGamestate;
 			
 			if(newPiece instanceof Powerup) {
-				if(currentTurn.equalsIgnoreCase("white")){
-					whitePowerUps.add(pwrUp.randomPowerup(isDebug))
-					sound.Teleport();
-				}
-				if(currentTurn.equalsIgnoreCase("black")) {
-					blackPowerUps.add(pwrUp.randomPowerup(isDebug));
-				        sound.Teleport();
-				}
-			}
-			else{
-				sound.chessmove();
+				if(currentTurn.equalsIgnoreCase("white")) whitePowerUps.add(pwrUp.randomPowerup(isDebug));
+				if(currentTurn.equalsIgnoreCase("black")) blackPowerUps.add(pwrUp.randomPowerup(isDebug));
+				        
 			}
 			
 			
