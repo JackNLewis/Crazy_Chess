@@ -3,6 +3,7 @@ package Graphics;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.EventHandler;
+import javafx.geometry.Pos;
 import javafx.scene.control.Label;
 import javafx.scene.control.ListView;
 import javafx.scene.input.MouseEvent;
@@ -15,16 +16,18 @@ public class PowerUpMenu {
     private VBox container;
     private ObservableList<String> whitePowers;
     private ObservableList<String> blackPowers;
-    private ListView powerList;
+    private final ListView<String> powerList;
     private SGameScreen gameScreen;
     private int selectedIndex = -1;
+
     public PowerUpMenu(SGameScreen gameScreen){
         this.gameScreen = gameScreen;
         container = new VBox();
-        powerList = new ListView();
+        container.setAlignment(Pos.CENTER);
+        powerList = new ListView<String>();
+        powerList.getStyleClass().add("menu-list");
         whitePowers = FXCollections.observableArrayList();
         blackPowers = FXCollections.observableArrayList();
-        showPowers("white");
 
         powerList.setOnMouseClicked(new EventHandler<MouseEvent>() {
             @Override
@@ -51,6 +54,7 @@ public class PowerUpMenu {
             }
         });
         Label title = new Label("Powers Ups");
+        title.getStyleClass().add("menu-text");
         container.getChildren().addAll(title,powerList);
     }
 
@@ -58,7 +62,9 @@ public class PowerUpMenu {
         if(player.equalsIgnoreCase("black")){
             blackPowers.clear();
             blackPowers.addAll(powers);
+            powerList.setItems(whitePowers);
         }else{
+            powerList.setItems(blackPowers);
             whitePowers.clear();
             whitePowers.addAll(powers);
         }
@@ -66,14 +72,6 @@ public class PowerUpMenu {
 
     public VBox getPowerUpMenu(){
         return container;
-    }
-
-    public void showPowers(String player){
-        if(player.equalsIgnoreCase("black")){
-            powerList.setItems(blackPowers);
-        }else{
-            powerList.setItems(whitePowers);
-        }
     }
 
     public int getSelectedIndex(){

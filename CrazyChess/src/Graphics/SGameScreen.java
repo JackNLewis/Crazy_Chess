@@ -26,7 +26,7 @@ public class SGameScreen {
 
         this.stage = stage;
         root = new VBox();
-        scene = new Scene(root,700,600);
+        scene = new Scene(root,720,600);
         scene.getStylesheets().add("/Graphics/css/board.css");
 
         //Add top banner
@@ -49,6 +49,7 @@ public class SGameScreen {
 
 
         boardContainer = new HBox();
+        boardContainer.setSpacing(10);
         boardContainer.getChildren().addAll(board.getBoard(), pwrUpMenu.getPowerUpMenu());
         boardContainer.setAlignment(Pos.CENTER);
         root.getChildren().add(boardContainer);

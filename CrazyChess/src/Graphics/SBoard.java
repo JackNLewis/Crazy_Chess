@@ -179,10 +179,6 @@ public class SBoard {
                                     SGameScreen.setInfoMessage(game.getTurn() + " wins!");
                                     System.out.println(oppColor + " is in check mate");
                                 }
-
-                                ArrayList<String> powerUpList = game.getPowerUps(game.getTurn());
-                                powerUps.setPowerUps(powerUpList,game.getTurn());
-
                             }
                             //Normal move was unsuccessful
                             else{
@@ -191,8 +187,11 @@ public class SBoard {
                             }
 
                         }
+
+                        ArrayList<String> powerUpList = game.getPowerUps(game.getTurn());
+                        powerUps.setPowerUps(powerUpList,game.getTurn());
                         game.changeTurn();
-                        powerUps.showPowers(game.getTurn());
+                        //powerUps.showPowers(game.getTurn());
                         SGameScreen.updateMoveLabel(game.getTurn());
                         selectedTile = null;
                         validMoves = null;
