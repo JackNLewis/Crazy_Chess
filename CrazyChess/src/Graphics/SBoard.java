@@ -20,6 +20,10 @@ import javafx.scene.paint.Color;
 
 import java.util.ArrayList;
 
+/**
+ * This class is for the actual game screen. It conects different components of the game screen such as board, power up menu.
+ *
+ */
 public class SBoard {
 
     //Main screen window connects other components

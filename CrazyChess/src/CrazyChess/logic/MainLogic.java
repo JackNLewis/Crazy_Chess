@@ -340,7 +340,7 @@ public class MainLogic
 			copiedPiece.setPosition(newPiece.getXpos(), newPiece.getYpos());
 			newGamestate=utils.placePiece(copiedPiece, isDebug, newGamestate);//place it according to the new position
 			//and set the old position to a Blank place
-			newGamestate=utils.placePiece(new BlankPiece("Blank",oldPos.getXpos(), oldPos.getYpos()), isDebug, newGamestate); // <------------------ BUG COULD BE HERE
+			newGamestate=utils.placePiece(new BlankPiece("Blank",oldPos.getXpos(), oldPos.getYpos()), isDebug, newGamestate);
 		
 		
 		
