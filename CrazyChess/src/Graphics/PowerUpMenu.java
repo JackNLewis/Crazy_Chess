@@ -1,7 +1,5 @@
 package Graphics;
 
-import CrazyChess.logic.Position;
-import CrazyChess.pieces.Powerup;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.EventHandler;
@@ -18,9 +16,9 @@ public class PowerUpMenu {
     private ObservableList<String> whitePowers;
     private ObservableList<String> blackPowers;
     private ListView powerList;
-    private SinglePlayer gameScreen;
+    private SGameScreen gameScreen;
     private int selectedIndex = -1;
-    public PowerUpMenu(SinglePlayer gameScreen){
+    public PowerUpMenu(SGameScreen gameScreen){
         this.gameScreen = gameScreen;
         container = new VBox();
         powerList = new ListView();
@@ -82,6 +80,9 @@ public class PowerUpMenu {
         return selectedIndex;
     }
 
+    public void setSelectedIndex(int index){
+        selectedIndex = index;
+    }
 
 
 }

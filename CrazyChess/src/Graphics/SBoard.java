@@ -20,32 +20,36 @@ import javafx.scene.paint.Color;
 
 import java.util.ArrayList;
 
-public class SinglePlayerBoard {
+public class SBoard {
 
+    //Main screen window connects other components
+    private SGameScreen SGameScreen;
+
+    //Used for checking
+    private MainLogic game;
+    private ExtraChecksAndTools ect;
+    private Utilities util;
+
+    //board logic
     private boolean selected; // shows if a tile is already selected
-    private Tile startTile; //Position of tile which is clicked
-    private Tile endTile; //Position of Graphics.Tile want to move piece to
     private ArrayList<Tile> tiles;
     private GridPane board;
     private double boardSize;
-    private MainLogic game;
     private Tile selectedTile;
-    private ExtraChecksAndTools ect;
-    private Utilities util;
-    private ArrayList<Position> validMoves;
-    private SinglePlayer singlePlayer;
-    private PowerUpMenu powerUps;
-    private PowerUpMenu pwrUp;
-    private PowerupMain powerMain;
 
-    public SinglePlayerBoard(MainLogic game, SinglePlayer singlePlayer){
+    //to do with power up
+    private ArrayList<Position> validMoves;
+    private PowerUpMenu powerUps;
+    private PowerupMain powerMain; // Used to see valid powered moves
+
+    public SBoard(MainLogic game, SGameScreen SGameScreen){
         initBoard("white");
         this.game = game;
-        this.singlePlayer = singlePlayer;
+        this.SGameScreen = SGameScreen;
         selected = false;
         ect = new ExtraChecksAndTools();
         util = new Utilities();
-        powerUps = singlePlayer.getPwrUpMenu();
+        powerUps = SGameScreen.getPwrUpMenu();
         powerMain = new PowerupMain();
     }
 
@@ -114,12 +118,11 @@ public class SinglePlayerBoard {
                         //Make sure you only select tiles of your colour
                         if(selectedColor.equalsIgnoreCase(currentColor)){
                             selected = true;
-                            tile.setbgColor(Color.web("#EF476F"));
                             selectedTile = tile;
 
                             if(powerUps.getSelectedIndex() != -1){
                                 showPoweredMoves();
-                            }else{
+                            }else {
                                 showMoves();
                             }
 
@@ -134,16 +137,22 @@ public class SinglePlayerBoard {
                             validMoves = null;
                             selectedTile = null;
                             selected = false;
+
                             return;
                         }
 
                         //check if a power up is selected
                         if(powerUps.getSelectedIndex() != -1){
-                            game.usePowerup(powerUps.getSelectedIndex(), selectedTile.getPos(), tile.getPos());
+                            boolean poweredMove = game.usePowerup(powerUps.getSelectedIndex(), selectedTile.getPos(), tile.getPos());
 
                             game.changeTurn();
                             powerUps.showPowers(game.getTurn());
                             renderGameState(game.getGamestate());
+                            SGameScreen.updateMoveLabel(game.getTurn());
+                            powerUps.setSelectedIndex(-1);
+                            selectedTile = null;
+                            validMoves = null;
+                            selected = false;
                             return;
                         }
 
@@ -156,14 +165,14 @@ public class SinglePlayerBoard {
                             game.printGameState();
                             String oppColor = util.oppositeColor(game.getTurn());
 
-                            singlePlayer.setInfoMessage("");
+                            SGameScreen.setInfoMessage("");
                             System.out.println("Opposite color: " + oppColor);
                             if(game.getCheckStatus(oppColor)){
                                 System.out.println(oppColor + " is in check");
-                                singlePlayer.setInfoMessage(oppColor + " is in check");
+                                SGameScreen.setInfoMessage(oppColor + " is in check");
                             }
                             if(game.getMateStatus(oppColor)){
-                                singlePlayer.setInfoMessage(game.getTurn() + " wins!");
+                                SGameScreen.setInfoMessage(game.getTurn() + " wins!");
                                 System.out.println(oppColor + " is in check mate");
                             }
 
@@ -173,7 +182,7 @@ public class SinglePlayerBoard {
                             game.changeTurn();
                             powerUps.showPowers(game.getTurn());
 
-                            singlePlayer.updateMoveLabel(game.getTurn());
+                            SGameScreen.updateMoveLabel(game.getTurn());
                         }else{
                             System.out.println("Unsuccessful move");
                         }
@@ -233,6 +242,7 @@ public class SinglePlayerBoard {
                 }
             }
         }
+        selectedTile.setbgColor(Color.web("#EF476F"));
     }
 
     public void showPoweredMoves(){
@@ -247,7 +257,7 @@ public class SinglePlayerBoard {
                 }
             }
         }
-        //showMoves(powerMain.validPowerupMoves(power,game.getGamestate(), selectedTile.getPos(), false));
+        selectedTile.setbgColor(Color.web("#EF476F"));
     }
 
     public GridPane getBoard(){

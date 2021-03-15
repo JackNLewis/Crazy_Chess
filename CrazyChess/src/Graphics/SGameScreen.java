@@ -1,9 +1,6 @@
 package Graphics;
 
 import CrazyChess.logic.MainLogic;
-import CrazyChess.pieces.AbstractPiece;
-import CrazyChess.pieces.Powerup;
-import Networking.Client;
 import javafx.event.EventHandler;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
@@ -12,19 +9,19 @@ import javafx.scene.layout.*;
 import javafx.stage.Stage;
 import javafx.stage.WindowEvent;
 
-public class SinglePlayer {
+public class SGameScreen {
 
     private Scene scene;
     private VBox root;
     private Label playerLabel;
-    private SinglePlayerBoard board;
+    private SBoard board;
     private HBox boardContainer;
     private Stage stage;
     private MainLogic game;
     private Label infoMessage;
     private PowerUpMenu pwrUpMenu;
 
-    public SinglePlayer(Stage stage){
+    public SGameScreen(Stage stage){
         game = new MainLogic();
 
         this.stage = stage;
@@ -39,13 +36,12 @@ public class SinglePlayer {
         infoMessage = new Label();
         infoMessage.getStyleClass().add("info-message");
         root.getChildren().add(infoMessage);
-        //infoMessage.setText("Debug text");
 
         //make power up menu
         pwrUpMenu = new PowerUpMenu(this);
 
         //Add actuall board
-        board = new SinglePlayerBoard(game, this);
+        board = new SBoard(game, this);
         game.resetBoard();
         game.printGameState();
         board.renderGameState(game.getGamestate());
@@ -105,7 +101,7 @@ public class SinglePlayer {
         return pwrUpMenu;
     }
 
-    public SinglePlayerBoard getBoard(){
+    public SBoard getBoard(){
         return this.board;
     }
 

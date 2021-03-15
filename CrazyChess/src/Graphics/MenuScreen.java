@@ -37,7 +37,7 @@ public class MenuScreen {
         newButton.setOnMouseClicked(new EventHandler<MouseEvent>() {
             @Override
             public void handle(MouseEvent event) {
-                SinglePlayer sp = new SinglePlayer(stage);
+                SGameScreen sp = new SGameScreen(stage);
                 stage.setScene(sp.getScene());
             }
         });
