@@ -2,6 +2,8 @@ package CrazyChess.pieces;
 
 import CrazyChess.logic.Position;
 
+import java.io.Serializable;
+
 /**
  * This is the abstract class for all of the other
  * classes of pieces.
@@ -12,7 +14,7 @@ import CrazyChess.logic.Position;
  */
 
 
-public abstract class AbstractPiece
+public abstract class AbstractPiece implements Serializable
 {
 
 	protected String color;
