@@ -3,6 +3,7 @@ package Graphics;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.EventHandler;
+import javafx.geometry.Pos;
 import javafx.scene.control.Label;
 import javafx.scene.control.ListView;
 import javafx.scene.input.MouseEvent;
@@ -22,10 +23,11 @@ public class PowerUpMenu {
     public PowerUpMenu(SGameScreen gameScreen){
         this.gameScreen = gameScreen;
         container = new VBox();
+        container.setAlignment(Pos.CENTER);
         powerList = new ListView<String>();
+        powerList.getStyleClass().add("menu-list");
         whitePowers = FXCollections.observableArrayList();
         blackPowers = FXCollections.observableArrayList();
-        //showPowers("white");
 
         powerList.setOnMouseClicked(new EventHandler<MouseEvent>() {
             @Override
@@ -52,6 +54,7 @@ public class PowerUpMenu {
             }
         });
         Label title = new Label("Powers Ups");
+        title.getStyleClass().add("menu-text");
         container.getChildren().addAll(title,powerList);
     }
 
@@ -70,7 +73,7 @@ public class PowerUpMenu {
     public VBox getPowerUpMenu(){
         return container;
     }
-    
+
     public int getSelectedIndex(){
         return selectedIndex;
     }
