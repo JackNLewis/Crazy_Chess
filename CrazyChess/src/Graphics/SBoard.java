@@ -20,6 +20,10 @@ import javafx.scene.paint.Color;
 
 import java.util.ArrayList;
 
+/**
+ * This class is for the actual game screen. It conects different components of the game screen such as board, power up menu.
+ *
+ */
 public class SBoard {
 
     //Main screen window connects other components
@@ -111,8 +115,8 @@ public class SBoard {
                     String currentColor = game.getTurn();
                     System.out.println("current turn " + currentColor);
                     String selectedColor = game.getPiece(tile.getPos()).getColor();
-                    //System.out.println("Selected piece color: " + selectedColor);
 
+                    //If tile not selected
                     if(!selected){
 
                         //Make sure you only select tiles of your colour
@@ -128,65 +132,66 @@ public class SBoard {
 
                         }
                     }
-                    //code for executing a move
+                    //Tile is selected so execute a move
                     else{
                         if(tile.equals(selectedTile)){
                             //deselect current tile
                             renderGameState(game.getGamestate());
-
                             validMoves = null;
                             selectedTile = null;
                             selected = false;
-
                             return;
                         }
 
+                        //Execute a Move
                         //check if a power up is selected
                         if(powerUps.getSelectedIndex() != -1){
                             boolean poweredMove = game.usePowerup(powerUps.getSelectedIndex(), selectedTile.getPos(), tile.getPos());
-
-                            game.changeTurn();
-                            powerUps.showPowers(game.getTurn());
-                            renderGameState(game.getGamestate());
-                            SGameScreen.updateMoveLabel(game.getTurn());
-                            powerUps.setSelectedIndex(-1);
-                            selectedTile = null;
-                            validMoves = null;
-                            selected = false;
-                            return;
-                        }
-
-                        boolean moved = game.moveTo(game.getPiece(selectedTile.getPos()),tile.getPos().getXpos(),tile.getPos().getYpos());
-                        if(moved){
-                            System.out.println("Successful move");
-                            selectedTile = null;
-                            validMoves = null;
-                            selected = false;
-                            game.printGameState();
-                            String oppColor = util.oppositeColor(game.getTurn());
-
-                            SGameScreen.setInfoMessage("");
-                            System.out.println("Opposite color: " + oppColor);
-                            if(game.getCheckStatus(oppColor)){
-                                System.out.println(oppColor + " is in check");
-                                SGameScreen.setInfoMessage(oppColor + " is in check");
+                            if(poweredMove){
+                                // SUCCESFFUL POWERED MOVE
+                                System.out.println("Successful powered up move");
+                                powerUps.setSelectedIndex(-1);
+                            }else{
+                                System.out.println("Unsucessful powered move");
+                                return;
                             }
-                            if(game.getMateStatus(oppColor)){
-                                SGameScreen.setInfoMessage(game.getTurn() + " wins!");
-                                System.out.println(oppColor + " is in check mate");
+                        }
+                        //NORMAL MOVE if no power up selected
+                        else{
+                            boolean normalMove = game.moveTo(game.getPiece(selectedTile.getPos()),tile.getPos().getXpos(),tile.getPos().getYpos());
+                            //Normal move was successful
+                            if(normalMove){
+                                System.out.println("Successful move");
+                                String oppColor = util.oppositeColor(game.getTurn());
+
+                                SGameScreen.setInfoMessage("");
+                                System.out.println("Opposite color: " + oppColor);
+                                if(game.getCheckStatus(oppColor)){
+                                    System.out.println(oppColor + " is in check");
+                                    SGameScreen.setInfoMessage(oppColor + " is in check");
+                                }
+                                if(game.getMateStatus(oppColor)){
+                                    SGameScreen.setInfoMessage(game.getTurn() + " wins!");
+                                    System.out.println(oppColor + " is in check mate");
+                                }
+
+                                ArrayList<String> powerUpList = game.getPowerUps(game.getTurn());
+                                powerUps.setPowerUps(powerUpList,game.getTurn());
+
+                            }
+                            //Normal move was unsuccessful
+                            else{
+                                System.out.println("Unsuccessful move");
+                                return;
                             }
 
-                            ArrayList<String> powerUpList = game.getPowerUps(game.getTurn());
-                            powerUps.setPowerUps(powerUpList,game.getTurn());
-
-                            game.changeTurn();
-                            powerUps.showPowers(game.getTurn());
-
-                            SGameScreen.updateMoveLabel(game.getTurn());
-                        }else{
-                            System.out.println("Unsuccessful move");
                         }
-
+                        game.changeTurn();
+                        powerUps.showPowers(game.getTurn());
+                        SGameScreen.updateMoveLabel(game.getTurn());
+                        selectedTile = null;
+                        validMoves = null;
+                        selected = false;
                         renderGameState(game.getGamestate());
 
 
