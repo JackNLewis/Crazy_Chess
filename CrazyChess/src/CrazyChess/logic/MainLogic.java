@@ -1,5 +1,8 @@
 package CrazyChess.logic;
 
+import java.util.ArrayList;
+
+import CrazyChess.logic.powerups.PowerupMain;
 import CrazyChess.pieces.*;
 
 
@@ -24,10 +27,17 @@ public class MainLogic
 	
 	protected boolean isWhiteChecked;  //boolean to show if the white player is under check
 	protected boolean isWhiteMated;    //boolean to show if the white player is mated
+
+	protected boolean isDraw;		   //boolean to show if the game is draw
+	protected boolean isEndgame;       //boolean to show if the game is ended
+	
+	ArrayList<String> whitePowerUps = new ArrayList<String>();  //ArrayList to store white's powerups
+	ArrayList<String> blackPowerUps = new ArrayList<String>();  //ArrayList tp store black's powerups
 	
 	Utilities utils = new Utilities();
 	BasicValidityChecker bvc = new BasicValidityChecker();
 	ExtraChecksAndTools ecat = new ExtraChecksAndTools();
+	PowerupMain pwrUp = new PowerupMain();
 	/**
 	 * Constructor for the MainLogic class.
 	 * Initiates the gamestate as an empty board.
@@ -45,11 +55,12 @@ public class MainLogic
 		currentTurn = "White";
 		turnNo = 1;
 		
-		isBlackChecked=false;
-		isBlackMated=false;
-		isWhiteChecked=false;
-		isWhiteMated=false;
-		
+		isBlackChecked = false;
+		isBlackMated = false;
+		isWhiteChecked = false;
+		isWhiteMated = false;
+		isDraw = false;
+		isEndgame = false;
 	}
 	
 	/**
@@ -118,8 +129,37 @@ public class MainLogic
 	 * Changes the current game state.
 	 * @param newGamestate    new gamestate
 	 */
-	void setGamestate(AbstractPiece[][] newGamestate){
+	public void setGamestate(AbstractPiece[][] newGamestate){
 		gamestate=newGamestate;
+		String oppColor = utils.oppositeColor(getTurn());
+		if(ecat.isInCheck(oppColor,false,newGamestate,turnNo)){
+			if(oppColor.equalsIgnoreCase("black")){
+				isBlackChecked = true;
+			}else{
+				isWhiteChecked = true;
+			}
+		}else{
+			if(oppColor.equalsIgnoreCase("black")){
+				isBlackChecked = false;
+			}else{
+				isWhiteChecked = false;
+			}
+		}
+		if(ecat.isInCheckmate(oppColor,false,newGamestate,turnNo+1)){
+			if(oppColor.equalsIgnoreCase("black")){
+				isBlackMated = true;
+			}else{
+				isWhiteMated = true;
+			}
+			isEndgame = true;
+		}
+		if (ecat.isInDraw(currentTurn, isDebug, newGamestate, turnNo+1) && !isEndgame) {
+			if (isDebug) {
+				System.out.println("The game resulted in a draw");
+			}
+			isDraw = true;
+			isEndgame = true;
+		}
 	}
 	
 	/**
@@ -131,14 +171,20 @@ public class MainLogic
 		if(currentTurn.equalsIgnoreCase("White")){
 			currentTurn = "Black";
 			turnNo++;
+			gamestate=pwrUp.powerupSpawn(gamestate, turnNo, isDebug);
 			if(isDebug)
-				System.out.println("It is now Black's turn.");
+				if(isDebug) {
+					System.out.println("It is now Black's turn.");
+					System.out.println("Black's powerups: "+blackPowerUps.toString());}
 		}
 		else{
 			currentTurn = "White";
 			turnNo++;
-			if(isDebug)
+			gamestate=pwrUp.powerupSpawn(gamestate, turnNo, isDebug);
+			
+			if(isDebug) {
 				System.out.println("It is now White's turn.");
+				System.out.println("White's powerups: "+whitePowerUps.toString());}
 		}
 	}
 	
@@ -172,11 +218,18 @@ public class MainLogic
 		utils.placePiece( new Bishop("Black",5,7), isDebug, gamestate );
 		utils.placePiece( new Bishop("Black",2,7), isDebug, gamestate );
 
-		utils.placePiece( new King("White",  3,0), isDebug, gamestate );
-		utils.placePiece( new Queen("White", 4,0), isDebug, gamestate );
+		utils.placePiece( new King("White",  4,0), isDebug, gamestate );
+		utils.placePiece( new Queen("White", 3,0), isDebug, gamestate );
 
-		utils.placePiece( new King("Black",  3,7), isDebug, gamestate );
-		utils.placePiece( new Queen("Black", 4,7), isDebug, gamestate );
+		utils.placePiece( new King("Black",  4,7), isDebug, gamestate );
+		utils.placePiece( new Queen("Black", 3,7), isDebug, gamestate );
+		
+		//Code to show that usePowerup is working
+//		whitePowerUps.add("Teleport");
+//		usePowerup(0, new Position(0,0), new Position(5,7));
+		
+		//System.out.println("Possible teleports for Rook at (0,0): "+pwrUp.validPowerupMoves("teleport", gamestate, new Position(0,0), isDebug).toString());
+		
 
 	}
 	
@@ -203,18 +256,14 @@ public class MainLogic
 				System.out.println("Bad move! You cannot move a blank space.");
 			return false;
 		}
-		//Check if the player is not under check
-		if(ecat.isInCheck(currentTurn, isDebug, gamestate, turnNo)) {
-			if(currentTurn.equalsIgnoreCase("white")) {
-				isWhiteChecked=true;
-				if(isDebug)
-					System.out.println("White is under check!");
-			}else {
-				if(isDebug)
-					System.out.println("Black is under check!");
-				isBlackChecked=true;
-			}
-		}
+		
+		
+//		System.out.println("Turn number: "+turnNo+". Available moves for "+currentTurn+": "+ecat.possibleGamestatesAfterNextMove(currentTurn, isDebug, gamestate, turnNo).size());
+//		for(AbstractPiece[][] gs: ecat.possibleGamestatesAfterNextMove(currentTurn, isDebug, gamestate, turnNo)) {
+//			utils.printGameState(gs);
+//		}
+		
+		
 		
 		
 		//Save old position (to place a blank later)
@@ -233,29 +282,45 @@ public class MainLogic
 			return false;
 		}
 
-		if(!bvc.moveCheckAssigner(p, xRel, yRel, isDebug, gamestate, turnNo)){
+//		if(!bvc.moveCheckAssigner(p, xRel, yRel, isDebug, gamestate, turnNo)){
+//			if(isDebug)
+//				System.out.println("Bad move! Illegal move for " + p.getClass().getSimpleName() + ".");
+//			return false;
+//		}
+		
+		//Checks the move validity
+		ArrayList<Position> moveList = ecat.validMoves(p, isDebug, gamestate, turnNo);
+		if(moveList.isEmpty()) {
 			if(isDebug)
-				System.out.println("Bad move! Illegal move for " + p.getClass().getSimpleName() + ".");
+				System.out.println("Piece has no valid moves");
 			return false;
 		}
-
-		if(newPiece instanceof King){
-			if(isDebug)
-				System.out.println("Bad move! Kings cannot be captured.");
-			return false;
+		boolean isValid=false;
+		for(Position pos : moveList) {
+			if(newPiece.getPosition().equals(pos)) {
+				isValid=true;
+			}
 		}
 		
-//		//sets up new potential gamestate
-//		p.setPosition(newPiece.getXpos(), newPiece.getYpos());
-//		AbstractPiece[][] newGamestate=utils.relocatePiece(p, gamestate, p.getPosition());
+//
+//		if(newPiece instanceof King){
+//			if(isDebug)
+//				System.out.println("Bad move! Kings cannot be captured.");
+//			return false;
+//		}
+		
+		//sets up new potential gamestate
+//		AbstractPiece pp = utils.safeCopyPiece(p);
+//		pp.setPosition(newPiece.getPosition());
+//		AbstractPiece[][] newGamestate=utils.relocatePiece(pp, utils.safeCopyGamestate(gamestate), newPiece.getPosition());
 //		
-//		//if king was under check, it checks if the king escaped check in the new gamestate
+		//if king was under check, it checks if the king escaped check in the new gamestate
 //		if(isWhiteChecked&&currentTurn.equalsIgnoreCase("white")) {
 //			if(ecat.isInCheck(currentTurn, isDebug, newGamestate, turnNo)) {
 //				if(isDebug) {
 //					System.out.println("Invalid move: King is still under check");
 //				}
-//				p.setPosition(oldPos); //resets piece's position because the move is invalid
+//				pp.setPosition(oldPos); //resets piece's position because the move is invalid
 //				return false;
 //			}
 //		}
@@ -264,7 +329,7 @@ public class MainLogic
 //				if(isDebug) {
 //					System.out.println("Invalid move: King is still under check");
 //				}
-//				p.setPosition(oldPos); //resets piece's position because the move is invalid
+//				pp.setPosition(oldPos); //resets piece's position because the move is invalid
 //				return false;
 //			}
 //		}
@@ -292,12 +357,116 @@ public class MainLogic
 		
 		
 		//Everything checks out, so set the piece's position anew
-		p.setPosition(newPiece.getXpos(), newPiece.getYpos());
-		gamestate=utils.placePiece(p, isDebug, gamestate);//place it according to the new position
+		//p.setPosition(newPiece.getXpos(), newPiece.getYpos());
+		//gamestate=utils.placePiece(p, isDebug, gamestate);//place it according to the new position
 		//and set the old position to a Blank place
-		gamestate=utils.placePiece(new BlankPiece("Blank",oldPos.getXpos(), oldPos.getYpos()), isDebug, gamestate);
+		//gamestate=utils.placePiece(new BlankPiece("Blank",oldPos.getXpos(), oldPos.getYpos()), isDebug, gamestate);
 		
-		return true;
+		//Constructing new possible gamestate
+		if(isValid) {
+			AbstractPiece[][] newGamestate = utils.safeCopyGamestate(gamestate);
+			AbstractPiece copiedPiece = utils.getPiece(p.getPosition(), isDebug, newGamestate);
+			copiedPiece.setPosition(newPiece.getXpos(), newPiece.getYpos());
+			newGamestate=utils.placePiece(copiedPiece, isDebug, newGamestate);//place it according to the new position
+			//and set the old position to a Blank place
+			newGamestate=utils.placePiece(new BlankPiece("Blank",oldPos.getXpos(), oldPos.getYpos()), isDebug, newGamestate);
+		
+		
+		
+		
+		
+		
+		//if king was under check, it checks if the king escaped check in the new gamestate
+//				if(isWhiteChecked&&currentTurn.equalsIgnoreCase("white")) {
+//					if(ecat.isInCheck(currentTurn, isDebug, newGamestate, turnNo+1)) {
+//						if(isDebug) {
+//							System.out.println("Invalid move: King is still under check");
+//						}
+//						copiedPiece.setPosition(oldPos);//resets piece's position because the move is invalid(?)
+//						gamestate=newGamestate;
+//						return false;
+//					}
+//				}
+//				if(isBlackChecked&&currentTurn.equalsIgnoreCase("black")) {
+//					if(ecat.isInCheck(currentTurn, isDebug, newGamestate, turnNo+1)) {
+//						if(isDebug) {
+//							System.out.println("Invalid move: King is still under check");
+//						}
+//						copiedPiece.setPosition(oldPos);//resets piece's position because the move is invalid(?)
+//						gamestate=newGamestate;
+//						return false;
+//					}
+//				}
+		
+		
+			//Check if the player is not under check
+			if(currentTurn.equalsIgnoreCase("white")) {
+				utils.printGameState(newGamestate);
+				if(ecat.isInCheck("black", isDebug, newGamestate, turnNo+1)) {
+					if(isDebug) {
+						System.out.println("Black king is now checked!");
+						isBlackChecked = true;
+					}
+				}else{
+					isBlackChecked = false;
+				}
+			}
+			if(currentTurn.equalsIgnoreCase("black")) {
+				if(ecat.isInCheck("white", isDebug, newGamestate, turnNo+1)) {
+					if(isDebug) {
+						System.out.println("White king is now checked!");
+						isWhiteChecked = true;
+					}
+				}else{
+					isWhiteChecked = false;
+				}
+			}
+
+			//checks if the new gamestate will be a checkmate for the oponent
+			if(currentTurn.equalsIgnoreCase("white")) {
+				if(ecat.isInCheckmate("black", isDebug, newGamestate, turnNo+1)) {
+					if(isDebug) {
+						System.out.println("White checkmated black");
+					}
+					isBlackMated = true;
+					isEndgame = true;
+				}else if(isBlackChecked) System.out.println(ecat.validMoves(ecat.getKing("black", newGamestate), isDebug, newGamestate, turnNo).size());
+			}
+			if(currentTurn.equalsIgnoreCase("black")) {
+				if(ecat.isInCheckmate("white", isDebug, newGamestate, turnNo+1)) {
+					if(isDebug) {
+						System.out.println("Black checkmated white");
+					}
+					isWhiteMated = true;
+					isEndgame = true;
+				}else if(isWhiteChecked) System.out.println(ecat.validMoves(ecat.getKing("white", newGamestate), isDebug, newGamestate, turnNo).size());
+			}
+
+			// Check if the new gamestate will be a draw
+
+			if (ecat.isInDraw(currentTurn, isDebug, newGamestate, turnNo+1) && !isEndgame) {
+				if (isDebug) {
+					System.out.println("The game resulted in a draw");
+				}
+				isDraw = true;
+				isEndgame = true;
+			}
+
+
+
+			gamestate = newGamestate;
+			
+			if(newPiece instanceof Powerup) {
+				if(currentTurn.equalsIgnoreCase("white")) whitePowerUps.add(pwrUp.randomPowerup(isDebug));
+				if(currentTurn.equalsIgnoreCase("black")) blackPowerUps.add(pwrUp.randomPowerup(isDebug));
+				        
+			}
+			
+			
+			
+			return true;
+		}
+		return false;
 	}
 
 
@@ -314,11 +483,13 @@ public class MainLogic
 			return false;
 		int relX = x - p.getXpos();
 		int relY = y - p.getYpos();
+		//System.out.println("RelX: "+ relX + " RelY: "+ relY);
 	//	if(!utils.isOnBoard(relX,relY))
 	//		return false;
 		return move(p, relX, relY);
 	}
-	
+
+
 	/**
 	 * Basically just a neat little wrapper for getPiece method in 
 	 * CrazyChess.logic.Utilities
@@ -330,37 +501,71 @@ public class MainLogic
 		return utils.getPiece(pos, isDebug, gamestate);
 	}
 	
-	
-	
-	
-	protected String twoLetterPiece(AbstractPiece p) {
-		String result = " ";
-		
-		if(p.getColor().equalsIgnoreCase("black")) {
-			result = "B";
-		}else result="W";
-		
-		result=result+p.getClass().getSimpleName().charAt(0);
-		
-		return result;
-	}
-	
-	
+	/**
+	 * Just a wrapper for the printGameState method in the
+	 * Utilities class
+	 * 
+	 */
 	public void printGameState() {
-		String line =" ";
-		for(int i=0; i<8; i++) {
-			System.out.println(line);
-			line =" ";
-			for(int j=0; j<8; j++) {
-				String piece;
-				piece="[]";
-				if(!gamestate[j][i].getColor().equalsIgnoreCase("blank")) {
-					piece=twoLetterPiece(gamestate[j][i]);
-				}
-				
-				line=line+piece;
-			}
+		utils.printGameState(gamestate);
+	}
+
+
+	public int getTurnNo() {
+		return turnNo;
+	}
+
+
+	/**
+	 * Method for using powerups. Returns true if the use of the powerup process was successful, false if not.
+	 * If using a powerup was successful, it will also alter the current gamestate.
+	 * @param powerupIndex    index (in whitePowerUps or blackPowerUps) of the powerup to be used 
+	 * @param target1         position of the first piece to be used in the powerup
+	 * @param target2         position of the second piece to be used in the powerup (can be NULL)
+	 * @return                true if the use of the powerup process was successful, false if not
+	 */
+	public boolean usePowerup(int powerupIndex, Position target1, Position target2) {
+		
+		ArrayList<String> listToUse=null;
+		if(currentTurn.equalsIgnoreCase("white")) {
+			listToUse=whitePowerUps;
+		}else listToUse=blackPowerUps;
+		
+		AbstractPiece[][] copiedGamestate = utils.safeCopyGamestate(gamestate);
+		
+		AbstractPiece[][] gamestateAfterPowerup = pwrUp.powerupAssigner(listToUse.get(powerupIndex).toLowerCase(), copiedGamestate, target1, target2, turnNo, currentTurn, isDebug);
+		
+		if(gamestateAfterPowerup!=null) {
+			if (isDebug) System.out.println(currentTurn+" just used a powerup: "+listToUse.get(powerupIndex));
+			gamestate=gamestateAfterPowerup;
+			listToUse.remove(powerupIndex);
+			return true;
 		}
-		System.out.println(line);
+		
+		return false;
+	}
+
+	public ArrayList<String> getPowerUps(String player){
+		if(player.equalsIgnoreCase("black")){
+			return blackPowerUps;
+		}else{
+			return whitePowerUps;
+		}
+	}
+
+	public void setCheck(String player,boolean check){
+		if(player.equalsIgnoreCase("white")){
+			isWhiteChecked = check;
+		}else{
+			isBlackChecked = check;
+		}
+	}
+
+	public void setMate(String player, boolean mate){
+		if(player.equalsIgnoreCase("white")){
+			isWhiteMated = mate;
+		}else{
+			isBlackMated = mate;
+		}
 	}
 }

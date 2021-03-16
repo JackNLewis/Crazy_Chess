@@ -193,8 +193,7 @@ public class Utilities
 	/**
 	 * Very brute function to move a piece in the game state and return the new game state.
 	 * Does not take into consideration any restrictions or rules on movement, will literally
-	 * move any piece anywhere on the board. DOES NOT CHANGE THE COORDINATES IN THE PEACE
-	 * OBJECT ITSELF!
+	 * move any piece anywhere on the board. 
 	 * 
 	 * !!!BE VERY CAREFUL WHEN USING THIS!!!
 	 * @param p           piece to be moved
@@ -209,8 +208,10 @@ public class Utilities
 		int oldX=p.getXpos();
 		int oldY=p.getYpos();
 		
-		AbstractPiece[][] newGamestate = gamestate; //not sure if I need this
-		newGamestate[xNew][yNew]=p;
+		AbstractPiece[][] newGamestate = safeCopyGamestate(gamestate); //not sure if I need this
+		AbstractPiece newPiece = safeCopyPiece(p);
+		newPiece.setPosition(xNew, yNew);
+		newGamestate[xNew][yNew]=newPiece;
 		newGamestate[oldX][oldY]=new BlankPiece("Blank", oldX, oldY);
 		
 		return newGamestate;
@@ -232,10 +233,125 @@ public class Utilities
 		int oldX=p.getXpos();
 		int oldY=p.getYpos();
 		
-		AbstractPiece[][] newGamestate = gamestate; //not sure if I need this
-		newGamestate[newPos.getXpos()][newPos.getYpos()]=p;
+		AbstractPiece[][] newGamestate = safeCopyGamestate(gamestate); //not sure if I need this
+		AbstractPiece newPiece = safeCopyPiece(p);
+		newPiece.setPosition(newPos);
+		newGamestate[newPos.getXpos()][newPos.getYpos()]=newPiece;
 		newGamestate[oldX][oldY]=new BlankPiece("Blank", oldX, oldY);
 		
 		return newGamestate;
 	}
+	
+	/**
+	 * Safely copies the inputed gamestate
+	 * @param gamestate    gamestate to be copied
+	 * @return             the copied gamestate
+	 */
+	
+	public AbstractPiece[][] safeCopyGamestate(AbstractPiece[][] gamestate){
+		AbstractPiece[][] copy = new AbstractPiece[8][8];
+		for(int i=0; i<8;i++) {
+			for(int j=0; j<8; j++) {
+				copy[j][i]=safeCopyPiece(gamestate[j][i]);
+				
+			}
+		}
+		return copy;
+	}
+	
+	/**
+	 * Safely copies the inputed piece
+	 * @param gamestate    piece to be copied
+	 * @return             the copied piece
+	 */
+	
+	public AbstractPiece safeCopyPiece(AbstractPiece p) {
+		String pieceType = p.getClass().getSimpleName();
+		//System.out.println("Copying piece type: "+pieceType);
+		AbstractPiece copy = null;
+		switch(pieceType) {
+			case "Pawn":
+				Pawn pawnCast=(Pawn) p;
+				Pawn pawnCopy=new Pawn(p.getColor(),p.getPositionCopy());
+				pawnCopy.setDoublejump(pawnCast.getDoublejump());
+				return pawnCopy;
+				//break;
+			case "Rook":
+				copy=new Rook(p.getColor(),p.getPositionCopy());
+				break;
+			case "Knight":
+				copy=new Knight(p.getColor(),p.getPositionCopy());
+				break;
+			case "Bishop":
+				copy=new Bishop(p.getColor(),p.getPositionCopy());
+				break;
+			case "Queen":
+				copy=new Queen(p.getColor(),p.getPositionCopy());
+				break;
+			case "King":
+				King kingCast=(King) p;
+				King kingCopy=new King(p.getColor(),p.getPositionCopy());
+				kingCopy.setWasMoved(kingCast.getWasMoved());
+				kingCopy.setIsChecked(kingCast.getIsChecked());
+				return kingCopy;
+				//break;
+			case "BlankPiece":
+				copy=new BlankPiece(p.getColor(),p.getPositionCopy());
+				break;
+			case "Powerup":
+				copy=new Powerup(p.getPositionCopy());
+				break;
+			
+		}
+		return copy;
+	}
+	
+	protected String twoLetterPiece(AbstractPiece p) {
+		String result = " ";
+		
+		if(p.getColor().equalsIgnoreCase("black")) {
+			result = "B";
+		}else if(p.getColor().equalsIgnoreCase("white")) {
+			result="W";
+		}else result = "P";
+		
+		result=result+p.getClass().getSimpleName().charAt(0);
+		
+		return result;
+	}
+	
+	
+	public void printGameState(AbstractPiece[][] gamestate) {
+		String line =" ";
+		for(int i=0; i<8; i++) {
+			System.out.println(line);
+			line =" ";
+			for(int j=0; j<8; j++) {
+				String piece;
+				piece="[]";
+				if(!gamestate[j][i].getColor().equalsIgnoreCase("blank")) {
+					piece=twoLetterPiece(gamestate[j][i]);
+				}
+				
+				line=line+piece;
+			}
+		}
+		System.out.println(line);
+	}
+	
+	/**
+	 *Returns the opposite of the input color 
+	 * @param col    input color
+	 * @return       the opposite of the input color, null if the input color is neither black nor white
+	 */
+	public String oppositeColor(String col) {
+		String newCol = null;
+		if(col.equalsIgnoreCase("black")) {
+			newCol="white";
+		}else newCol="black";
+		
+		return newCol;
+	}
 }
+
+

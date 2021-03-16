@@ -3,3 +3,9 @@
 ### Intellij ###
 .idea/
 CrazyChess.iml
+
+
+# OS created files
+
+### MacOS ###
+.DS_Store

@@ -18,6 +18,8 @@ import javafx.scene.shape.Rectangle;
 
 import javafx.stage.Stage;
 
+import java.util.ArrayList;
+
 import CrazyChess.logic.*;
 import CrazyChess.pieces.*;
 
@@ -34,7 +36,8 @@ import CrazyChess.pieces.*;
 public class GUI extends Application {
 	
 	private BorderPane borderPane;
-	private GridPane board;  
+	private GridPane board;
+
 	//private int turnNumber; 
 	
 	private Position selectedSquare;
@@ -43,7 +46,7 @@ public class GUI extends Application {
 	private MainLogic chess; //Object for the "server". All chess logic computation should happen in here,
 							//and the purpose of the GUI is mainly to reflect the game state produced by this
 							//and to pass mouseclicks on the GUI board to it.
-	
+	private AI ai = new AI();
 	
 	
     public static void main(String[] args) {
@@ -129,6 +132,11 @@ public class GUI extends Application {
 				System.out.println("Blank space selected without movement");
 			return;
 		}
+		if(chess.getPiece(pos).getColor().equalsIgnoreCase("Powerup") && !lookingForMove){
+			if(chess.isDebug())
+				System.out.println("You can't move powerups");
+			return;
+		}
 		if(selectedSquare.equals(pos)){
 			if(chess.isDebug())
 				System.out.println("Deselecting...");
@@ -152,22 +160,23 @@ public class GUI extends Application {
 			//Do move!
 			//first, get piece that is piece of prior selected square
 			AbstractPiece currentPiece = chess.getPiece(selectedSquare);
-
+			System.out.println(currentPiece.toString());
 			//Now the actual move check
+			System.out.println(currentPiece);
+			System.out.println(chess.getPiece(pos));
 			if(!chess.moveTo(currentPiece, pos.getXpos(), pos.getYpos())){
 				if(chess.isDebug())
 					System.out.print("Move not successful.");
 				chess.printGameState();
 				return;
 			}
-			//Move done, do updates
-
+			
 			updateBoard();
 			lookingForMove = false;
 			selectedSquare.setXpos(-1);
 			selectedSquare.setYpos(-1);
 			chess.changeTurn();
-
+			updateBoard();
 			return;
 		}
 		else if(!lookingForMove){//Nothing selected, needs move
@@ -226,8 +235,11 @@ public class GUI extends Application {
 				rect.setStroke(Color.GREY);
 				rect.setStrokeWidth(3);
 				if((i%2==1&&j%2==1)||(i%2==0&&j%2==0)){
-				rect.setFill(Color.GREY);}
-					else {rect.setFill(Color.WHITE);}
+					rect.setFill(Color.GREY);
+				}
+				else {
+					rect.setFill(Color.WHITE);
+				}
 				board.add(rect, i, j);
 			}
 		}
@@ -237,7 +249,7 @@ public class GUI extends Application {
 			public void handle(MouseEvent event) {
 				squareClicked(getClickPos(event.getX(), event.getY()));
 			}
-			
+
 			//SOMEWHERE AROUND HERE IS WHERE YOU WOULD ADD THE AI MOVE
 			
 			
@@ -263,8 +275,11 @@ public class GUI extends Application {
 				rect.setStroke(Color.GREY);
 				rect.setStrokeWidth(3);
 				if(((i+1)%2==1&&(j+1)%2==1)||((i+1)%2==0&&(j+1)%2==0)){
-					rect.setFill(Color.GREY);}
-						else {rect.setFill(Color.WHITE);}
+					rect.setFill(Color.GREY);
+				}
+				else {
+					rect.setFill(Color.WHITE);
+				}
 				
 				board.add(rect, i+1, 8-j);
 				AbstractPiece p = chess.getPiece(new Position(i,j));
@@ -295,10 +310,13 @@ public class GUI extends Application {
 		String name = p.getClass().getSimpleName().toLowerCase();
 		String color=" ";
 		
+		
 		if(p.getColor().equalsIgnoreCase("white")) {
 			color="W_";
 		}else if (p.getColor().equalsIgnoreCase("black")) {
 			color="B_";
+		}else if (p.getColor().equalsIgnoreCase("powerup")) {
+			color="P_";
 		}else if(p.getColor().equalsIgnoreCase("blank")) {
 			if(chess.isDebug()) {
 				System.out.println("Can't get an image for an empty square");

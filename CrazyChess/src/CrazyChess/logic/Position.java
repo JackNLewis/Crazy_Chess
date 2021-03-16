@@ -1,5 +1,7 @@
 package CrazyChess.logic;
 
+import java.io.Serializable;
+
 /**
  * This class is used to hold position of the piece on the board.
  * It also has getters and setters for it.
@@ -9,7 +11,7 @@ package CrazyChess.logic;
  * @author Darius
  *
  */
-public class Position
+public class Position implements Serializable
 {
 	public int xCoord;
 	public int yCoord;
