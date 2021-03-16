@@ -203,6 +203,7 @@ public class SBoard {
 
                         //If ai is enabled make the ai move
                         if(aiEnabled){
+
                             aiMove();
                         }
                     }
@@ -292,9 +293,24 @@ public class SBoard {
         AbstractPiece[][] gs = this.ai.AI(game);
         game.setGamestate(gs);
         renderGameState(game.getGamestate());
+
+        String oppColor = (game.getTurn().equalsIgnoreCase("white")) ? "black" : "white";
+        //TODO: Update the MainLogic isChecked and isCheckMated
+
+
         ArrayList<String> powerUpList = game.getPowerUps(game.getTurn());
         powerUps.setPowerUps(powerUpList,game.getTurn());
         game.changeTurn();
+
+        if(game.getCheckStatus(game.getTurn())){
+            System.out.println("Ai has checked you ");
+            SGameScreen.setInfoMessage("AI has Checked You");
+        }
+
+        if(game.getMateStatus(game.getTurn())){
+            System.out.println("AI has check mated you");
+            SGameScreen.setInfoMessage("AI Wins");
+        }
         SGameScreen.updateMoveLabel(game.getTurn());
     }
 }

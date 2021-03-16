@@ -131,6 +131,35 @@ public class MainLogic
 	 */
 	public void setGamestate(AbstractPiece[][] newGamestate){
 		gamestate=newGamestate;
+		String oppColor = utils.oppositeColor(getTurn());
+		if(ecat.isInCheck(oppColor,false,newGamestate,turnNo)){
+			if(oppColor.equalsIgnoreCase("black")){
+				isBlackChecked = true;
+			}else{
+				isWhiteChecked = true;
+			}
+		}else{
+			if(oppColor.equalsIgnoreCase("black")){
+				isBlackChecked = false;
+			}else{
+				isWhiteChecked = false;
+			}
+		}
+		if(ecat.isInCheckmate(oppColor,false,newGamestate,turnNo+1)){
+			if(oppColor.equalsIgnoreCase("black")){
+				isBlackMated = true;
+			}else{
+				isWhiteMated = true;
+			}
+			isEndgame = true;
+		}
+		if (ecat.isInDraw(currentTurn, isDebug, newGamestate, turnNo+1) && !isEndgame) {
+			if (isDebug) {
+				System.out.println("The game resulted in a draw");
+			}
+			isDraw = true;
+			isEndgame = true;
+		}
 	}
 	
 	/**
@@ -378,6 +407,8 @@ public class MainLogic
 						System.out.println("Black king is now checked!");
 						isBlackChecked = true;
 					}
+				}else{
+					isBlackChecked = false;
 				}
 			}
 			if(currentTurn.equalsIgnoreCase("black")) {
@@ -386,6 +417,8 @@ public class MainLogic
 						System.out.println("White king is now checked!");
 						isWhiteChecked = true;
 					}
+				}else{
+					isWhiteChecked = false;
 				}
 			}
 
@@ -520,4 +553,19 @@ public class MainLogic
 		}
 	}
 
+	public void setCheck(String player,boolean check){
+		if(player.equalsIgnoreCase("white")){
+			isWhiteChecked = check;
+		}else{
+			isBlackChecked = check;
+		}
+	}
+
+	public void setMate(String player, boolean mate){
+		if(player.equalsIgnoreCase("white")){
+			isWhiteMated = mate;
+		}else{
+			isBlackMated = mate;
+		}
+	}
 }
