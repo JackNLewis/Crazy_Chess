@@ -117,6 +117,8 @@ public class SBoard {
                 public void handle(MouseEvent event) {
                     String currentColor = game.getTurn();
                     System.out.println("current turn " + currentColor);
+                    System.out.println("current gamestate ");
+                    util.printGameState(game.getGamestate());
                     String selectedColor = game.getPiece(tile.getPos()).getColor();
 
                     //If tile not selected

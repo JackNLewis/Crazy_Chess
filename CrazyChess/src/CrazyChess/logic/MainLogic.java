@@ -372,6 +372,7 @@ public class MainLogic
 		
 			//Check if the player is not under check
 			if(currentTurn.equalsIgnoreCase("white")) {
+				utils.printGameState(newGamestate);
 				if(ecat.isInCheck("black", isDebug, newGamestate, turnNo+1)) {
 					if(isDebug) {
 						System.out.println("Black king is now checked!");

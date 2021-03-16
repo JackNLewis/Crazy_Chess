@@ -108,4 +108,24 @@ public abstract class AbstractPiece implements Serializable
 		return color + " " + this.getClass().getSimpleName() + " at (" + position.getXpos() + ", " + position.getYpos() + ")";
 	}
 
+	/**
+	 * Returns the position copy as a Position object, without referencing the original object's position
+	 * This is a very hacky solution and should be changed in the future
+	 *
+	 * @return   position represented by Position object
+	 */
+	public Position getPositionCopy(){
+		
+		int x=0;
+		int y=0;
+		
+		for(x=0; x<position.getXpos(); x++) {
+		}
+		
+		for(y=0; y<position.getYpos(); y++) {
+		}
+		
+		
+		return new Position(x,y);
+	}
 }

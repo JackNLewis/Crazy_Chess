@@ -276,6 +276,7 @@ public class ExtraChecksAndTools
 	 */
 	
 	public ArrayList<Position> validMoves( AbstractPiece p, boolean isDebug, AbstractPiece[][] gamestate, int moveNo){
+			
 		ArrayList<Position> movesList = new ArrayList<Position>();
 		for(int i=0; i<8; i++) {
 			for(int j=0; j<8; j++) {
@@ -306,7 +307,6 @@ public class ExtraChecksAndTools
 				}
 			}
 		}
-		
 		return movesList;
 	}
 	
@@ -352,7 +352,11 @@ public class ExtraChecksAndTools
 					//generate gamestate for each one. Excluding moves where you capture enemy king
 					AbstractPiece[][] newGamestate = utils.safeCopyGamestate(gamestate);
 					if(!(vp.getXpos()==getKing("white", newGamestate).getXpos()&&vp.getYpos()==getKing("white", newGamestate).getYpos())) {
-						newGamestate=utils.relocatePiece(p, newGamestate, vp.getXpos(), vp.getYpos()); //might cause some bugs
+						
+						AbstractPiece safeP = utils.safeCopyPiece(p);
+						newGamestate=utils.relocatePiece(safeP, newGamestate, vp.getXpos(), vp.getYpos()); //might cause some bugs
+						
+						
 						listOfGamestates.add(newGamestate);
 					}
 					
