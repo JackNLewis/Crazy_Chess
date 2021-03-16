@@ -56,7 +56,7 @@ public class ExtraChecksAndTools
 		
 		for(AbstractPiece p : allPieces) {
 			if(p.getColor().equalsIgnoreCase("white")) {
-				whitePieces.add(utils.safeCopyPiece(p));
+				whitePieces.add(p);
 			}
 		}
 		
@@ -218,7 +218,7 @@ public class ExtraChecksAndTools
 				}
 			}
 		}
-		if(color.equalsIgnoreCase("white") && getBlackPieces(gamestate).size() > 0){
+		if(color.equalsIgnoreCase("white") && getWhitePieces(gamestate).size() > 0){
 			for(AbstractPiece p : getWhitePieces(gamestate)){
 				if(p instanceof King){
 					return (King)p;
@@ -276,6 +276,7 @@ public class ExtraChecksAndTools
 	 */
 	
 	public ArrayList<Position> validMoves( AbstractPiece p, boolean isDebug, AbstractPiece[][] gamestate, int moveNo){
+			
 		ArrayList<Position> movesList = new ArrayList<Position>();
 		for(int i=0; i<8; i++) {
 			for(int j=0; j<8; j++) {
@@ -306,7 +307,6 @@ public class ExtraChecksAndTools
 				}
 			}
 		}
-		
 		return movesList;
 	}
 	
@@ -323,18 +323,17 @@ public class ExtraChecksAndTools
 	 */
 	
 	public ArrayList<AbstractPiece[][]> possibleGamestatesAfterNextMove (String whoseTurn, boolean isDebug, AbstractPiece[][] gamestate, int moveNo){
-		System.out.println("HELLO");
 		if(whoseTurn.equalsIgnoreCase("white")) {
 			ArrayList<AbstractPiece[][]> listOfGamestates = new ArrayList<AbstractPiece[][]>();
-			System.out.println("Getting white pieces");
+			//System.out.println("Getting white pieces");
 			ArrayList<AbstractPiece> whitePieces = getWhitePieces(gamestate);
-			System.out.println("Got the white pieces");
+			//System.out.println("Got the white pieces");
 			for(AbstractPiece p : whitePieces) {
 				ArrayList<Position> validPositions = validMoves(p, isDebug, gamestate, moveNo);
 				for(Position vp : validPositions) {
 					//generate gamestate for each one. Excluding moves where you capture enemy king
 					AbstractPiece[][] newGamestate = utils.safeCopyGamestate(gamestate);
-					if(!(vp.getXpos()==getKing("black", newGamestate).getXpos()&&vp.getYpos()==getKing("black", newGamestate).getXpos())) {
+					if(!(vp.getXpos()==getKing("black", newGamestate).getXpos()&&vp.getYpos()==getKing("black", newGamestate).getYpos())) {
 						newGamestate=utils.relocatePiece(p, newGamestate, vp.getXpos(), vp.getYpos()); //might cause some bugs
 						listOfGamestates.add(newGamestate);
 					}
@@ -351,8 +350,12 @@ public class ExtraChecksAndTools
 				for(Position vp : validPositions) {
 					//generate gamestate for each one. Excluding moves where you capture enemy king
 					AbstractPiece[][] newGamestate = utils.safeCopyGamestate(gamestate);
-					if(!(vp.getXpos()==getKing("white", newGamestate).getXpos()&&vp.getYpos()==getKing("white", newGamestate).getXpos())) {
-						newGamestate=utils.relocatePiece(p, newGamestate, vp.getXpos(), vp.getYpos()); //might cause some bugs
+					if(!(vp.getXpos()==getKing("white", newGamestate).getXpos()&&vp.getYpos()==getKing("white", newGamestate).getYpos())) {
+						
+						AbstractPiece safeP = utils.safeCopyPiece(p);
+						newGamestate=utils.relocatePiece(safeP, newGamestate, vp.getXpos(), vp.getYpos()); //might cause some bugs
+						
+						
 						listOfGamestates.add(newGamestate);
 					}
 					

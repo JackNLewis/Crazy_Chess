@@ -272,34 +272,34 @@ public class Utilities
 		switch(pieceType) {
 			case "Pawn":
 				Pawn pawnCast=(Pawn) p;
-				Pawn pawnCopy=new Pawn(p.getColor(),p.getPosition());
+				Pawn pawnCopy=new Pawn(p.getColor(),p.getPositionCopy());
 				pawnCopy.setDoublejump(pawnCast.getDoublejump());
 				return pawnCopy;
 				//break;
 			case "Rook":
-				copy=new Rook(p.getColor(),p.getPosition());
+				copy=new Rook(p.getColor(),p.getPositionCopy());
 				break;
 			case "Knight":
-				copy=new Knight(p.getColor(),p.getPosition());
+				copy=new Knight(p.getColor(),p.getPositionCopy());
 				break;
 			case "Bishop":
-				copy=new Bishop(p.getColor(),p.getPosition());
+				copy=new Bishop(p.getColor(),p.getPositionCopy());
 				break;
 			case "Queen":
-				copy=new Queen(p.getColor(),p.getPosition());
+				copy=new Queen(p.getColor(),p.getPositionCopy());
 				break;
 			case "King":
 				King kingCast=(King) p;
-				King kingCopy=new King(p.getColor(),p.getPosition());
+				King kingCopy=new King(p.getColor(),p.getPositionCopy());
 				kingCopy.setWasMoved(kingCast.getWasMoved());
 				kingCopy.setIsChecked(kingCast.getIsChecked());
 				return kingCopy;
 				//break;
 			case "BlankPiece":
-				copy=new BlankPiece(p.getColor(),p.getPosition());
+				copy=new BlankPiece(p.getColor(),p.getPositionCopy());
 				break;
 			case "Powerup":
-				copy=new Powerup(p.getPosition());
+				copy=new Powerup(p.getPositionCopy());
 				break;
 			
 		}
