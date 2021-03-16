@@ -48,7 +48,14 @@ public class MenuScreen {
 
         //Add vs AI
         Button VsAI = new Button("Player Vs AI");
-
+        VsAI.setOnMouseClicked(new EventHandler<MouseEvent>() {
+            @Override
+            public void handle(MouseEvent event) {
+                SGameScreen sp = new SGameScreen(stage);
+                sp.getBoard().enableAI();
+                stage.setScene(sp.getScene());
+            }
+        });
 
         root.getChildren().addAll(newButton,multiplayer,VsAI);
     }

@@ -1,9 +1,6 @@
 package Graphics;
 
-import CrazyChess.logic.ExtraChecksAndTools;
-import CrazyChess.logic.MainLogic;
-import CrazyChess.logic.Position;
-import CrazyChess.logic.Utilities;
+import CrazyChess.logic.*;
 import CrazyChess.logic.powerups.PowerupMain;
 import CrazyChess.pieces.AbstractPiece;
 import CrazyChess.pieces.BlankPiece;
@@ -47,6 +44,9 @@ public class SBoard {
     private PowerupMain powerMain; // Used to see valid powered moves
     
     private music sound; // Used to play sound
+
+    private boolean aiEnabled = false;
+    private AI ai;
 
     public SBoard(MainLogic game, SGameScreen SGameScreen){
         initBoard("white");
@@ -181,6 +181,7 @@ public class SBoard {
                                     SGameScreen.setInfoMessage(game.getTurn() + " wins!");
                                     System.out.println(oppColor + " is in check mate");
                                 }
+
                             }
                             //Normal move was unsuccessful
                             else{
@@ -200,7 +201,10 @@ public class SBoard {
                         selected = false;
                         renderGameState(game.getGamestate());
 
-
+                        //If ai is enabled make the ai move
+                        if(aiEnabled){
+                            aiMove();
+                        }
                     }
 
 
@@ -277,5 +281,20 @@ public class SBoard {
 
     public boolean isSelected(){
         return selected;
+    }
+
+    public void enableAI(){
+        this.aiEnabled = true;
+        ai = new AI();
+    }
+
+    private void aiMove(){
+        AbstractPiece[][] gs = this.ai.AI(game);
+        game.setGamestate(gs);
+        renderGameState(game.getGamestate());
+        ArrayList<String> powerUpList = game.getPowerUps(game.getTurn());
+        powerUps.setPowerUps(powerUpList,game.getTurn());
+        game.changeTurn();
+        SGameScreen.updateMoveLabel(game.getTurn());
     }
 }
