@@ -218,7 +218,7 @@ public class ExtraChecksAndTools
 				}
 			}
 		}
-		if(color.equalsIgnoreCase("white") && getBlackPieces(gamestate).size() > 0){
+		if(color.equalsIgnoreCase("white") && getWhitePieces(gamestate).size() > 0){
 			for(AbstractPiece p : getWhitePieces(gamestate)){
 				if(p instanceof King){
 					return (King)p;
@@ -334,7 +334,7 @@ public class ExtraChecksAndTools
 				for(Position vp : validPositions) {
 					//generate gamestate for each one. Excluding moves where you capture enemy king
 					AbstractPiece[][] newGamestate = utils.safeCopyGamestate(gamestate);
-					if(!(vp.getXpos()==getKing("black", newGamestate).getXpos()&&vp.getYpos()==getKing("black", newGamestate).getXpos())) {
+					if(!(vp.getXpos()==getKing("black", newGamestate).getXpos()&&vp.getYpos()==getKing("black", newGamestate).getYpos())) {
 						newGamestate=utils.relocatePiece(p, newGamestate, vp.getXpos(), vp.getYpos()); //might cause some bugs
 						listOfGamestates.add(newGamestate);
 					}
@@ -351,7 +351,7 @@ public class ExtraChecksAndTools
 				for(Position vp : validPositions) {
 					//generate gamestate for each one. Excluding moves where you capture enemy king
 					AbstractPiece[][] newGamestate = utils.safeCopyGamestate(gamestate);
-					if(!(vp.getXpos()==getKing("white", newGamestate).getXpos()&&vp.getYpos()==getKing("white", newGamestate).getXpos())) {
+					if(!(vp.getXpos()==getKing("white", newGamestate).getXpos()&&vp.getYpos()==getKing("white", newGamestate).getYpos())) {
 						newGamestate=utils.relocatePiece(p, newGamestate, vp.getXpos(), vp.getYpos()); //might cause some bugs
 						listOfGamestates.add(newGamestate);
 					}
