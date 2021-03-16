@@ -56,7 +56,7 @@ public class ExtraChecksAndTools
 		
 		for(AbstractPiece p : allPieces) {
 			if(p.getColor().equalsIgnoreCase("white")) {
-				whitePieces.add(utils.safeCopyPiece(p));
+				whitePieces.add(p);
 			}
 		}
 		
