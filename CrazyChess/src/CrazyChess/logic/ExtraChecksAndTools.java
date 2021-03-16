@@ -323,12 +323,11 @@ public class ExtraChecksAndTools
 	 */
 	
 	public ArrayList<AbstractPiece[][]> possibleGamestatesAfterNextMove (String whoseTurn, boolean isDebug, AbstractPiece[][] gamestate, int moveNo){
-		System.out.println("HELLO");
 		if(whoseTurn.equalsIgnoreCase("white")) {
 			ArrayList<AbstractPiece[][]> listOfGamestates = new ArrayList<AbstractPiece[][]>();
-			System.out.println("Getting white pieces");
+			//System.out.println("Getting white pieces");
 			ArrayList<AbstractPiece> whitePieces = getWhitePieces(gamestate);
-			System.out.println("Got the white pieces");
+			//System.out.println("Got the white pieces");
 			for(AbstractPiece p : whitePieces) {
 				ArrayList<Position> validPositions = validMoves(p, isDebug, gamestate, moveNo);
 				for(Position vp : validPositions) {

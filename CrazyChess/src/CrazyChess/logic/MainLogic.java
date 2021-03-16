@@ -129,7 +129,7 @@ public class MainLogic
 	 * Changes the current game state.
 	 * @param newGamestate    new gamestate
 	 */
-	void setGamestate(AbstractPiece[][] newGamestate){
+	public void setGamestate(AbstractPiece[][] newGamestate){
 		gamestate=newGamestate;
 	}
 	
