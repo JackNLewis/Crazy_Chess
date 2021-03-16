@@ -9,6 +9,8 @@ import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
@@ -25,7 +27,16 @@ public class MenuScreen {
         buttons = new VBox();
         buttons.setAlignment(Pos.CENTER);
         scene = new Scene(buttons,500,600); // make 500,600
+        scene.getStylesheets().add("/Graphics/css/menu.css");
         this.stage = stage;
+
+
+        //Add Banner Image
+        ImageView img = new ImageView();
+        img.setImage(new Image("/resources/menu_text.png"));
+        img.setFitWidth(400);
+        img.setPreserveRatio(true);
+        buttons.getChildren().add(img);
         addButtons(buttons);
         stage.setResizable(false);
     }
