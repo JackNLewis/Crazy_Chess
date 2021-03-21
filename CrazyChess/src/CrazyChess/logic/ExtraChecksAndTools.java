@@ -44,6 +44,25 @@ public class ExtraChecksAndTools
 		return temp;
 	}
 	/**
+	 * Function that returns and ArrayList of blank pieces from
+	 * a given game state
+	 * @param gamestate    any game state
+	 * @return An ArrayList of pieces in the game state
+	 */
+	
+	public ArrayList<AbstractPiece> getBlankArrayList(AbstractPiece[][] gamestate){
+		ArrayList<AbstractPiece> blank = new ArrayList<AbstractPiece>();
+		for(int i=0; i<8; i++) {
+			for(int j=0; j<8; j++) {
+				if((gamestate[j][i] instanceof BlankPiece)) {
+					blank.add(gamestate[j][i]);
+				}
+			}
+		}
+		
+		return blank;
+	}
+	/**
 	 * Function that returns and ArrayList of white pieces from
 	 * a given game state
 	 * @param gamestate    any game state

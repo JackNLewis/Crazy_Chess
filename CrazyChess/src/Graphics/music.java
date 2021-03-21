@@ -29,6 +29,12 @@ public class music {
 	protected URL ulrTeleport;
 	protected AudioClip Teleport;
 	
+	protected URL ulrFreeCard;
+	protected AudioClip FreeCard;
+	
+	protected URL ulrDummyPiece;
+	protected AudioClip DummyPiece;
+	
 	
 	/**
 	 * Constructor for the music class.
@@ -47,6 +53,12 @@ public class music {
 		
 		ulrTeleport = this.getClass().getClassLoader().getResource("resources.music/Teleport.wav");
 		Teleport = new AudioClip(ulrTeleport.toExternalForm());
+		
+		ulrFreeCard = this.getClass().getClassLoader().getResource("resources.music/FreeCard.wav");
+		FreeCard = new AudioClip(ulrFreeCard.toExternalForm());
+		
+		ulrDummyPiece = this.getClass().getClassLoader().getResource("resources.music/DummyPiece.wav");
+		DummyPiece = new AudioClip(ulrDummyPiece.toExternalForm());
 	}
 
 	
@@ -62,12 +74,22 @@ public class music {
 	
 	//play Mini-Promote sound
 	public void MiniPromote() {
-		MiniPromote.play();
+		MiniPromote.play(0.6);
 	}
 	
 	//play Teleport sound
 	public void Teleport() {
 		Teleport.play();
+	}
+	
+	//play FreeCard sound
+	public void FreeCard() {
+		FreeCard.play(0.6);
+	}
+	
+	//play DummyPiece sound
+	public void DummyPiece() {
+		DummyPiece.play();
 	}
 	
 }

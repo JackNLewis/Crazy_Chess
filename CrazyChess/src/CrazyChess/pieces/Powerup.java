@@ -17,8 +17,9 @@ public class Powerup extends AbstractPiece
 	 * @param xCoord    x coordinate
 	 * @param yCoord    y coordinate
 	 */
-	public Powerup ( int xCoord, int yCoord){
-		super("Powerup", xCoord, yCoord);
+	public Powerup ( int xCoord, int yCoord, String Type){
+		super("Powerup", xCoord, yCoord,Type);
+		Type = "Normal";
 	}
 	
 	/**
@@ -27,7 +28,8 @@ public class Powerup extends AbstractPiece
 	 * @param color      color of the bishop
 	 * @param position   position object to set initial position
 	 */
-	public Powerup( Position position){
-		super("Powerup", position);
+	public Powerup( Position position, String Type){
+		super("Powerup", position,Type);
+		Type = "Normal";
 	}
 }

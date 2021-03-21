@@ -19,6 +19,7 @@ public abstract class AbstractPiece implements Serializable
 
 	protected String color;
 	protected Position position;
+	protected String Pwtype;
 	
 	/**
 	 * Constructor by coordinates
@@ -27,9 +28,10 @@ public abstract class AbstractPiece implements Serializable
 	 * @param xCoord    x coordinate
 	 * @param yCoord    y coordinate
 	 */
-	public AbstractPiece(String color, int xCoord, int yCoord){
+	public AbstractPiece(String color, int xCoord, int yCoord, String type){
 		this.color = color;
 		this.position = new Position(xCoord, yCoord);
+		this.Pwtype = type;
 	}
 
 	/**
@@ -38,9 +40,10 @@ public abstract class AbstractPiece implements Serializable
 	 * @param color      color of piece
 	 * @param position   position object to set initial position
 	 */
-	public AbstractPiece(String color, Position position){
+	public AbstractPiece(String color, Position position, String type){
 		this.color = color;
 		this.position = position;
+		this.Pwtype = type;
 	}
 	
 	/**
@@ -127,5 +130,13 @@ public abstract class AbstractPiece implements Serializable
 		
 		
 		return new Position(x,y);
+	}
+	
+	public void changePowerup(String type){
+		this.Pwtype = type;
+	}
+	
+	public String getPoweruptype(){
+		return Pwtype;
 	}
 }
