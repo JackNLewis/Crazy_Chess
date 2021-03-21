@@ -295,8 +295,6 @@ public class SBoard {
         renderGameState(game.getGamestate());
 
         String oppColor = (game.getTurn().equalsIgnoreCase("white")) ? "black" : "white";
-        //TODO: Update the MainLogic isChecked and isCheckMated
-
 
         ArrayList<String> powerUpList = game.getPowerUps(game.getTurn());
         powerUps.setPowerUps(powerUpList,game.getTurn());
