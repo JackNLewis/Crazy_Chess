@@ -368,6 +368,13 @@ public class MainLogic
 			AbstractPiece copiedPiece = utils.getPiece(p.getPosition(), isDebug, newGamestate);
 			copiedPiece.setPosition(newPiece.getXpos(), newPiece.getYpos());
 			newGamestate=utils.placePiece(copiedPiece, isDebug, newGamestate);//place it according to the new position
+			//sets captured piece to blank space in case of En Passant and sets En Passant to false
+			if(p instanceof Pawn && ((Pawn)p).getEnPassant() == true){ 
+				if(p.getColor().equalsIgnoreCase("white"))
+					newGamestate=utils.placePiece(new BlankPiece("Blank",copiedPiece.getXpos(), (copiedPiece.getYpos()-1)), isDebug, newGamestate);
+				else 
+					newGamestate=utils.placePiece(new BlankPiece("Blank",copiedPiece.getXpos(), (copiedPiece.getYpos()+1)), isDebug, newGamestate);
+			}
 			//and set the old position to a Blank place
 			newGamestate=utils.placePiece(new BlankPiece("Blank",oldPos.getXpos(), oldPos.getYpos()), isDebug, newGamestate);
 		
