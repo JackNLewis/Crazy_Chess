@@ -455,6 +455,7 @@ public class BasicValidityChecker
 	 * @param gamestate   the current game state
 	 * @return            true if move is okay
 	 */
+	
 	public boolean validityCheckQueen(Queen p, int xRel, int yRel, boolean isDebug, AbstractPiece[][] gamestate){
 		AbstractPiece newPos = utils.getTargetPiece(p,xRel,yRel, isDebug, gamestate);
 		if(diagonalCheck(p.getXpos()-1, p.getYpos()+1, "upleft", p, newPos.getPosition(), isDebug, gamestate).equals(newPos.getPosition()))
@@ -517,3 +518,4 @@ public class BasicValidityChecker
 	}
 	
 }
+
