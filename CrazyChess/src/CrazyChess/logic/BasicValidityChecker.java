@@ -16,7 +16,6 @@ import java.util.ArrayList;
 public class BasicValidityChecker
 {
 	Utilities utils = new Utilities();
-	ExtraChecksAndTools ect = new ExtraChecksAndTools();
 	
 	
 	
@@ -47,7 +46,7 @@ public class BasicValidityChecker
 		else if(p instanceof Bishop)
 			return validityCheckBishop((Bishop)p, xRel, yRel, isDebug, gamestate);
 		else if(p instanceof King)
-			return validityCheckKing((King)p, xRel, yRel, isDebug, gamestate, moveNo);
+			return validityCheckKing((King)p, xRel, yRel, isDebug, gamestate);
 		else if(p instanceof Queen)
 			return validityCheckQueen((Queen)p, xRel, yRel, isDebug, gamestate);
 		else if(p instanceof Knight)
@@ -408,7 +407,7 @@ public class BasicValidityChecker
 	 * @param gamestate   the current game state
 	 * @return            true if move is okay
 	 */
-	public boolean validityCheckKing(King p, int xRel, int yRel, boolean isDebug, AbstractPiece[][] gamestate, int moveNo){
+	public boolean validityCheckKing(King p, int xRel, int yRel, boolean isDebug, AbstractPiece[][] gamestate){
 		//TODO: Add Castling
 		if(p.getWasMoved() == false)
 			if(xRel == 2 && yRel == 0) { //castle to the right
@@ -417,7 +416,7 @@ public class BasicValidityChecker
 					//check if all the spaces are free
 					if(utils.getPiece(5,0,isDebug,gamestate) instanceof BlankPiece && utils.getPiece(4,0,isDebug,gamestate) instanceof BlankPiece) 
 						//check if the spaces the king passes trough are not attacked
-						if(ect.capturableBy(utils.getPiece(5,0,isDebug,gamestate),isDebug,gamestate,moveNo) == null && ect.capturableBy(utils.getPiece(4,0,isDebug,gamestate),isDebug,gamestate,moveNo) == null) {
+						if(ect.capturableBy(utils.getPiece(5,0,isDebug,gamestate),isDebug,gamestate,1) == null && ect.capturableBy(utils.getPiece(4,0,isDebug,gamestate),isDebug,gamestate,1) == null) {
 							p.setWasMoved(true);
 							p.setCanCastle(true);
 							return true;
