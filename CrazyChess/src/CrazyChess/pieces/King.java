@@ -12,7 +12,6 @@ public class King extends AbstractPiece
 {
 	boolean isChecked = false; //is king currently under check
 	boolean wasMoved = false; //was king moved this game
-	boolean canCastle = false; //can the kind castle
 	/**
 	 * Constructor by coordinates
 	 *
@@ -65,14 +64,4 @@ public class King extends AbstractPiece
 	 * Setter for wasMoved
 	 * @param input   Value to change wasMoved to
 	 */
-	public void setCanCastle(boolean input) {
-		canCastle=input;
-	}
-	/**
-	 * Getter for wasMoved
-	 * @return current value of wasMoved
-	 */
-	public boolean getCanCastle() {
-		return canCastle;
-	}
 }

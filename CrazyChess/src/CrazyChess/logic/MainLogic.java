@@ -38,6 +38,7 @@ public class MainLogic
 	BasicValidityChecker bvc = new BasicValidityChecker();
 	ExtraChecksAndTools ecat = new ExtraChecksAndTools();
 	PowerupMain pwrUp = new PowerupMain();
+	Castle cstl = new Castle();
 	/**
 	 * Constructor for the MainLogic class.
 	 * Initiates the gamestate as an empty board.
@@ -223,7 +224,6 @@ public class MainLogic
 
 		utils.placePiece( new King("Black",  4,7), isDebug, gamestate );
 		utils.placePiece( new Queen("Black", 3,7), isDebug, gamestate );
-
 		//Code to show that usePowerup is working
 //		whitePowerUps.add("Teleport");
 //		usePowerup(0, new Position(0,0), new Position(5,7));
@@ -301,6 +301,9 @@ public class MainLogic
 				isValid=true;
 			}
 		}
+		if(isValid == false && p instanceof King) {
+			isValid = cstl.castle((King)p, xRel, yRel, isDebug, gamestate, turnNo);
+		}
 		
 //
 //		if(newPiece instanceof King){
@@ -365,12 +368,16 @@ public class MainLogic
 		//Constructing new possible gamestate
 		if(isValid) {
 			AbstractPiece[][] newGamestate = utils.safeCopyGamestate(gamestate);
-			AbstractPiece copiedPiece = utils.getPiece(p.getPosition(), isDebug, newGamestate);
+			AbstractPiece copiedPiece = utils.safeCopyPiece(p);
 			copiedPiece.setPosition(newPiece.getXpos(), newPiece.getYpos());
+			if(copiedPiece instanceof King)
+				((King)copiedPiece).setWasMoved(true);
+			if(copiedPiece instanceof Rook) {
+				((Rook)copiedPiece).setWasMoved(true);
+			}
 			newGamestate=utils.placePiece(copiedPiece, isDebug, newGamestate);//place it according to the new position
 			//and set the old position to a Blank place
 			newGamestate=utils.placePiece(new BlankPiece("Blank",oldPos.getXpos(), oldPos.getYpos()), isDebug, newGamestate);
-
 		
 		
 		

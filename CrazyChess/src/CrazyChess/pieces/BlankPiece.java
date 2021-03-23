@@ -41,4 +41,5 @@ public class BlankPiece extends AbstractPiece
 	public String toString(){
 		return "Blank space at (" + position.getXpos() + ", " + position.getYpos() + ")";
 	}
+	
 }

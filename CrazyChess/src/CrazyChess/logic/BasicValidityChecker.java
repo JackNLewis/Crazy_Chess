@@ -352,19 +352,15 @@ public class BasicValidityChecker
 	public boolean validityCheckRook(Rook p, int xRel, int yRel, boolean isDebug, AbstractPiece[][] gamestate){
 		AbstractPiece newPos = utils.getTargetPiece(p,xRel, yRel, isDebug, gamestate);
 		if(columnAndRowCheck(p.getXpos(), p.getYpos()+1,"up", p, newPos.getPosition(), isDebug, gamestate).equals(newPos.getPosition())) {
-			p.setWasMoved(true);
 			return true;
 		}
 		if(columnAndRowCheck(p.getXpos(), p.getYpos()-1,"down", p, newPos.getPosition(), isDebug, gamestate).equals(newPos.getPosition())) {
-			p.setWasMoved(true);
 			return true;
 		}
 		if(columnAndRowCheck(p.getXpos()-1, p.getYpos(),"left", p, newPos.getPosition(), isDebug, gamestate).equals(newPos.getPosition())) {
-			p.setWasMoved(true);
 			return true;
 		}
 		if(columnAndRowCheck(p.getXpos()+1, p.getYpos(),"right", p, newPos.getPosition(), isDebug, gamestate).equals(newPos.getPosition())) {
-			p.setWasMoved(true);
 			return true;
 		}
 		//if(isDebug)
@@ -409,20 +405,6 @@ public class BasicValidityChecker
 	 */
 	public boolean validityCheckKing(King p, int xRel, int yRel, boolean isDebug, AbstractPiece[][] gamestate){
 		//TODO: Add Castling
-		if(p.getWasMoved() == false)
-			if(xRel == 2 && yRel == 0) { //castle to the right
-				 //castle for white and rook not moved
-				if(p.getColor().equalsIgnoreCase("white") && utils.getPiece(7,0,isDebug,gamestate) instanceof Rook && ((Rook)utils.getPiece(7,0,isDebug,gamestate)).getWasMoved() == false){
-					//check if all the spaces are free
-					if(utils.getPiece(5,0,isDebug,gamestate) instanceof BlankPiece && utils.getPiece(4,0,isDebug,gamestate) instanceof BlankPiece) 
-						//check if the spaces the king passes trough are not attacked
-						if(ect.capturableBy(utils.getPiece(5,0,isDebug,gamestate),isDebug,gamestate,1) == null && ect.capturableBy(utils.getPiece(4,0,isDebug,gamestate),isDebug,gamestate,1) == null) {
-							p.setWasMoved(true);
-							p.setCanCastle(true);
-							return true;
-						}
-				}
-			}
 		
 		if(xRel > 1 || xRel < -1 || yRel > 1 || yRel < -1){
 			//if(isDebug)
@@ -431,35 +413,27 @@ public class BasicValidityChecker
 		}
 		AbstractPiece newPos = utils.getTargetPiece(p, xRel, yRel, isDebug, gamestate);
 		if(p.getXpos()+1==newPos.getXpos() && p.getYpos()+0==newPos.getYpos()){//(1,0)
-			p.setWasMoved(true);
 			return true;
 		}
 		else if(p.getXpos()+1==newPos.getXpos() && p.getYpos()-1==newPos.getYpos()){//(1,-1)
-			p.setWasMoved(true);
 			return true;
 		}
 		else if(p.getXpos()+0==newPos.getXpos() && p.getYpos()-1==newPos.getYpos()){//(0,-1)
-			p.setWasMoved(true);
 			return true;
 		}
 		else if(p.getXpos()-1==newPos.getXpos() && p.getYpos()-1==newPos.getYpos()){//(-1,-1)
-			p.setWasMoved(true);
 			return true;
 		}
 		else if(p.getXpos()-1==newPos.getXpos() && p.getYpos()+0==newPos.getYpos()){//(-1,0)
-			p.setWasMoved(true);
 			return true;
 		}
 		else if(p.getXpos()-1==newPos.getXpos() && p.getYpos()+1==newPos.getYpos()){//(-1,1)
-			p.setWasMoved(true);
 			return true;
 		}
 		else if(p.getXpos()+0==newPos.getXpos() && p.getYpos()+1==newPos.getYpos()){//(0,1)
-			p.setWasMoved(true);
 			return true;
 		}
 		else if(p.getXpos()+1==newPos.getXpos() && p.getYpos()+1==newPos.getYpos()){//(1,1)
-			p.setWasMoved(true);
 			return true;
 		}
 		return false;
