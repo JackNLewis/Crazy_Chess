@@ -292,12 +292,14 @@ public class BasicValidityChecker
 				}
 			}
 			//making sure piece about to get captured is of enemy color
-			else if((xRel == 1 || xRel == -1) && yRel == -1 && utils.getTargetPiece(p,xRel,yRel,isDebug,gamestate).getColor().equalsIgnoreCase("white"))
+			else if((xRel == 1 || xRel == -1) && yRel == -1 && (utils.getTargetPiece(p,xRel,yRel,isDebug,gamestate).getColor().equalsIgnoreCase("white")||
+															    utils.getTargetPiece(p,xRel,yRel,isDebug,gamestate).getColor().equalsIgnoreCase("powerup")))
 				return true;
 		}
 		else if(p.getColor().equalsIgnoreCase("white")){
 			//basic advance
-			if(xRel == 0 && yRel == 1 && !utils.getTargetPiece(p,xRel,yRel,isDebug,gamestate).getColor().equalsIgnoreCase("black"))
+			if(xRel == 0 && yRel == 1 && !(utils.getTargetPiece(p,xRel,yRel,isDebug,gamestate).getColor().equalsIgnoreCase("black")||
+										   utils.getTargetPiece(p,xRel,yRel,isDebug,gamestate).getColor().equalsIgnoreCase("powerup")))
 				return true;
 			//first turn jump
 			else if(xRel == 0 && yRel == 2 && p.getYpos() == 1){
@@ -333,7 +335,8 @@ public class BasicValidityChecker
 				}
 			}
 			//making sure piece about to get captured is of enemy color
-			else if((xRel == 1 || xRel == -1) && yRel == 1 && utils.getTargetPiece(p,xRel,yRel,isDebug,gamestate).getColor().equalsIgnoreCase("black"))
+			else if((xRel == 1 || xRel == -1) && yRel == 1 && (utils.getTargetPiece(p,xRel,yRel,isDebug,gamestate).getColor().equalsIgnoreCase("black")||
+															   utils.getTargetPiece(p,xRel,yRel,isDebug,gamestate).getColor().equalsIgnoreCase("powerup")))
 				return true;
 		}
 		return false;
