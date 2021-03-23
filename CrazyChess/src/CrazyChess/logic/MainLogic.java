@@ -223,7 +223,7 @@ public class MainLogic
 
 		utils.placePiece( new King("Black",  4,7), isDebug, gamestate );
 		utils.placePiece( new Queen("Black", 3,7), isDebug, gamestate );
-		
+
 		//Code to show that usePowerup is working
 //		whitePowerUps.add("Teleport");
 //		usePowerup(0, new Position(0,0), new Position(5,7));
@@ -370,8 +370,7 @@ public class MainLogic
 			newGamestate=utils.placePiece(copiedPiece, isDebug, newGamestate);//place it according to the new position
 			//and set the old position to a Blank place
 			newGamestate=utils.placePiece(new BlankPiece("Blank",oldPos.getXpos(), oldPos.getYpos()), isDebug, newGamestate);
-		
-		
+
 		
 		
 		

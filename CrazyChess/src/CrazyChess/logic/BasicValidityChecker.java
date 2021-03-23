@@ -16,6 +16,7 @@ import java.util.ArrayList;
 public class BasicValidityChecker
 {
 	Utilities utils = new Utilities();
+	ExtraChecksAndTools ect = new ExtraChecksAndTools();
 	
 	
 	
@@ -46,7 +47,7 @@ public class BasicValidityChecker
 		else if(p instanceof Bishop)
 			return validityCheckBishop((Bishop)p, xRel, yRel, isDebug, gamestate);
 		else if(p instanceof King)
-			return validityCheckKing((King)p, xRel, yRel, isDebug, gamestate);
+			return validityCheckKing((King)p, xRel, yRel, isDebug, gamestate, moveNo);
 		else if(p instanceof Queen)
 			return validityCheckQueen((Queen)p, xRel, yRel, isDebug, gamestate);
 		else if(p instanceof Knight)
@@ -351,14 +352,22 @@ public class BasicValidityChecker
 	 */
 	public boolean validityCheckRook(Rook p, int xRel, int yRel, boolean isDebug, AbstractPiece[][] gamestate){
 		AbstractPiece newPos = utils.getTargetPiece(p,xRel, yRel, isDebug, gamestate);
-		if(columnAndRowCheck(p.getXpos(), p.getYpos()+1,"up", p, newPos.getPosition(), isDebug, gamestate).equals(newPos.getPosition()))
+		if(columnAndRowCheck(p.getXpos(), p.getYpos()+1,"up", p, newPos.getPosition(), isDebug, gamestate).equals(newPos.getPosition())) {
+			p.setWasMoved(true);
 			return true;
-		if(columnAndRowCheck(p.getXpos(), p.getYpos()-1,"down", p, newPos.getPosition(), isDebug, gamestate).equals(newPos.getPosition()))
+		}
+		if(columnAndRowCheck(p.getXpos(), p.getYpos()-1,"down", p, newPos.getPosition(), isDebug, gamestate).equals(newPos.getPosition())) {
+			p.setWasMoved(true);
 			return true;
-		if(columnAndRowCheck(p.getXpos()-1, p.getYpos(),"left", p, newPos.getPosition(), isDebug, gamestate).equals(newPos.getPosition()))
+		}
+		if(columnAndRowCheck(p.getXpos()-1, p.getYpos(),"left", p, newPos.getPosition(), isDebug, gamestate).equals(newPos.getPosition())) {
+			p.setWasMoved(true);
 			return true;
-		if(columnAndRowCheck(p.getXpos()+1, p.getYpos(),"right", p, newPos.getPosition(), isDebug, gamestate).equals(newPos.getPosition()))
+		}
+		if(columnAndRowCheck(p.getXpos()+1, p.getYpos(),"right", p, newPos.getPosition(), isDebug, gamestate).equals(newPos.getPosition())) {
+			p.setWasMoved(true);
 			return true;
+		}
 		//if(isDebug)
 		//	System.out.println("Correct position for Rook not found.");
 		return false;
@@ -399,8 +408,22 @@ public class BasicValidityChecker
 	 * @param gamestate   the current game state
 	 * @return            true if move is okay
 	 */
-	public boolean validityCheckKing(King p, int xRel, int yRel, boolean isDebug, AbstractPiece[][] gamestate){
+	public boolean validityCheckKing(King p, int xRel, int yRel, boolean isDebug, AbstractPiece[][] gamestate, int moveNo){
 		//TODO: Add Castling
+		if(p.getWasMoved() == false)
+			if(xRel == 2 && yRel == 0) { //castle to the right
+				 //castle for white and rook not moved
+				if(p.getColor().equalsIgnoreCase("white") && utils.getPiece(7,0,isDebug,gamestate) instanceof Rook && ((Rook)utils.getPiece(7,0,isDebug,gamestate)).getWasMoved() == false){
+					//check if all the spaces are free
+					if(utils.getPiece(5,0,isDebug,gamestate) instanceof BlankPiece && utils.getPiece(4,0,isDebug,gamestate) instanceof BlankPiece) 
+						//check if the spaces the king passes trough are not attacked
+						if(ect.capturableBy(utils.getPiece(5,0,isDebug,gamestate),isDebug,gamestate,moveNo) == null && ect.capturableBy(utils.getPiece(4,0,isDebug,gamestate),isDebug,gamestate,moveNo) == null) {
+							p.setWasMoved(true);
+							p.setCanCastle(true);
+							return true;
+						}
+				}
+			}
 		
 		if(xRel > 1 || xRel < -1 || yRel > 1 || yRel < -1){
 			//if(isDebug)

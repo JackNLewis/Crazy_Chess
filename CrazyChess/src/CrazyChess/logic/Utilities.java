@@ -1,3 +1,4 @@
+
 package CrazyChess.logic;
 import CrazyChess.pieces.*;
 /**
