@@ -154,7 +154,22 @@ public class SBoard {
                             boolean poweredMove = game.usePowerup(powerUps.getSelectedIndex(), selectedTile.getPos(), tile.getPos());
                             if(poweredMove){
                                 // SUCCESFFUL POWERED MOVE
-                                sound.Teleport();
+                            	//play sound effects
+                            	if(powerUps.getSelectedStr().equalsIgnoreCase("teleport")) {
+                            		sound.Teleport();
+                            	}
+                            	if(powerUps.getSelectedStr().equalsIgnoreCase("minipromote")) {
+                            		sound.MiniPromote();
+                            	}
+                            	if(powerUps.getSelectedStr().equalsIgnoreCase("freecard")) {
+                            		sound.FreeCard();
+                            	}
+                            	if(powerUps.getSelectedStr().equalsIgnoreCase("bomb")) {
+                            		sound.Bomb();
+                            	}
+                            	if(powerUps.getSelectedStr().equalsIgnoreCase("dummypiece")) {
+                            		sound.DummyPiece();
+                            	}
                                 System.out.println("Successful powered up move");
                                 powerUps.setSelectedIndex(-1);
                             }else{
