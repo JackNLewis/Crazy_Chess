@@ -32,7 +32,7 @@ public class PowerupBomb {
 		
 		AbstractPiece gamestateCopy[][]=utils.safeCopyGamestate(gamestate);
 		AbstractPiece piece1 = utils.getPiece(target1, isDebug, gamestateCopy);
-		AbstractPiece piece2 = utils.getPiece(target2, isDebug, gamestateCopy);
+		//AbstractPiece piece2 = utils.getPiece(target2, isDebug, gamestateCopy);
 		
 		if((piece1 instanceof King)) {
 			if (isDebug) System.out.println("Cant add Bomb on the King. Returning NULL");

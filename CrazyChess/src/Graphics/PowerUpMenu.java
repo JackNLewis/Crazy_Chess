@@ -39,18 +39,15 @@ public class PowerUpMenu {
                     System.out.println("Power: " + powerList.getItems().get(clickedIndex));
                     selectedIndex = clickedIndex;
                     selectedstr = powerList.getItems().get(selectedIndex);
+                    gameScreen.getBoard().showInitPowerMoves();
 
-                    if(gameScreen.getBoard().isSelected()){
-                        gameScreen.getBoard().showPoweredMoves();
-                    }
                 }else{
                     System.out.println("Deselecting index " + clickedIndex);
                     powerList.getSelectionModel().clearSelection();
                     selectedIndex = -1;
+                    selectedstr = null;
+                    gameScreen.getBoard().showMoves();
 
-                    if(gameScreen.getBoard().isSelected()){
-                        gameScreen.getBoard().showMoves();
-                    }
                 }
 
             }
@@ -87,6 +84,7 @@ public class PowerUpMenu {
     public String getSelectedStr() {
     	return selectedstr;
     }
+
 
 
 }
