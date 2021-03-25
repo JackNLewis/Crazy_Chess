@@ -171,7 +171,11 @@ public class ExtraChecksAndTools
 		else if((defender.getColor().equalsIgnoreCase("black")||defender.getColor().equalsIgnoreCase("powerup")) && attacker.getColor().equalsIgnoreCase("white")) {
 			return true;
 		}
+		else if(defender.getColor().equalsIgnoreCase("blank")) {
+			return true;
+		}
 		else
+			System.out.println("no....");
 			return false;
 	}
 	
@@ -213,6 +217,41 @@ public class ExtraChecksAndTools
 			for(int i = 0; i < whitePieces.size(); i++){
 				if(canCapture(whitePieces.get(i), target, isDebug, gamestate, moveNo)){
 					pieceList.add(whitePieces.get(i));
+				}
+			}
+		}
+		else {
+			return null;
+		}
+		return pieceList;
+	}
+	
+	/**
+	 * Method to get a list of pieces that can capture a blank target
+	 * @param target     The target piece
+	 * @param isDebug    is debug mode active
+	 * @param gamestate  game state currently to be examined
+	 * @param moveNo	 current move number
+	 * @return           ArrayList of pieces that can capture the target
+	 */
+	
+	public ArrayList<AbstractPiece> BlankcapturableBy(AbstractPiece target, String color,boolean isDebug, AbstractPiece[][] gamestate, int moveNo){
+		if(!utils.isOnBoard(target.getXpos(),target.getYpos()) || target == null) //checks if target has legal coordinates
+			return null;
+		ArrayList<AbstractPiece> pieceList = new ArrayList<AbstractPiece>();
+		ArrayList<AbstractPiece> whitePieces = getWhitePieces(gamestate);
+		ArrayList<AbstractPiece> blackPieces = getBlackPieces(gamestate);
+		if(color.equalsIgnoreCase("black")){
+			for(int i = 0; i < whitePieces.size(); i++){
+				if(canCapture(whitePieces.get(i), target, isDebug, gamestate, moveNo)){
+					pieceList.add(whitePieces.get(i));
+				}
+			}
+		}
+		else if(color.equalsIgnoreCase("white")){
+			for(int i = 0; i < blackPieces.size(); i++){
+				if(canCapture(blackPieces.get(i), target, isDebug, gamestate, moveNo)){
+					pieceList.add(blackPieces.get(i));
 				}
 			}
 		}

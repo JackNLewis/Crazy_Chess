@@ -165,7 +165,7 @@ public class SBoard {
                             		sound.FreeCard();
                             	}
                             	if(powerUps.getSelectedStr().equalsIgnoreCase("bomb")) {
-                            		sound.Bomb();
+                            		sound.SetBomb();
                             	}
                             	if(powerUps.getSelectedStr().equalsIgnoreCase("dummypiece")) {
                             		sound.DummyPiece();
@@ -182,7 +182,6 @@ public class SBoard {
                             boolean normalMove = game.moveTo(game.getPiece(selectedTile.getPos()),tile.getPos().getXpos(),tile.getPos().getYpos());
                             //Normal move was successful
                             if(normalMove){
-                                sound.chessmove();
                                 System.out.println("Successful move");
                                 String oppColor = util.oppositeColor(game.getTurn());
 
@@ -196,6 +195,17 @@ public class SBoard {
                                     SGameScreen.setInfoMessage(game.getTurn() + " wins!");
                                     System.out.println(oppColor + " is in check mate");
                                 }
+                                if(game.getBB() == 1 || (game.getTurnNo() == game.getBBlt() + 4 &&!(game.getBBlt() == 0))) {
+                            		sound.Bomb();
+                            		game.resetBBombsound();
+                            	}
+                            	else if(game.getWB() == 1|| (game.getTurnNo() == game.getWBlt() + 4 &&!(game.getWBlt() == 0))) {
+                            		sound.Bomb();
+                            		game.resetWBombsound();
+                            	}
+                            	else {
+                            		sound.chessmove();
+                            	}
 
                             }
                             //Normal move was unsuccessful

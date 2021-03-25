@@ -102,15 +102,15 @@ public class PowerupMain
 		int random = ThreadLocalRandom.current().nextInt(1,5+1);  //increase the max here for each new powerup
 		switch (random) { //Add a case for each new powerup
 		   case 1:
-			   return "DummyPiece";
-		   case 2:
 			   return "Teleport";
-		   case 3:
-			   return "Bomb";
-		   case 4:
-			   return "MiniPromote";
-		   case 5:
+		   case 2:
 			   return "FreeCard";
+		   case 3:
+			   return "DummyPiece";
+		   case 4:
+			   return "Bomb";
+		   case 5:
+			   return "MiniPromote";
 
 		}
 		
