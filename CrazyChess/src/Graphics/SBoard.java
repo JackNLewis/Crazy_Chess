@@ -180,7 +180,6 @@ public class SBoard {
                             boolean normalMove = game.moveTo(game.getPiece(selectedTile.getPos()),tile.getPos().getXpos(),tile.getPos().getYpos());
                             //Normal move was successful
                             if(normalMove){
-                                sound.chessmove();
                                 System.out.println("Successful move");
                                 updateGui();
                                 success = true;
@@ -307,6 +306,9 @@ public class SBoard {
                 }
             }
         }
+        validMoves = null;
+        selectedTile = null;
+        selected = false;
     }
 
     private void playSound(){

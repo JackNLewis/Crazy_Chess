@@ -46,14 +46,11 @@ public class SGameScreen {
         game.printGameState();
         board.renderGameState(game.getGamestate());
 
-
-
         boardContainer = new HBox();
         boardContainer.setSpacing(10);
         boardContainer.getChildren().addAll(board.getBoard(), pwrUpMenu.getPowerUpMenu());
         boardContainer.setAlignment(Pos.CENTER);
         root.getChildren().add(boardContainer);
-
 
         stage.setOnCloseRequest(new EventHandler<WindowEvent>() {
             @Override

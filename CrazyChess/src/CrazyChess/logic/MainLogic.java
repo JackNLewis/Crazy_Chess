@@ -2,6 +2,7 @@ package CrazyChess.logic;
 
 import java.util.ArrayList;
 
+
 import CrazyChess.logic.powerups.PowerupMain;
 import CrazyChess.pieces.*;
 
@@ -31,6 +32,11 @@ public class MainLogic
 	protected boolean isDraw;		   //boolean to show if the game is draw
 	protected boolean isEndgame;       //boolean to show if the game is ended
 	
+	protected int WBlt;
+	protected int BBlt;
+	protected int WB;
+	protected int BB;
+	
 	ArrayList<String> whitePowerUps = new ArrayList<String>();  //ArrayList to store white's powerups
 	ArrayList<String> blackPowerUps = new ArrayList<String>();  //ArrayList tp store black's powerups
 	
@@ -54,6 +60,10 @@ public class MainLogic
 		}
 		currentTurn = "White";
 		turnNo = 1;
+		WBlt = 0;
+		BBlt = 0;
+		BB = 0;
+		WB = 0;
 		
 		isBlackChecked = false;
 		isBlackMated = false;
@@ -172,7 +182,55 @@ public class MainLogic
 		
 		if(currentTurn.equalsIgnoreCase("White")){
 			currentTurn = "Black";
+			
+			//set bomb limit 
+			ArrayList<AbstractPiece> Bx = ecat.gamestateToPieceArrayList(gamestate);
+			for(AbstractPiece x : Bx) {
+				if((x.getPoweruptype().equalsIgnoreCase("bomb"))) {
+					if(x.getColor().equalsIgnoreCase("white")&&(WBlt == 0)) {
+						WBlt = turnNo;
+					}
+					else if(x.getColor().equalsIgnoreCase("black")&&(BBlt == 0)) {
+						BBlt = turnNo;
+					}
+				}
+			}
+			
+			//change turn number
 			turnNo++;
+			
+			//check bomb limit
+			for(AbstractPiece x : Bx) {
+				if((x.getPoweruptype().equalsIgnoreCase("bomb"))) {
+					if(x.getColor().equalsIgnoreCase("white")&&(turnNo - WBlt >= 5)) {
+						System.out.println("Bomb!!!");
+				        if(utils.isOnBoard(x.getXpos() -1, x.getYpos() -1)&&!((utils.getPiece(x.getXpos() -1, x.getYpos() -1, isDebug,gamestate)) instanceof King))gamestate=utils.placePiece(new BlankPiece("Blank", x.getXpos() -1,x.getYpos() -1,"Normal"), isDebug, gamestate);
+				        if(utils.isOnBoard(x.getXpos() -1,x.getYpos())&&!((utils.getPiece(x.getXpos() -1, x.getYpos() , isDebug, gamestate)) instanceof King))gamestate=utils.placePiece(new BlankPiece("Blank", x.getXpos() -1,x.getYpos(),"Normal"), isDebug, gamestate);
+				        if(utils.isOnBoard(x.getXpos() , x.getYpos() -1)&&!((utils.getPiece(x.getXpos() , x.getYpos() -1, isDebug, gamestate)) instanceof King))gamestate=utils.placePiece(new BlankPiece("Blank", x.getXpos(),x.getYpos() -1,"Normal"), isDebug, gamestate);
+				        if(utils.isOnBoard(x.getXpos(), x.getYpos())&&!((utils.getPiece(x.getXpos() , x.getYpos() , isDebug, gamestate)) instanceof King))gamestate=utils.placePiece(new BlankPiece("Blank", x.getXpos(),x.getYpos(),"Normal"), isDebug, gamestate);
+				        if(utils.isOnBoard(x.getXpos() +1, x.getYpos() -1)&&!((utils.getPiece(x.getXpos() +1, x.getYpos() -1, isDebug, gamestate)) instanceof King))gamestate=utils.placePiece(new BlankPiece("Blank", x.getXpos() +1,x.getYpos() -1,"Normal"), isDebug, gamestate);
+				        if(utils.isOnBoard(x.getXpos() -1, x.getYpos() +1)&&!((utils.getPiece(x.getXpos() -1, x.getYpos() +1, isDebug, gamestate)) instanceof King))gamestate=utils.placePiece(new BlankPiece("Blank", x.getXpos() -1,x.getYpos() +1,"Normal"), isDebug, gamestate);
+				        if(utils.isOnBoard(x.getXpos() +1, x.getYpos() +1)&&!((utils.getPiece(x.getXpos() +1, x.getYpos() +1, isDebug, gamestate)) instanceof King))gamestate=utils.placePiece(new BlankPiece("Blank", x.getXpos() +1,x.getYpos() +1,"Normal"), isDebug, gamestate);
+				        if(utils.isOnBoard(x.getXpos() +1, x.getYpos() )&&!((utils.getPiece(x.getXpos() +1, x.getYpos() , isDebug, gamestate)) instanceof King))gamestate=utils.placePiece(new BlankPiece("Blank", x.getXpos() +1,x.getYpos(),"Normal"), isDebug, gamestate);
+				        if(utils.isOnBoard(x.getXpos() , x.getYpos() +1)&&!((utils.getPiece(x.getXpos() , x.getYpos() +1, isDebug, gamestate)) instanceof King))gamestate=utils.placePiece(new BlankPiece("Blank", x.getXpos(),x.getYpos() +1,"Normal"), isDebug, gamestate);
+				        WBlt = 0;
+					}
+					else if(x.getColor().equalsIgnoreCase("black")&&(turnNo - BBlt >= 5)) {
+						System.out.println("Bomb!!!");
+						if(utils.isOnBoard(x.getXpos() -1, x.getYpos() -1)&&!((utils.getPiece(x.getXpos() -1, x.getYpos() -1, isDebug,gamestate)) instanceof King))gamestate=utils.placePiece(new BlankPiece("Blank", x.getXpos() -1,x.getYpos() -1,"Normal"), isDebug, gamestate);
+				        if(utils.isOnBoard(x.getXpos() -1,x.getYpos())&&!((utils.getPiece(x.getXpos() -1, x.getYpos() , isDebug, gamestate)) instanceof King))gamestate=utils.placePiece(new BlankPiece("Blank", x.getXpos() -1,x.getYpos(),"Normal"), isDebug, gamestate);
+				        if(utils.isOnBoard(x.getXpos() , x.getYpos() -1)&&!((utils.getPiece(x.getXpos() , x.getYpos() -1, isDebug, gamestate)) instanceof King))gamestate=utils.placePiece(new BlankPiece("Blank", x.getXpos(),x.getYpos() -1,"Normal"), isDebug, gamestate);
+				        if(utils.isOnBoard(x.getXpos(), x.getYpos())&&!((utils.getPiece(x.getXpos() , x.getYpos() , isDebug, gamestate)) instanceof King))gamestate=utils.placePiece(new BlankPiece("Blank", x.getXpos(),x.getYpos(),"Normal"), isDebug, gamestate);
+				        if(utils.isOnBoard(x.getXpos() +1, x.getYpos() -1)&&!((utils.getPiece(x.getXpos() +1, x.getYpos() -1, isDebug, gamestate)) instanceof King))gamestate=utils.placePiece(new BlankPiece("Blank", x.getXpos() +1,x.getYpos() -1,"Normal"), isDebug, gamestate);
+				        if(utils.isOnBoard(x.getXpos() -1, x.getYpos() +1)&&!((utils.getPiece(x.getXpos() -1, x.getYpos() +1, isDebug, gamestate)) instanceof King))gamestate=utils.placePiece(new BlankPiece("Blank", x.getXpos() -1,x.getYpos() +1,"Normal"), isDebug, gamestate);
+				        if(utils.isOnBoard(x.getXpos() +1, x.getYpos() +1)&&!((utils.getPiece(x.getXpos() +1, x.getYpos() +1, isDebug, gamestate)) instanceof King))gamestate=utils.placePiece(new BlankPiece("Blank", x.getXpos() +1,x.getYpos() +1,"Normal"), isDebug, gamestate);
+				        if(utils.isOnBoard(x.getXpos() +1, x.getYpos() )&&!((utils.getPiece(x.getXpos() +1, x.getYpos() , isDebug, gamestate)) instanceof King))gamestate=utils.placePiece(new BlankPiece("Blank", x.getXpos() +1,x.getYpos(),"Normal"), isDebug, gamestate);
+				        if(utils.isOnBoard(x.getXpos() , x.getYpos() +1)&&!((utils.getPiece(x.getXpos() , x.getYpos() +1, isDebug, gamestate)) instanceof King))gamestate=utils.placePiece(new BlankPiece("Blank", x.getXpos(),x.getYpos() +1,"Normal"), isDebug, gamestate);
+				        BBlt = 0;
+					}
+				}
+			}
+			
 			gamestate=pwrUp.powerupSpawn(gamestate, turnNo, isDebug);
 			
 			
@@ -387,12 +445,27 @@ public class MainLogic
 		        if(utils.isOnBoard(newPiece.getXpos() -1, newPiece.getYpos() -1)&&!((utils.getPiece(newPiece.getXpos() -1, newPiece.getYpos() -1, isDebug, newGamestate)) instanceof King))newGamestate=utils.placePiece(new BlankPiece("Blank", newPiece.getXpos() -1,newPiece.getYpos() -1,"Normal"), isDebug, newGamestate);
 		        if(utils.isOnBoard(newPiece.getXpos() -1,newPiece.getYpos())&&!((utils.getPiece(newPiece.getXpos() -1, newPiece.getYpos() , isDebug, newGamestate)) instanceof King))newGamestate=utils.placePiece(new BlankPiece("Blank", newPiece.getXpos() -1,newPiece.getYpos(),"Normal"), isDebug, newGamestate);
 		        if(utils.isOnBoard(newPiece.getXpos() , newPiece.getYpos() -1)&&!((utils.getPiece(newPiece.getXpos() , newPiece.getYpos() -1, isDebug, newGamestate)) instanceof King))newGamestate=utils.placePiece(new BlankPiece("Blank", newPiece.getXpos(),newPiece.getYpos() -1,"Normal"), isDebug, newGamestate);
-		        if(utils.isOnBoard(newPiece.getXpos(), newPiece.getYpos())&&!((utils.getPiece(newPiece.getXpos() , newPiece.getYpos() , isDebug, newGamestate)) instanceof King))newGamestate=utils.placePiece(new BlankPiece("Blank", newPiece.getXpos(),newPiece.getYpos(),"Normal"), isDebug, newGamestate);
 		        if(utils.isOnBoard(newPiece.getXpos() +1, newPiece.getYpos() -1)&&!((utils.getPiece(newPiece.getXpos() +1, newPiece.getYpos() -1, isDebug, newGamestate)) instanceof King))newGamestate=utils.placePiece(new BlankPiece("Blank", newPiece.getXpos() +1,newPiece.getYpos() -1,"Normal"), isDebug, newGamestate);
 		        if(utils.isOnBoard(newPiece.getXpos() -1, newPiece.getYpos() +1)&&!((utils.getPiece(newPiece.getXpos() -1, newPiece.getYpos() +1, isDebug, newGamestate)) instanceof King))newGamestate=utils.placePiece(new BlankPiece("Blank", newPiece.getXpos() -1,newPiece.getYpos() +1,"Normal"), isDebug, newGamestate);
 		        if(utils.isOnBoard(newPiece.getXpos() +1, newPiece.getYpos() +1)&&!((utils.getPiece(newPiece.getXpos() +1, newPiece.getYpos() +1, isDebug, newGamestate)) instanceof King))newGamestate=utils.placePiece(new BlankPiece("Blank", newPiece.getXpos() +1,newPiece.getYpos() +1,"Normal"), isDebug, newGamestate);
 		        if(utils.isOnBoard(newPiece.getXpos() +1, newPiece.getYpos() )&&!((utils.getPiece(newPiece.getXpos() +1, newPiece.getYpos() , isDebug, newGamestate)) instanceof King))newGamestate=utils.placePiece(new BlankPiece("Blank", newPiece.getXpos() +1,newPiece.getYpos(),"Normal"), isDebug, newGamestate);
 		        if(utils.isOnBoard(newPiece.getXpos() , newPiece.getYpos() +1)&&!((utils.getPiece(newPiece.getXpos() , newPiece.getYpos() +1, isDebug, newGamestate)) instanceof King))newGamestate=utils.placePiece(new BlankPiece("Blank", newPiece.getXpos(),newPiece.getYpos() +1,"Normal"), isDebug, newGamestate);
+			    
+		        if(!(copiedPiece instanceof King)) {
+		        	if(utils.isOnBoard(newPiece.getXpos(), newPiece.getYpos())&&!((utils.getPiece(newPiece.getXpos() , newPiece.getYpos() , isDebug, newGamestate)) instanceof King))newGamestate=utils.placePiece(new BlankPiece("Blank", newPiece.getXpos(),newPiece.getYpos(),"Normal"), isDebug, newGamestate);
+		        }
+		        else if((copiedPiece instanceof King)) {
+		        	if(utils.isOnBoard(newPiece.getXpos(), newPiece.getYpos())&&!((utils.getPiece(newPiece.getXpos() , newPiece.getYpos() , isDebug, newGamestate)) instanceof King))newGamestate=utils.placePiece(copiedPiece, isDebug, newGamestate);
+		        }
+		        
+		        if(newPiece.getColor().equalsIgnoreCase("white")) {
+			    	WBlt = 0;
+			    	WB = 1;
+			    }
+			    if(newPiece.getColor().equalsIgnoreCase("black")) {
+			    	BBlt = 0;
+			    	BB = 1;
+			    }
 			}
 			else {
 			newGamestate=utils.placePiece(copiedPiece, isDebug, newGamestate);//place it according to the new position
@@ -566,10 +639,9 @@ public class MainLogic
 		
 		if(gamestateAfterPowerup!=null) {
 			if (isDebug) System.out.println(currentTurn+" just used a powerup: "+listToUse.get(powerupIndex));
-			gamestate=gamestateAfterPowerup;
-			listToUse.remove(powerupIndex);
 			
-			 
+			gamestate=gamestateAfterPowerup;
+			listToUse.remove(powerupIndex); 
 			return true;
 		}
 		
@@ -598,5 +670,27 @@ public class MainLogic
 		}else{
 			isBlackMated = mate;
 		}
+	}
+	
+	public void resetWBombsound() {
+		WB = 0;
+	}
+	public void resetBBombsound() {
+		BB = 0;
+	}
+	
+	public int getWB() {
+		return WB;
+	}
+	
+	public int getBB() {
+		return BB;
+	}
+	public int getWBlt() {
+		return WBlt;
+	}
+	
+	public int getBBlt() {
+		return BBlt;
 	}
 }

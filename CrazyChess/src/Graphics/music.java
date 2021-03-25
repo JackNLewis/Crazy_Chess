@@ -20,7 +20,9 @@ public class music {
 	//create sound for Bomb
 	protected URL ulrBomb;
 	protected AudioClip Bomb;
-	
+	protected URL ulrSetBomb;
+	protected AudioClip SetBomb;
+		
 	//create sound for Mini-Promote
 	protected URL ulrMiniPromote;
 	protected AudioClip MiniPromote;
@@ -47,6 +49,8 @@ public class music {
 		
 		ulrBomb = this.getClass().getClassLoader().getResource("resources.music/Bomb.wav");
 		Bomb = new AudioClip(ulrBomb.toExternalForm());
+		ulrSetBomb = this.getClass().getClassLoader().getResource("resources.music/SetBomb.wav");
+		SetBomb = new AudioClip(ulrSetBomb.toExternalForm());
 		
         ulrMiniPromote  = this.getClass().getClassLoader().getResource("resources.music/Mini-Promote.wav");
 		MiniPromote  = new AudioClip(ulrMiniPromote.toExternalForm());
@@ -70,6 +74,9 @@ public class music {
 	//play bomb sound
 	public void Bomb() {
 		Bomb.play(0.1);
+	}
+	public void SetBomb() {
+		SetBomb.play();
 	}
 	
 	//play Mini-Promote sound

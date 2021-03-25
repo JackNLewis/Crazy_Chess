@@ -4,8 +4,9 @@ import CrazyChess.logic.*;
 import CrazyChess.pieces.*;
 
 public class PowerupFreeCard {
-Utilities utils = new Utilities();
-	
+	Utilities utils = new Utilities();
+	MainLogic main = new MainLogic();
+	ExtraChecksAndTools ecat = new ExtraChecksAndTools();
 	/**
 	 * Swap one king and a blank on the board.
 	 * @param gamestate    gamestate to be altered
@@ -23,7 +24,7 @@ Utilities utils = new Utilities();
 			return null;
 		}
 		
-		
+
 		AbstractPiece gamestateCopy[][]=utils.safeCopyGamestate(gamestate);
 		AbstractPiece newking = utils.getPiece(king, isDebug, gamestateCopy);
 		AbstractPiece blank = utils.getPiece(target, isDebug, gamestateCopy);
@@ -40,6 +41,14 @@ Utilities utils = new Utilities();
 			if (isDebug) System.out.println("Cant move to other pieces' position which is not blank. Returning NULL");
 			return null;
 		}
+		if(!ecat.isInCheck(newking.getColor(), isDebug, gamestateCopy, main.getTurnNo())) {
+			if (isDebug) System.out.println("Cant move the king which is not in check. Returning NULL");
+			return null;
+		}
+		if(!(ecat.BlankcapturableBy(blank, newking.getColor(), isDebug,gamestateCopy, main.getTurnNo()).isEmpty())) {
+			if (isDebug) System.out.println("Cant move the king to a place which is in check. Returning NULL");
+			return null;
+		}
 		Position newkingposition = newking.getPosition();
 		Position blankposition = blank.getPosition();
 		newking.setPosition(blankposition);
@@ -47,6 +56,8 @@ Utilities utils = new Utilities();
 		
 		gamestateCopy=utils.placePiece(newking, isDebug, gamestateCopy);
 		gamestateCopy=utils.placePiece(blank, isDebug, gamestateCopy);
+		
+
 		
 		return gamestateCopy;
 	}

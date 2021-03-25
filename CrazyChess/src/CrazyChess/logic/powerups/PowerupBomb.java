@@ -2,11 +2,11 @@ package CrazyChess.logic.powerups;
 
 import java.util.ArrayList;
 
+
 import CrazyChess.logic.ExtraChecksAndTools;
 import CrazyChess.logic.Position;
 import CrazyChess.logic.Utilities;
 import CrazyChess.pieces.AbstractPiece;
-import CrazyChess.pieces.BlankPiece;
 import CrazyChess.pieces.King;
 
 public class PowerupBomb {
@@ -25,6 +25,8 @@ public class PowerupBomb {
 	//include checks vs moving enemy pieces and powerups
 	
 	public AbstractPiece[][] bomb(AbstractPiece[][] gamestate, Position target1,Position target2, Boolean isDebug){
+		
+		
 		if(!(utils.isOnBoard(target1))&&!(utils.isOnBoard(target2))) {
 			if (isDebug) System.out.println("Target for Bomb is coordinate that is not on the board. Returning NULL");
 			return null;
@@ -33,6 +35,16 @@ public class PowerupBomb {
 		AbstractPiece gamestateCopy[][]=utils.safeCopyGamestate(gamestate);
 		AbstractPiece piece1 = utils.getPiece(target1, isDebug, gamestateCopy);
 		//AbstractPiece piece2 = utils.getPiece(target2, isDebug, gamestateCopy);
+		
+		ArrayList<AbstractPiece> Bx = ecat.gamestateToPieceArrayList(gamestate);
+		for(AbstractPiece x : Bx) {
+			if((x.getPoweruptype().equalsIgnoreCase("bomb"))) {
+				if(piece1.getColor() == x.getColor()) {
+					if (isDebug) System.out.println("Can have two or more bomb!");
+					return null;
+				}
+			}
+		}
 		
 		if((piece1 instanceof King)) {
 			if (isDebug) System.out.println("Cant add Bomb on the King. Returning NULL");
