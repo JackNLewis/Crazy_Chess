@@ -176,7 +176,13 @@ public class GUI extends Application {
 			selectedSquare.setXpos(-1);
 			selectedSquare.setYpos(-1);
 			chess.changeTurn();
-			updateBoard();
+
+			AbstractPiece[][] aiMove = ai.AI(chess);
+			
+			
+			//chess.setGamestate(aiMove);
+			//updateBoard();
+			//chess.changeTurn();
 			return;
 		}
 		else if(!lookingForMove){//Nothing selected, needs move
