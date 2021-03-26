@@ -296,6 +296,7 @@ public class Utilities
 				King kingCopy=new King(p.getColor(),p.getPositionCopy());
 				kingCopy.setWasMoved(kingCast.getWasMoved());
 				kingCopy.setIsChecked(kingCast.getIsChecked());
+				kingCopy.setCanCastle(kingCast.getCanCastle());
 				return kingCopy;
 				//break;
 			case "BlankPiece":

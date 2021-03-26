@@ -302,7 +302,7 @@ public class MainLogic
 			}
 		}
 		if(isValid == false && p instanceof King) {
-			isValid = cstl.castle((King)p, xRel, yRel, isDebug, gamestate, turnNo);
+			isValid = cstl.castleCheck((King)p, xRel, yRel, isDebug, gamestate, turnNo);
 		}
 		
 //
@@ -366,7 +366,10 @@ public class MainLogic
 		//gamestate=utils.placePiece(new BlankPiece("Blank",oldPos.getXpos(), oldPos.getYpos()), isDebug, gamestate);
 		
 		//Constructing new possible gamestate
-		if(isValid) {
+		//First checks if it can castle
+		if(isValid){
+			if(p instanceof King && ((King)p).getCanCastle() != 0)
+				cstl.castle((King)p, xRel, yRel, isDebug, gamestate, turnNo);
 			AbstractPiece[][] newGamestate = utils.safeCopyGamestate(gamestate);
 			AbstractPiece copiedPiece = utils.safeCopyPiece(p);
 			copiedPiece.setPosition(newPiece.getXpos(), newPiece.getYpos());

@@ -1,7 +1,8 @@
+/.classpath
+/.project
+/.settings/
 /CrazyChess/
-<<<<<<< HEAD
 /Graphics/
 /Networking/
-=======
-/.settings/
->>>>>>> ai
+/resources.music/
+/resources/
