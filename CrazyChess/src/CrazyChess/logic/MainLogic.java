@@ -2,6 +2,7 @@ package CrazyChess.logic;
 
 import java.util.ArrayList;
 
+
 import CrazyChess.logic.powerups.PowerupMain;
 import CrazyChess.pieces.*;
 
@@ -31,6 +32,11 @@ public class MainLogic
 	protected boolean isDraw;		   //boolean to show if the game is draw
 	protected boolean isEndgame;       //boolean to show if the game is ended
 	
+	protected int WBlt;
+	protected int BBlt;
+	protected int WB;
+	protected int BB;
+	
 	ArrayList<String> whitePowerUps = new ArrayList<String>();  //ArrayList to store white's powerups
 	ArrayList<String> blackPowerUps = new ArrayList<String>();  //ArrayList tp store black's powerups
 	
@@ -49,11 +55,15 @@ public class MainLogic
 		gamestate= new AbstractPiece[8][8];
 		for(int i = 0; i < 8; i++){
 			for(int j = 0; j < 8; j++){
-				gamestate[i][j] = new BlankPiece("Blank", i, j);
+				gamestate[i][j] = new BlankPiece("Blank", i, j,"Normal");
 			}
 		}
 		currentTurn = "White";
 		turnNo = 1;
+		WBlt = 0;
+		BBlt = 0;
+		BB = 0;
+		WB = 0;
 		
 		isBlackChecked = false;
 		isBlackMated = false;
@@ -168,10 +178,62 @@ public class MainLogic
 	 * by default the method sets it to white
 	 */
 	public void changeTurn(){
+		
+		
 		if(currentTurn.equalsIgnoreCase("White")){
 			currentTurn = "Black";
+			
+			//set bomb limit 
+			ArrayList<AbstractPiece> Bx = ecat.gamestateToPieceArrayList(gamestate);
+			for(AbstractPiece x : Bx) {
+				if((x.getPoweruptype().equalsIgnoreCase("bomb"))) {
+					if(x.getColor().equalsIgnoreCase("white")&&(WBlt == 0)) {
+						WBlt = turnNo;
+					}
+					else if(x.getColor().equalsIgnoreCase("black")&&(BBlt == 0)) {
+						BBlt = turnNo;
+					}
+				}
+			}
+			
+			//change turn number
 			turnNo++;
+			
+			//check bomb limit
+			for(AbstractPiece x : Bx) {
+				if((x.getPoweruptype().equalsIgnoreCase("bomb"))) {
+					if(x.getColor().equalsIgnoreCase("white")&&(turnNo - WBlt >= 5)) {
+						System.out.println("Bomb!!!");
+				        if(utils.isOnBoard(x.getXpos() -1, x.getYpos() -1)&&!((utils.getPiece(x.getXpos() -1, x.getYpos() -1, isDebug,gamestate)) instanceof King))gamestate=utils.placePiece(new BlankPiece("Blank", x.getXpos() -1,x.getYpos() -1,"Normal"), isDebug, gamestate);
+				        if(utils.isOnBoard(x.getXpos() -1,x.getYpos())&&!((utils.getPiece(x.getXpos() -1, x.getYpos() , isDebug, gamestate)) instanceof King))gamestate=utils.placePiece(new BlankPiece("Blank", x.getXpos() -1,x.getYpos(),"Normal"), isDebug, gamestate);
+				        if(utils.isOnBoard(x.getXpos() , x.getYpos() -1)&&!((utils.getPiece(x.getXpos() , x.getYpos() -1, isDebug, gamestate)) instanceof King))gamestate=utils.placePiece(new BlankPiece("Blank", x.getXpos(),x.getYpos() -1,"Normal"), isDebug, gamestate);
+				        if(utils.isOnBoard(x.getXpos(), x.getYpos())&&!((utils.getPiece(x.getXpos() , x.getYpos() , isDebug, gamestate)) instanceof King))gamestate=utils.placePiece(new BlankPiece("Blank", x.getXpos(),x.getYpos(),"Normal"), isDebug, gamestate);
+				        if(utils.isOnBoard(x.getXpos() +1, x.getYpos() -1)&&!((utils.getPiece(x.getXpos() +1, x.getYpos() -1, isDebug, gamestate)) instanceof King))gamestate=utils.placePiece(new BlankPiece("Blank", x.getXpos() +1,x.getYpos() -1,"Normal"), isDebug, gamestate);
+				        if(utils.isOnBoard(x.getXpos() -1, x.getYpos() +1)&&!((utils.getPiece(x.getXpos() -1, x.getYpos() +1, isDebug, gamestate)) instanceof King))gamestate=utils.placePiece(new BlankPiece("Blank", x.getXpos() -1,x.getYpos() +1,"Normal"), isDebug, gamestate);
+				        if(utils.isOnBoard(x.getXpos() +1, x.getYpos() +1)&&!((utils.getPiece(x.getXpos() +1, x.getYpos() +1, isDebug, gamestate)) instanceof King))gamestate=utils.placePiece(new BlankPiece("Blank", x.getXpos() +1,x.getYpos() +1,"Normal"), isDebug, gamestate);
+				        if(utils.isOnBoard(x.getXpos() +1, x.getYpos() )&&!((utils.getPiece(x.getXpos() +1, x.getYpos() , isDebug, gamestate)) instanceof King))gamestate=utils.placePiece(new BlankPiece("Blank", x.getXpos() +1,x.getYpos(),"Normal"), isDebug, gamestate);
+				        if(utils.isOnBoard(x.getXpos() , x.getYpos() +1)&&!((utils.getPiece(x.getXpos() , x.getYpos() +1, isDebug, gamestate)) instanceof King))gamestate=utils.placePiece(new BlankPiece("Blank", x.getXpos(),x.getYpos() +1,"Normal"), isDebug, gamestate);
+				        WBlt = 0;
+					}
+					else if(x.getColor().equalsIgnoreCase("black")&&(turnNo - BBlt >= 5)) {
+						System.out.println("Bomb!!!");
+						if(utils.isOnBoard(x.getXpos() -1, x.getYpos() -1)&&!((utils.getPiece(x.getXpos() -1, x.getYpos() -1, isDebug,gamestate)) instanceof King))gamestate=utils.placePiece(new BlankPiece("Blank", x.getXpos() -1,x.getYpos() -1,"Normal"), isDebug, gamestate);
+				        if(utils.isOnBoard(x.getXpos() -1,x.getYpos())&&!((utils.getPiece(x.getXpos() -1, x.getYpos() , isDebug, gamestate)) instanceof King))gamestate=utils.placePiece(new BlankPiece("Blank", x.getXpos() -1,x.getYpos(),"Normal"), isDebug, gamestate);
+				        if(utils.isOnBoard(x.getXpos() , x.getYpos() -1)&&!((utils.getPiece(x.getXpos() , x.getYpos() -1, isDebug, gamestate)) instanceof King))gamestate=utils.placePiece(new BlankPiece("Blank", x.getXpos(),x.getYpos() -1,"Normal"), isDebug, gamestate);
+				        if(utils.isOnBoard(x.getXpos(), x.getYpos())&&!((utils.getPiece(x.getXpos() , x.getYpos() , isDebug, gamestate)) instanceof King))gamestate=utils.placePiece(new BlankPiece("Blank", x.getXpos(),x.getYpos(),"Normal"), isDebug, gamestate);
+				        if(utils.isOnBoard(x.getXpos() +1, x.getYpos() -1)&&!((utils.getPiece(x.getXpos() +1, x.getYpos() -1, isDebug, gamestate)) instanceof King))gamestate=utils.placePiece(new BlankPiece("Blank", x.getXpos() +1,x.getYpos() -1,"Normal"), isDebug, gamestate);
+				        if(utils.isOnBoard(x.getXpos() -1, x.getYpos() +1)&&!((utils.getPiece(x.getXpos() -1, x.getYpos() +1, isDebug, gamestate)) instanceof King))gamestate=utils.placePiece(new BlankPiece("Blank", x.getXpos() -1,x.getYpos() +1,"Normal"), isDebug, gamestate);
+				        if(utils.isOnBoard(x.getXpos() +1, x.getYpos() +1)&&!((utils.getPiece(x.getXpos() +1, x.getYpos() +1, isDebug, gamestate)) instanceof King))gamestate=utils.placePiece(new BlankPiece("Blank", x.getXpos() +1,x.getYpos() +1,"Normal"), isDebug, gamestate);
+				        if(utils.isOnBoard(x.getXpos() +1, x.getYpos() )&&!((utils.getPiece(x.getXpos() +1, x.getYpos() , isDebug, gamestate)) instanceof King))gamestate=utils.placePiece(new BlankPiece("Blank", x.getXpos() +1,x.getYpos(),"Normal"), isDebug, gamestate);
+				        if(utils.isOnBoard(x.getXpos() , x.getYpos() +1)&&!((utils.getPiece(x.getXpos() , x.getYpos() +1, isDebug, gamestate)) instanceof King))gamestate=utils.placePiece(new BlankPiece("Blank", x.getXpos(),x.getYpos() +1,"Normal"), isDebug, gamestate);
+				        BBlt = 0;
+					}
+				}
+			}
+			
 			gamestate=pwrUp.powerupSpawn(gamestate, turnNo, isDebug);
+			
+			
 			if(isDebug)
 				if(isDebug) {
 					System.out.println("It is now Black's turn.");
@@ -194,35 +256,35 @@ public class MainLogic
 	public void resetBoard(){
 		for(int i = 0; i < 8; i++){
 			for(int j = 0; j < 8; j++){// first replaces all pieces with blank
-				utils.placePiece(new BlankPiece("Blank", i, j), isDebug, gamestate);
+				utils.placePiece(new BlankPiece("Blank", i, j,"Normal"), isDebug, gamestate);
 			}
 		}
 		//Now place all pieces in starting positions
 		for(int i = 0; i < 8; i++)
-			utils.placePiece(new Pawn("White", i, 1), isDebug, gamestate);
+			utils.placePiece(new Pawn("White", i, 1,"Normal"), isDebug, gamestate);
 		for(int j = 0; j < 8; j++)
-			utils.placePiece(new Pawn("Black", j, 6), isDebug, gamestate);
+			utils.placePiece(new Pawn("Black", j, 6,"Normal"), isDebug, gamestate);
 		//0 y is black pieces, 7 y is white pieces
-		utils.placePiece( new Rook("White",  0,0), isDebug, gamestate );
-		utils.placePiece( new Rook("White",  7,0), isDebug, gamestate );
-		utils.placePiece( new Rook("Black",  0,7), isDebug, gamestate );
-		utils.placePiece( new Rook("Black",  7,7), isDebug, gamestate );
+		utils.placePiece( new Rook("White",  0,0,"Normal"), isDebug, gamestate );
+		utils.placePiece( new Rook("White",  7,0,"Normal"), isDebug, gamestate );
+		utils.placePiece( new Rook("Black",  0,7,"Normal"), isDebug, gamestate );
+		utils.placePiece( new Rook("Black",  7,7,"Normal"), isDebug, gamestate );
 
-		utils.placePiece( new Knight("White",6,0), isDebug, gamestate );
-		utils.placePiece( new Knight("White",1,0), isDebug, gamestate );
-		utils.placePiece( new Knight("Black",6,7), isDebug, gamestate );
-		utils.placePiece( new Knight("Black",1,7), isDebug, gamestate );
+		utils.placePiece( new Knight("White",6,0,"Normal"), isDebug, gamestate );
+		utils.placePiece( new Knight("White",1,0,"Normal"), isDebug, gamestate );
+		utils.placePiece( new Knight("Black",6,7,"Normal"), isDebug, gamestate );
+		utils.placePiece( new Knight("Black",1,7,"Normal"), isDebug, gamestate );
 
-		utils.placePiece( new Bishop("White",5,0), isDebug, gamestate );
-		utils.placePiece( new Bishop("White",2,0), isDebug, gamestate );
-		utils.placePiece( new Bishop("Black",5,7), isDebug, gamestate );
-		utils.placePiece( new Bishop("Black",2,7), isDebug, gamestate );
+		utils.placePiece( new Bishop("White",5,0,"Normal"), isDebug, gamestate );
+		utils.placePiece( new Bishop("White",2,0,"Normal"), isDebug, gamestate );
+		utils.placePiece( new Bishop("Black",5,7,"Normal"), isDebug, gamestate );
+		utils.placePiece( new Bishop("Black",2,7,"Normal"), isDebug, gamestate );
 
-		utils.placePiece( new King("White",  4,0), isDebug, gamestate );
-		utils.placePiece( new Queen("White", 3,0), isDebug, gamestate );
+		utils.placePiece( new King("White",  4,0,"Normal"), isDebug, gamestate );
+		utils.placePiece( new Queen("White", 3,0,"Normal"), isDebug, gamestate );
 
-		utils.placePiece( new King("Black",  4,7), isDebug, gamestate );
-		utils.placePiece( new Queen("Black", 3,7), isDebug, gamestate );
+		utils.placePiece( new King("Black",  4,7,"Normal"), isDebug, gamestate );
+		utils.placePiece( new Queen("Black", 3,7,"Normal"), isDebug, gamestate );
 		
 		//Code to show that usePowerup is working
 //		whitePowerUps.add("Teleport");
@@ -256,6 +318,13 @@ public class MainLogic
 				System.out.println("Bad move! You cannot move a blank space.");
 			return false;
 		}
+		if(p.getPoweruptype().equalsIgnoreCase("dummy")) {
+			if(isDebug)
+				System.out.println("You cannot move a Dummy piece.");
+			return false;
+		}
+		
+		
 		
 		
 //		System.out.println("Turn number: "+turnNo+". Available moves for "+currentTurn+": "+ecat.possibleGamestatesAfterNextMove(currentTurn, isDebug, gamestate, turnNo).size());
@@ -269,7 +338,9 @@ public class MainLogic
 		//Save old position (to place a blank later)
 		Position oldPos = new Position(p.getXpos(), p.getYpos());
 		//New position, using x and y to be relative
+		System.out.println("p:"+utils.getPiece(p.getPosition(), isDebug, gamestate).getPoweruptype());
 		AbstractPiece newPiece = utils.getTargetPiece(p, xRel, yRel, isDebug, gamestate);
+		System.out.println("newpiece:"+utils.getPiece(newPiece.getPosition(), isDebug, gamestate).getPoweruptype());
 		if(oldPos == null || newPiece == null){
 			if(isDebug)
 				System.out.println("Invalid creation of pieces during move()");
@@ -367,9 +438,40 @@ public class MainLogic
 			AbstractPiece[][] newGamestate = utils.safeCopyGamestate(gamestate);
 			AbstractPiece copiedPiece = utils.getPiece(p.getPosition(), isDebug, newGamestate);
 			copiedPiece.setPosition(newPiece.getXpos(), newPiece.getYpos());
+			
+			
+			if(newPiece.getPoweruptype().equalsIgnoreCase("bomb")) {
+				System.out.println("Bomb!!!");
+		        if(utils.isOnBoard(newPiece.getXpos() -1, newPiece.getYpos() -1)&&!((utils.getPiece(newPiece.getXpos() -1, newPiece.getYpos() -1, isDebug, newGamestate)) instanceof King))newGamestate=utils.placePiece(new BlankPiece("Blank", newPiece.getXpos() -1,newPiece.getYpos() -1,"Normal"), isDebug, newGamestate);
+		        if(utils.isOnBoard(newPiece.getXpos() -1,newPiece.getYpos())&&!((utils.getPiece(newPiece.getXpos() -1, newPiece.getYpos() , isDebug, newGamestate)) instanceof King))newGamestate=utils.placePiece(new BlankPiece("Blank", newPiece.getXpos() -1,newPiece.getYpos(),"Normal"), isDebug, newGamestate);
+		        if(utils.isOnBoard(newPiece.getXpos() , newPiece.getYpos() -1)&&!((utils.getPiece(newPiece.getXpos() , newPiece.getYpos() -1, isDebug, newGamestate)) instanceof King))newGamestate=utils.placePiece(new BlankPiece("Blank", newPiece.getXpos(),newPiece.getYpos() -1,"Normal"), isDebug, newGamestate);
+		        if(utils.isOnBoard(newPiece.getXpos() +1, newPiece.getYpos() -1)&&!((utils.getPiece(newPiece.getXpos() +1, newPiece.getYpos() -1, isDebug, newGamestate)) instanceof King))newGamestate=utils.placePiece(new BlankPiece("Blank", newPiece.getXpos() +1,newPiece.getYpos() -1,"Normal"), isDebug, newGamestate);
+		        if(utils.isOnBoard(newPiece.getXpos() -1, newPiece.getYpos() +1)&&!((utils.getPiece(newPiece.getXpos() -1, newPiece.getYpos() +1, isDebug, newGamestate)) instanceof King))newGamestate=utils.placePiece(new BlankPiece("Blank", newPiece.getXpos() -1,newPiece.getYpos() +1,"Normal"), isDebug, newGamestate);
+		        if(utils.isOnBoard(newPiece.getXpos() +1, newPiece.getYpos() +1)&&!((utils.getPiece(newPiece.getXpos() +1, newPiece.getYpos() +1, isDebug, newGamestate)) instanceof King))newGamestate=utils.placePiece(new BlankPiece("Blank", newPiece.getXpos() +1,newPiece.getYpos() +1,"Normal"), isDebug, newGamestate);
+		        if(utils.isOnBoard(newPiece.getXpos() +1, newPiece.getYpos() )&&!((utils.getPiece(newPiece.getXpos() +1, newPiece.getYpos() , isDebug, newGamestate)) instanceof King))newGamestate=utils.placePiece(new BlankPiece("Blank", newPiece.getXpos() +1,newPiece.getYpos(),"Normal"), isDebug, newGamestate);
+		        if(utils.isOnBoard(newPiece.getXpos() , newPiece.getYpos() +1)&&!((utils.getPiece(newPiece.getXpos() , newPiece.getYpos() +1, isDebug, newGamestate)) instanceof King))newGamestate=utils.placePiece(new BlankPiece("Blank", newPiece.getXpos(),newPiece.getYpos() +1,"Normal"), isDebug, newGamestate);
+			    
+		        if(!(copiedPiece instanceof King)) {
+		        	if(utils.isOnBoard(newPiece.getXpos(), newPiece.getYpos())&&!((utils.getPiece(newPiece.getXpos() , newPiece.getYpos() , isDebug, newGamestate)) instanceof King))newGamestate=utils.placePiece(new BlankPiece("Blank", newPiece.getXpos(),newPiece.getYpos(),"Normal"), isDebug, newGamestate);
+		        }
+		        else if((copiedPiece instanceof King)) {
+		        	if(utils.isOnBoard(newPiece.getXpos(), newPiece.getYpos())&&!((utils.getPiece(newPiece.getXpos() , newPiece.getYpos() , isDebug, newGamestate)) instanceof King))newGamestate=utils.placePiece(copiedPiece, isDebug, newGamestate);
+		        }
+		        
+		        if(newPiece.getColor().equalsIgnoreCase("white")) {
+			    	WBlt = 0;
+			    	WB = 1;
+			    }
+			    if(newPiece.getColor().equalsIgnoreCase("black")) {
+			    	BBlt = 0;
+			    	BB = 1;
+			    }
+			}
+			else {
 			newGamestate=utils.placePiece(copiedPiece, isDebug, newGamestate);//place it according to the new position
 			//and set the old position to a Blank place
-			newGamestate=utils.placePiece(new BlankPiece("Blank",oldPos.getXpos(), oldPos.getYpos()), isDebug, newGamestate);
+			}
+			newGamestate=utils.placePiece(new BlankPiece("Blank",oldPos.getXpos(), oldPos.getYpos(),"Normal"), isDebug, newGamestate);
 		
 		
 		
@@ -453,8 +555,8 @@ public class MainLogic
 			}
 
 
-
 			gamestate = newGamestate;
+			
 			
 			if(newPiece instanceof Powerup) {
 				if(currentTurn.equalsIgnoreCase("white")) whitePowerUps.add(pwrUp.randomPowerup(isDebug));
@@ -537,8 +639,9 @@ public class MainLogic
 		
 		if(gamestateAfterPowerup!=null) {
 			if (isDebug) System.out.println(currentTurn+" just used a powerup: "+listToUse.get(powerupIndex));
+			
 			gamestate=gamestateAfterPowerup;
-			listToUse.remove(powerupIndex);
+			listToUse.remove(powerupIndex); 
 			return true;
 		}
 		
@@ -567,5 +670,27 @@ public class MainLogic
 		}else{
 			isBlackMated = mate;
 		}
+	}
+	
+	public void resetWBombsound() {
+		WB = 0;
+	}
+	public void resetBBombsound() {
+		BB = 0;
+	}
+	
+	public int getWB() {
+		return WB;
+	}
+	
+	public int getBB() {
+		return BB;
+	}
+	public int getWBlt() {
+		return WBlt;
+	}
+	
+	public int getBBlt() {
+		return BBlt;
 	}
 }

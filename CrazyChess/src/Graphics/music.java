@@ -20,7 +20,9 @@ public class music {
 	//create sound for Bomb
 	protected URL ulrBomb;
 	protected AudioClip Bomb;
-	
+	protected URL ulrSetBomb;
+	protected AudioClip SetBomb;
+		
 	//create sound for Mini-Promote
 	protected URL ulrMiniPromote;
 	protected AudioClip MiniPromote;
@@ -28,6 +30,12 @@ public class music {
 	//create sound for Teleport
 	protected URL ulrTeleport;
 	protected AudioClip Teleport;
+	
+	protected URL ulrFreeCard;
+	protected AudioClip FreeCard;
+	
+	protected URL ulrDummyPiece;
+	protected AudioClip DummyPiece;
 	
 	
 	/**
@@ -41,12 +49,20 @@ public class music {
 		
 		ulrBomb = this.getClass().getClassLoader().getResource("resources.music/Bomb.wav");
 		Bomb = new AudioClip(ulrBomb.toExternalForm());
+		ulrSetBomb = this.getClass().getClassLoader().getResource("resources.music/SetBomb.wav");
+		SetBomb = new AudioClip(ulrSetBomb.toExternalForm());
 		
         ulrMiniPromote  = this.getClass().getClassLoader().getResource("resources.music/Mini-Promote.wav");
 		MiniPromote  = new AudioClip(ulrMiniPromote.toExternalForm());
 		
 		ulrTeleport = this.getClass().getClassLoader().getResource("resources.music/Teleport.wav");
 		Teleport = new AudioClip(ulrTeleport.toExternalForm());
+		
+		ulrFreeCard = this.getClass().getClassLoader().getResource("resources.music/FreeCard.wav");
+		FreeCard = new AudioClip(ulrFreeCard.toExternalForm());
+		
+		ulrDummyPiece = this.getClass().getClassLoader().getResource("resources.music/DummyPiece.wav");
+		DummyPiece = new AudioClip(ulrDummyPiece.toExternalForm());
 	}
 
 	
@@ -59,15 +75,28 @@ public class music {
 	public void Bomb() {
 		Bomb.play(0.1);
 	}
+	public void SetBomb() {
+		SetBomb.play();
+	}
 	
 	//play Mini-Promote sound
 	public void MiniPromote() {
-		MiniPromote.play();
+		MiniPromote.play(0.6);
 	}
 	
 	//play Teleport sound
 	public void Teleport() {
 		Teleport.play();
+	}
+	
+	//play FreeCard sound
+	public void FreeCard() {
+		FreeCard.play(0.6);
+	}
+	
+	//play DummyPiece sound
+	public void DummyPiece() {
+		DummyPiece.play();
 	}
 	
 }

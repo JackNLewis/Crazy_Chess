@@ -116,25 +116,34 @@ public class SBoard {
                 @Override
                 public void handle(MouseEvent event) {
                     String currentColor = game.getTurn();
-                    System.out.println("current turn " + currentColor);
-                    System.out.println("current gamestate ");
+//                    System.out.println("current turn " + currentColor);
+//                    System.out.println("current gamestate ");
                     util.printGameState(game.getGamestate());
                     String selectedColor = game.getPiece(tile.getPos()).getColor();
-
+                    boolean success = false;
                     //If tile not selected
                     if(!selected){
-
                         //Make sure you only select tiles of your colour
                         if(selectedColor.equalsIgnoreCase(currentColor)){
                             selected = true;
                             selectedTile = tile;
-
+                            // check if power up selected
                             if(powerUps.getSelectedIndex() != -1){
-                                showPoweredMoves();
+                                if(powerUps.getSelectedStr().equalsIgnoreCase("bomb")){
+                                    System.out.println("place bomb and change turn");
+                                    boolean poweredMove = game.usePowerup(powerUps.getSelectedIndex(), tile.getPos(),null);
+                                    if(poweredMove){
+                                        playSound();
+                                        System.out.println("Successful bomb place");
+                                        success = true;
+                                    }
+                                }
+                                else{
+                                    showPowerMoves();
+                                }
                             }else {
                                 showMoves();
                             }
-
                         }
                     }
                     //Tile is selected so execute a move
@@ -145,18 +154,22 @@ public class SBoard {
                             validMoves = null;
                             selectedTile = null;
                             selected = false;
+                            if(powerUps.getSelectedIndex()!=-1){
+                                showInitPowerMoves();
+                            }
                             return;
                         }
 
                         //Execute a Move
                         //check if a power up is selected
                         if(powerUps.getSelectedIndex() != -1){
-                            boolean poweredMove = game.usePowerup(powerUps.getSelectedIndex(), selectedTile.getPos(), tile.getPos());
+                            boolean poweredMove = game.usePowerup(powerUps.getSelectedIndex(), selectedTile.getPos(),tile.getPos());
                             if(poweredMove){
                                 // SUCCESFFUL POWERED MOVE
-                                sound.Teleport();
+                            	//play sound effects
+                            	playSound();
                                 System.out.println("Successful powered up move");
-                                powerUps.setSelectedIndex(-1);
+                                success = true;
                             }else{
                                 System.out.println("Unsucessful powered move");
                                 return;
@@ -167,30 +180,18 @@ public class SBoard {
                             boolean normalMove = game.moveTo(game.getPiece(selectedTile.getPos()),tile.getPos().getXpos(),tile.getPos().getYpos());
                             //Normal move was successful
                             if(normalMove){
-                                sound.chessmove();
                                 System.out.println("Successful move");
-                                String oppColor = util.oppositeColor(game.getTurn());
-
-                                SGameScreen.setInfoMessage("");
-                                System.out.println("Opposite color: " + oppColor);
-                                if(game.getCheckStatus(oppColor)){
-                                    System.out.println(oppColor + " is in check");
-                                    SGameScreen.setInfoMessage(oppColor + " is in check");
-                                }
-                                if(game.getMateStatus(oppColor)){
-                                    SGameScreen.setInfoMessage(game.getTurn() + " wins!");
-                                    System.out.println(oppColor + " is in check mate");
-                                }
-
+                                updateGui();
+                                success = true;
                             }
                             //Normal move was unsuccessful
                             else{
                                 System.out.println("Unsuccessful move");
                                 return;
                             }
-
                         }
-
+                    }
+                    if(success){
                         ArrayList<String> powerUpList = game.getPowerUps(game.getTurn());
                         powerUps.setPowerUps(powerUpList,game.getTurn());
                         game.changeTurn();
@@ -199,15 +200,14 @@ public class SBoard {
                         selectedTile = null;
                         validMoves = null;
                         selected = false;
+                        powerUps.setSelectedIndex(-1);
                         renderGameState(game.getGamestate());
 
                         //If ai is enabled make the ai move
                         if(aiEnabled){
-
                             aiMove();
                         }
                     }
-
 
                 }
             });
@@ -238,7 +238,19 @@ public class SBoard {
         return imgView;
     }
 
-
+    public void updateGui(){
+        String oppColor = util.oppositeColor(game.getTurn());
+        SGameScreen.setInfoMessage("");
+        System.out.println("Opposite color: " + oppColor);
+        if(game.getCheckStatus(oppColor)){
+            System.out.println(oppColor + " is in check");
+            SGameScreen.setInfoMessage(oppColor + " is in check");
+        }
+        if(game.getMateStatus(oppColor)){
+            SGameScreen.setInfoMessage(game.getTurn() + " wins!");
+            System.out.println(oppColor + " is in check mate");
+        }
+    }
     private void setDefaultColor(Tile tile){
         if ((tile.getPos().getXpos() % 2 == 1 && tile.getPos().getYpos() % 2 == 1)
                 || ((tile.getPos().getXpos() % 2 == 0) && (tile.getPos().getYpos() % 2 == 0))) {
@@ -250,6 +262,9 @@ public class SBoard {
 
     public void showMoves(){
         renderGameState(game.getGamestate());
+        if(selectedTile ==null){
+            return;
+        }
         validMoves = ect.validMoves(game.getPiece(selectedTile.getPos()),false,game.getGamestate(),game.getTurnNo());
         for(Tile tile: tiles){
             for(Position pos: validMoves){
@@ -261,11 +276,11 @@ public class SBoard {
         selectedTile.setbgColor(Color.web("#EF476F"));
     }
 
-    public void showPoweredMoves(){
+    public void showPowerMoves(){
         renderGameState(game.getGamestate());
         int powerIndex = powerUps.getSelectedIndex();
         String power = game.getPowerUps(game.getTurn()).get(powerIndex);
-        ArrayList<Position> poweredMoves = powerMain.validPowerupMoves(power,game.getGamestate(), selectedTile.getPos(), false);
+        ArrayList<Position> poweredMoves = powerMain.validPowerupMoves(power,game.getGamestate(),selectedTile.getPos(),false);
         for(Tile tile: tiles){
             for(Position pos: poweredMoves){
                 if(tile.getPos().equals(pos)){
@@ -273,7 +288,49 @@ public class SBoard {
                 }
             }
         }
-        selectedTile.setbgColor(Color.web("#EF476F"));
+        if(selectedTile!=null){
+            selectedTile.setbgColor(Color.web("#EF476F"));
+        }
+    }
+
+    public void showInitPowerMoves(){
+        renderGameState(game.getGamestate());
+        int powerIndex = powerUps.getSelectedIndex();
+        String power = game.getPowerUps(game.getTurn()).get(powerIndex);
+        ArrayList<Position> poweredMoves = powerMain.initialPowerupMoves(power,game.getGamestate(),game.getTurn());
+        //ArrayList<Position> poweredMoves = powerMain.validPowerupMoves(power,game.getGamestate(), selectedTile.getPos(), false);
+        for(Tile tile: tiles){
+            for(Position pos: poweredMoves){
+                if(tile.getPos().equals(pos)){
+                    tile.setbgColor(Color.web("#FFD166"));
+                }
+            }
+        }
+        validMoves = null;
+        selectedTile = null;
+        selected = false;
+    }
+
+    private void playSound(){
+        // SUCCESFFUL POWERED MOVE
+        //play sound effects
+        if(powerUps.getSelectedStr().equalsIgnoreCase("teleport")) {
+            sound.Teleport();
+        }
+        if(powerUps.getSelectedStr().equalsIgnoreCase("minipromote")) {
+            sound.MiniPromote();
+        }
+        if(powerUps.getSelectedStr().equalsIgnoreCase("freecard")) {
+            sound.FreeCard();
+        }
+        if(powerUps.getSelectedStr().equalsIgnoreCase("bomb")) {
+            sound.Bomb();
+        }
+        if(powerUps.getSelectedStr().equalsIgnoreCase("dummypiece")) {
+            sound.DummyPiece();
+        }
+        System.out.println("Successful powered up move");
+        powerUps.setSelectedIndex(-1);
     }
 
     public GridPane getBoard(){
@@ -295,8 +352,6 @@ public class SBoard {
         renderGameState(game.getGamestate());
 
         String oppColor = (game.getTurn().equalsIgnoreCase("white")) ? "black" : "white";
-        //TODO: Update the MainLogic isChecked and isCheckMated
-
 
         ArrayList<String> powerUpList = game.getPowerUps(game.getTurn());
         powerUps.setPowerUps(powerUpList,game.getTurn());
