@@ -569,15 +569,6 @@ public class MainLogic
 
 
 			gamestate = newGamestate;
-//			System.out.println("Updated gamestate");
-//			System.out.println("=========================== MAINLOGIC ===========================");
-//			AbstractPiece[][] tempGs = gamestate;
-//			for(AbstractPiece[] row: tempGs){
-//				for(AbstractPiece pie: row){
-//					System.out.println(pie);
-//				}
-//			}
-//			System.out.println("=========================== MAINLOGIC ===========================");
 			return true;
 		}
 		return false;

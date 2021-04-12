@@ -204,11 +204,6 @@ public class SBoard {
                         validMoves = null;
                         selected = false;
                         powerUps.setSelectedIndex(-1);
-                        for(AbstractPiece[] row: game.getGamestate()){
-                            for(AbstractPiece pie: row){
-                                System.out.println(pie);
-                            }
-                        }
                         renderGameState(game.getGamestate());
 
                         //If ai is enabled make the ai move

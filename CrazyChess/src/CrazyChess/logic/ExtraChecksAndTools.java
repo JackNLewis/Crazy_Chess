@@ -2,6 +2,7 @@ package CrazyChess.logic;
 
 import java.util.ArrayList;
 
+import CrazyChess.logic.StageHazards.Hazard;
 import CrazyChess.logic.StageHazards.HazardPiece;
 import CrazyChess.pieces.*;
 import com.sun.xml.internal.ws.api.model.wsdl.WSDLOutput;
@@ -336,11 +337,14 @@ public class ExtraChecksAndTools
 	 */
 	
 	public ArrayList<Position> validMoves( AbstractPiece p, boolean isDebug, AbstractPiece[][] gamestate, int moveNo){
-			
+		utils.printGameState(gamestate);
 		ArrayList<Position> movesList = new ArrayList<Position>();
 		for(int i=0; i<8; i++) {
 			for(int j=0; j<8; j++) {
 				AbstractPiece targetTile = utils.safeCopyPiece(gamestate[j][i]);
+				if(p instanceof HazardPiece){
+					continue;
+				}
 				if(!(p.getXpos()==targetTile.getXpos()&&p.getYpos()==targetTile.getYpos())) {
 					if(bvc.moveCheckAssigner(p, targetTile.getXpos()-p.getXpos(), targetTile.getYpos()-p.getYpos(), isDebug, gamestate, moveNo)) {
 						if(!targetTile.getColor().equalsIgnoreCase(p.getColor())){ //checks if the candidate tile doesn't have a piece of the same color on it

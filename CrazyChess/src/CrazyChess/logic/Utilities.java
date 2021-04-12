@@ -302,7 +302,8 @@ public class Utilities
 			case "Powerup":
 				copy=new Powerup(p.getPositionCopy(),p.getPoweruptype());
 				break;
-			
+			case "HazardPiece":
+				copy=new HazardPiece(p.getPosition(),((HazardPiece) p).getHazard(),((HazardPiece) p).getOriginalPiece());
 		}
 		return copy;
 	}
