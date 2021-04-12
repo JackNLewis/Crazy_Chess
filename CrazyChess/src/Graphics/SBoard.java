@@ -72,6 +72,7 @@ public class SBoard {
             board.getColumnConstraints().add(new ColumnConstraints(squareSize));
             board.getRowConstraints().add(new RowConstraints(squareSize));
         }
+
         for (int i = 0; i < 8; i++) {
             for (int j = 0; j < 8; j++) {
                 Tile tile = new Tile(new Position(i,j), squareSize);
@@ -97,8 +98,6 @@ public class SBoard {
     }
 
     public void renderGameState(AbstractPiece[][] gamesState){
-        //System.out.println("Rendering");
-        //util.printGameState(gamesState);
         for(Tile tile : tiles){
             int x = tile.getPos().getXpos();
             int y = tile.getPos().getYpos();
@@ -106,7 +105,6 @@ public class SBoard {
             setDefaultColor(tile);
             tile.removeImg();
             if(!(piece instanceof BlankPiece)){
-                //System.out.println(piece.toString());
                 ImageView img = getImageView(piece);
                 tile.addImg(img);
             }
@@ -226,7 +224,6 @@ public class SBoard {
             System.out.println("p is null in getImage");
         }
         else if(p instanceof HazardPiece){
-            System.out.println("getting hazard img");
             filename = "ice.png";
         }
         else if(p.getColor().equalsIgnoreCase("white")) {

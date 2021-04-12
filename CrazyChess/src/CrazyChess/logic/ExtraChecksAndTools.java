@@ -337,12 +337,11 @@ public class ExtraChecksAndTools
 	 */
 	
 	public ArrayList<Position> validMoves( AbstractPiece p, boolean isDebug, AbstractPiece[][] gamestate, int moveNo){
-		utils.printGameState(gamestate);
 		ArrayList<Position> movesList = new ArrayList<Position>();
 		for(int i=0; i<8; i++) {
 			for(int j=0; j<8; j++) {
 				AbstractPiece targetTile = utils.safeCopyPiece(gamestate[j][i]);
-				if(p instanceof HazardPiece){
+				if(targetTile instanceof HazardPiece){
 					continue;
 				}
 				if(!(p.getXpos()==targetTile.getXpos()&&p.getYpos()==targetTile.getYpos())) {
