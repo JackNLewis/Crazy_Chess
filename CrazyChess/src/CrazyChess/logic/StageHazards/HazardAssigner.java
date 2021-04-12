@@ -27,11 +27,12 @@ public class HazardAssigner {
 
     private AbstractPiece[][] frozenHazard(AbstractPiece[][] gameState){
         ArrayList<AbstractPiece> pieces = ecat.gamestateToPieceArrayList(gameState);
-        //Random rand = new Random();
+        Random rand = new Random();
         AbstractPiece[][] gs = gameState;
-        for(int i =0; i<1 ; i++){
+        for(int i =0; i<2 ; i++){
             //only changes first piece at the minuite
-            HazardPiece frozenTile = new HazardPiece(pieces.get(0).getPosition(), Hazard.FROZEN,pieces.get(0));
+            int index = rand.nextInt(pieces.size());
+            HazardPiece frozenTile = new HazardPiece(pieces.get(index).getPosition(), Hazard.FROZEN,pieces.get(0));
             gs = utils.placePiece(frozenTile,false,gameState);
         }
         return gs;

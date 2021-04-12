@@ -1,6 +1,8 @@
 package CrazyChess.logic;
 
 import java.util.ArrayList;
+
+import CrazyChess.logic.StageHazards.HazardPiece;
 import CrazyChess.pieces.*;
 import com.sun.xml.internal.ws.api.model.wsdl.WSDLOutput;
 
@@ -448,7 +450,7 @@ public class ExtraChecksAndTools
 			for(AbstractPiece[][] g : nextMoveGamestates) {
 				if(!isInCheck(color, isDebug, g, moveNo)) {
 					isMated =  false;
-					utils.printGameState(g);
+					//utils.printGameState(g);
 				}
 			}
 		}

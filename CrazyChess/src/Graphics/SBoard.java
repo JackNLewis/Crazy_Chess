@@ -1,6 +1,8 @@
 package Graphics;
 
 import CrazyChess.logic.*;
+import CrazyChess.logic.StageHazards.Hazard;
+import CrazyChess.logic.StageHazards.HazardPiece;
 import CrazyChess.logic.powerups.PowerupMain;
 import CrazyChess.pieces.AbstractPiece;
 import CrazyChess.pieces.BlankPiece;
@@ -95,7 +97,8 @@ public class SBoard {
     }
 
     public void renderGameState(AbstractPiece[][] gamesState){
-        System.out.println("Rendering");
+        //System.out.println("Rendering");
+        //util.printGameState(gamesState);
         for(Tile tile : tiles){
             int x = tile.getPos().getXpos();
             int y = tile.getPos().getYpos();
@@ -118,7 +121,7 @@ public class SBoard {
                     String currentColor = game.getTurn();
 //                    System.out.println("current turn " + currentColor);
 //                    System.out.println("current gamestate ");
-                    util.printGameState(game.getGamestate());
+                    //util.printGameState(game.getGamestate());
                     String selectedColor = game.getPiece(tile.getPos()).getColor();
                     boolean success = false;
                     //If tile not selected
@@ -201,6 +204,11 @@ public class SBoard {
                         validMoves = null;
                         selected = false;
                         powerUps.setSelectedIndex(-1);
+                        for(AbstractPiece[] row: game.getGamestate()){
+                            for(AbstractPiece pie: row){
+                                System.out.println(pie);
+                            }
+                        }
                         renderGameState(game.getGamestate());
 
                         //If ai is enabled make the ai move
@@ -216,23 +224,27 @@ public class SBoard {
 
 
     public ImageView getImageView(AbstractPiece p) {
-        String name = p.getClass().getSimpleName().toLowerCase();
-        String color=" ";
         String filename = "";
-        if(p.getColor().equalsIgnoreCase("white")) {
+        String name;
+        String color;
+        if(p == null){
+            System.out.println("p is null in getImage");
+        }
+        else if(p instanceof HazardPiece){
+            System.out.println("getting hazard img");
+            filename = "ice.png";
+        }
+        else if(p.getColor().equalsIgnoreCase("white")) {
+            name = p.getClass().getSimpleName().toLowerCase();
             color="W_";
             filename = color+name+".png";
         }else if (p.getColor().equalsIgnoreCase("black")) {
+            name = p.getClass().getSimpleName().toLowerCase();
             color="B_";
             filename = color+name+".png";
         }else if(p instanceof Powerup){
             filename = "PowerUp.png";
         }
-        else if(p.getColor().equalsIgnoreCase("blank")) {
-            return null;
-        }
-
-
         ImageView imgView = new ImageView();
         imgView.setImage(new Image("/resources/pieces/"+filename));
         return imgView;
