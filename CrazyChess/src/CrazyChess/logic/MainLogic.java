@@ -455,9 +455,9 @@ public class MainLogic
 			//sets captured piece to blank space in case of En Passant and sets En Passant to false
 			if(p instanceof Pawn && ((Pawn)p).getEnPassant() == true){ 
 				if(p.getColor().equalsIgnoreCase("white"))
-					newGamestate=utils.placePiece(new BlankPiece("Blank",copiedPiece.getXpos(), (copiedPiece.getYpos()-1)), isDebug, newGamestate);
+					newGamestate=utils.placePiece(new BlankPiece("Blank",copiedPiece.getXpos(), (copiedPiece.getYpos()-1),"Normal"), isDebug, newGamestate);
 				else 
-					newGamestate=utils.placePiece(new BlankPiece("Blank",copiedPiece.getXpos(), (copiedPiece.getYpos()+1)), isDebug, newGamestate);
+					newGamestate=utils.placePiece(new BlankPiece("Blank",copiedPiece.getXpos(), (copiedPiece.getYpos()+1),"Normal"), isDebug, newGamestate);
 			}
 			//and set the old position to a Blank place
 			}
