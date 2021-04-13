@@ -31,11 +31,18 @@ public class music {
 	protected URL ulrTeleport;
 	protected AudioClip Teleport;
 	
+	//create sound for Freecard
 	protected URL ulrFreeCard;
 	protected AudioClip FreeCard;
 	
+	//create sound for DummyPiece
 	protected URL ulrDummyPiece;
 	protected AudioClip DummyPiece;
+	
+	//create sound int
+	protected double bombsound;
+	protected double normalsound;
+	protected double miniAndfree;
 	
 	
 	/**
@@ -63,40 +70,57 @@ public class music {
 		
 		ulrDummyPiece = this.getClass().getClassLoader().getResource("resources.music/DummyPiece.wav");
 		DummyPiece = new AudioClip(ulrDummyPiece.toExternalForm());
+		
+		bombsound = 0.1;
+		normalsound = 1.0;
+		miniAndfree = 0.6;
 	}
-
+	//turn on music
+	public void turnOff() {
+		this.bombsound = 0.0;
+		this.normalsound = 0.0;
+		this.miniAndfree = 0.0;
+	}
+	
+	//turn on music
+	public void turnOn() {
+		this.bombsound = 0.1;
+		this.normalsound = 1.0;
+		this.miniAndfree = 0.6;
+	}
+	
 	
 	//play chessmove sound
 	public void chessmove() {
-		chessmove.play();
+		chessmove.play(normalsound);
 	}
 	
 	//play bomb sound
 	public void Bomb() {
-		Bomb.play(0.1);
+		Bomb.play(bombsound);
 	}
 	public void SetBomb() {
-		SetBomb.play();
+		SetBomb.play(normalsound);
 	}
 	
 	//play Mini-Promote sound
 	public void MiniPromote() {
-		MiniPromote.play(0.6);
+		MiniPromote.play(miniAndfree);
 	}
 	
 	//play Teleport sound
 	public void Teleport() {
-		Teleport.play();
+		Teleport.play(normalsound);
 	}
 	
 	//play FreeCard sound
 	public void FreeCard() {
-		FreeCard.play(0.6);
+		FreeCard.play(miniAndfree);
 	}
 	
 	//play DummyPiece sound
 	public void DummyPiece() {
-		DummyPiece.play();
+		DummyPiece.play(normalsound);
 	}
 	
 }
