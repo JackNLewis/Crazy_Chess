@@ -1,16 +1,26 @@
 package Graphics;
 
 import CrazyChess.logic.*;
+
+
 import CrazyChess.logic.powerups.PowerupMain;
 import CrazyChess.pieces.AbstractPiece;
+import CrazyChess.pieces.Bishop;
 import CrazyChess.pieces.BlankPiece;
+import CrazyChess.pieces.Knight;
+import CrazyChess.pieces.Pawn;
 import CrazyChess.pieces.Powerup;
+import CrazyChess.pieces.Queen;
+import CrazyChess.pieces.Rook;
+import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
+import javafx.scene.control.Button;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.ColumnConstraints;
 import javafx.scene.layout.GridPane;
+import javafx.scene.layout.HBox;
 import javafx.scene.layout.RowConstraints;
 import javafx.scene.layout.StackPane;
 import javafx.scene.paint.Color;
@@ -44,7 +54,11 @@ public class SBoard {
     private PowerupMain powerMain; // Used to see valid powered moves
     
     private music sound; // Used to play sound
-
+    
+    //to add pawn promotion button
+    private HBox Wpawnpormote;
+    private HBox Bpawnpormote;
+    
     private boolean aiEnabled = false;
     private AI ai;
 
@@ -58,6 +72,7 @@ public class SBoard {
         powerUps = SGameScreen.getPwrUpMenu();
         powerMain = new PowerupMain();
         sound = new music();
+        
     }
 
     public void initBoard(String player) {
@@ -66,6 +81,10 @@ public class SBoard {
         board = new GridPane();
         tiles = new ArrayList<Tile>();
 
+        Wpawnpormote = new HBox(4);
+        board.add(Wpawnpormote, 0 , 10);
+        Bpawnpormote = new HBox(4);
+        board.add(Bpawnpormote, 5 , 10);
         for (int i=0; i<8; i++) {
             board.getColumnConstraints().add(new ColumnConstraints(squareSize));
             board.getRowConstraints().add(new RowConstraints(squareSize));
@@ -120,7 +139,22 @@ public class SBoard {
                     System.out.println("current gamestate ");
                     util.printGameState(game.getGamestate());
                     String selectedColor = game.getPiece(tile.getPos()).getColor();
-
+                    
+                    //check pawn promotion is or is not valid
+                    if (game.getPiece(tile.getPos()) instanceof Pawn && (game.getPiece(tile.getPos()).getColor().equalsIgnoreCase("White") || game.getPiece(tile.getPos()).getColor().equalsIgnoreCase("Black"))
+                    		 && (tile.getPos().getYpos() == 0||tile.getPos().getYpos() == 7)) {
+                    	if(game.getPiece(tile.getPos()).getColor().equalsIgnoreCase("White")) {
+                    		PawnPromote(getWBox(), tile.getPos());
+                    	}
+                    	if(game.getPiece(tile.getPos()).getColor().equalsIgnoreCase("Black")) {
+                    		PawnPromote(getBBox(), tile.getPos());
+                    	}
+                     	
+                     	return;
+                     	
+                   }
+                    
+                    
                     //If tile not selected
                     if(!selected){
 
@@ -139,6 +173,7 @@ public class SBoard {
                     }
                     //Tile is selected so execute a move
                     else{
+                    	
                         if(tile.equals(selectedTile)){
                             //deselect current tile
                             renderGameState(game.getGamestate());
@@ -147,6 +182,7 @@ public class SBoard {
                             selected = false;
                             return;
                         }
+                        
 
                         //Execute a Move
                         //check if a power up is selected
@@ -177,6 +213,8 @@ public class SBoard {
                                 return;
                             }
                         }
+                        
+                        
                         //NORMAL MOVE if no power up selected
                         else{
                             boolean normalMove = game.moveTo(game.getPiece(selectedTile.getPos()),tile.getPos().getXpos(),tile.getPos().getYpos());
@@ -300,9 +338,104 @@ public class SBoard {
         }
         selectedTile.setbgColor(Color.web("#EF476F"));
     }
+    
+    /**
+	 * Method for PawnPromotion. add 4 buttons when click on a pawn which has reach the edge of board.
+	 * r for rook, b for bishop, k for knight, q for queen
+	 * @param b the box we use for adding buttons, we have two in SBoard, one for white and the other one for black
+	 * @param p the position of the pawn which reach the edge of board.
+	 */
+	
+	public void PawnPromote(HBox b,Position p) {
+		AbstractPiece[][] gamestateCopy = util.safeCopyGamestate(game.getGamestate());
+		AbstractPiece copiedPiece = util.getPiece(p, true, gamestateCopy);
+		if(copiedPiece.getColor().equalsIgnoreCase(game.getTurn())&& b.getChildren().isEmpty()) {
+			Button rook = new Button();
+			rook.setText("r");
+			Button Bishop = new Button();
+			Bishop.setText("b");
+			Button Knight = new Button();
+			Knight.setText("k");
+			Button Queen = new Button();
+			Queen.setText("q");
+			b.getChildren().addAll(rook,Bishop,Knight,Queen);
+			rook.setOnAction(new EventHandler<ActionEvent>() {
+				public void handle(ActionEvent event) {
+					if (game.getTurn().equalsIgnoreCase(copiedPiece.getColor())) {
+						game.setGamestate(util.placePiece(new Rook(copiedPiece.getColor(),copiedPiece.getPosition(),"Normal"), true, game.getGamestate()));
+						b.getChildren().remove(rook);
+						b.getChildren().remove(Bishop);
+						b.getChildren().remove(Knight);
+						b.getChildren().remove(Queen);
+						game.changeTurn();
+						renderGameState(game.getGamestate());
+					}
+					else{
+						System.out.println("not your bottom");
+					}
+				}
+			});
+			Bishop.setOnAction(new EventHandler<ActionEvent>() {
+				public void handle(ActionEvent event) {
+					if (game.getTurn().equalsIgnoreCase(copiedPiece.getColor())) {
+						game.setGamestate(util.placePiece(new Bishop(copiedPiece.getColor(),copiedPiece.getPosition(),"Normal"), true, game.getGamestate()));
+						b.getChildren().remove(rook);
+						b.getChildren().remove(Bishop);
+						b.getChildren().remove(Knight);
+						b.getChildren().remove(Queen);
+						game.changeTurn();
+						renderGameState(game.getGamestate());
+					}
+					else{
+						System.out.println("not your bottom");
+					}
+				}
+			});
+			Knight.setOnAction(new EventHandler<ActionEvent>() {
+				public void handle(ActionEvent event) {
+					if (game.getTurn().equalsIgnoreCase(copiedPiece.getColor())) {
+						game.setGamestate(util.placePiece(new Knight(copiedPiece.getColor(),copiedPiece.getPosition(),"Normal"), true, game.getGamestate()));
+						b.getChildren().remove(rook);
+						b.getChildren().remove(Bishop);
+						b.getChildren().remove(Knight);
+						b.getChildren().remove(Queen);
+						game.changeTurn();
+						renderGameState(game.getGamestate());
+					}
+					else{
+						System.out.println("not your bottom");
+					}
+				}
+			});
+			Queen.setOnAction(new EventHandler<ActionEvent>() {
+				public void handle(ActionEvent event) {
+					if (game.getTurn().equalsIgnoreCase(copiedPiece.getColor())) {
+						game.setGamestate(util.placePiece(new Queen(copiedPiece.getColor(),copiedPiece.getPosition(),"Normal"), true, game.getGamestate()));
+						b.getChildren().remove(rook);
+						b.getChildren().remove(Bishop);
+						b.getChildren().remove(Knight);
+						b.getChildren().remove(Queen);
+						game.changeTurn();
+						renderGameState(game.getGamestate());
+					}
+					else{
+						System.out.println("not your bottom");
+					}
+				}
+			});
+			
+		}
+	}
 
     public GridPane getBoard(){
         return this.board;
+    }
+    
+    public HBox getWBox() {
+    	return Wpawnpormote;
+    }
+    public HBox getBBox() {
+    	return Bpawnpormote;
     }
 
     public boolean isSelected(){
