@@ -19,6 +19,7 @@ public class PowerUpMenu {
     private final ListView<String> powerList;
     private SGameScreen gameScreen;
     private int selectedIndex = -1;
+    private String selectedstr;
 
     public PowerUpMenu(SGameScreen gameScreen){
         this.gameScreen = gameScreen;
@@ -37,6 +38,7 @@ public class PowerUpMenu {
                     System.out.println("clicked on " + clickedIndex);
                     System.out.println("Power: " + powerList.getItems().get(clickedIndex));
                     selectedIndex = clickedIndex;
+                    selectedstr = powerList.getItems().get(selectedIndex);
 
                     if(gameScreen.getBoard().isSelected()){
                         gameScreen.getBoard().showPoweredMoves();
@@ -80,6 +82,10 @@ public class PowerUpMenu {
 
     public void setSelectedIndex(int index){
         selectedIndex = index;
+    }
+    
+    public String getSelectedStr() {
+    	return selectedstr;
     }
 
 

@@ -24,8 +24,8 @@ public class Pawn extends AbstractPiece
 	 * @param xCoord    x coordinate
 	 * @param yCoord    y coordinate
 	 */
-	public Pawn(String color, int xCoord, int yCoord){
-		super(color, xCoord, yCoord);
+	public Pawn(String color, int xCoord, int yCoord, String Type){
+		super(color, xCoord, yCoord, Type);
 	}
 	
 	/**
@@ -34,8 +34,8 @@ public class Pawn extends AbstractPiece
 	 * @param color      color of the pawn
 	 * @param position   position object to set initial position
 	 */
-	public Pawn(String color, Position position){
-		super(color, position);
+	public Pawn(String color, Position position, String Type){
+		super(color, position,Type);
 	}
 	
 	/**
