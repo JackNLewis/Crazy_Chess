@@ -26,10 +26,9 @@ public class HazardAssigner {
 
 
     public AbstractPiece[][] assignHazard(AbstractPiece[][] gameState){
-            AbstractPiece[][] safeGameState = utils.safeCopyGamestate(gameState);
-            // just using frozen hazard atm
+        AbstractPiece[][] safeGameState = utils.safeCopyGamestate(gameState);
+        // spawn a hazard
         if(untilHazard == 0){
-
             activeHazard = true;
             hazardTurns = 0;
             untilHazard = hazardInterval;
@@ -39,14 +38,15 @@ public class HazardAssigner {
             int randHazardIndex = rand.nextInt(Hazard.values().length);
             Hazard randHazard = Hazard.values()[randHazardIndex];
 
+            return frozenHazard(gameState);
             //code for randomly choosing hazard
-            if(randHazard == Hazard.FROZEN){
-                System.out.println("FROZEN");
-                return frozenHazard(gameState);
-            }else if(randHazard == Hazard.BURN){
-                System.out.println("BURN");
-                return burnHazard(gameState);
-            }
+//            if(randHazard == Hazard.FROZEN){
+//                System.out.println("FROZEN");
+//                return frozenHazard(gameState);
+//            }else if(randHazard == Hazard.BURN){
+//                System.out.println("BURN");
+//                return burnHazard(gameState);
+//            }
         }
         else{
             if(activeHazard){
@@ -54,6 +54,7 @@ public class HazardAssigner {
                     hazardTurns=0;
                     System.out.println("DESPAWN HAZARD");
                     activeHazard= false;
+                    return despawn(safeGameState);
                 }else{
                     hazardTurns++;
                 }
@@ -75,7 +76,8 @@ public class HazardAssigner {
             while(pieces.get(index) instanceof King){
                 index = rand.nextInt(pieces.size());
             }
-            HazardPiece frozenTile = new HazardPiece(pieces.get(index).getPosition(), Hazard.FROZEN,pieces.get(0));
+            HazardPiece frozenTile = new HazardPiece(pieces.get(index).getPosition(), Hazard.FROZEN,pieces.get(index));
+            System.out.println("Freezing: " + frozenTile.getOriginalPiece());
             gs = utils.placePiece(frozenTile,false,gameState);
         }
         return gs;
@@ -84,6 +86,24 @@ public class HazardAssigner {
     private AbstractPiece[][] burnHazard(AbstractPiece[][] gameState){
         System.out.println("In burn");
         return gameState;
+    }
+
+    private AbstractPiece[][] despawn(AbstractPiece[][] gameState){
+        System.out.println("=======================================");
+        System.out.println("Despawn the stage hazards");
+        AbstractPiece[][] gs = utils.safeCopyGamestate(gameState);
+        for(AbstractPiece[] row: gs){
+            for(AbstractPiece p: row){
+                if(p instanceof HazardPiece){
+                    AbstractPiece org = ((HazardPiece) p).getOriginalPiece();
+                    System.out.println("Original piece: " + org);
+                    utils.placePiece(org,org.getPosition(),false,gs);
+                }
+            }
+        }
+        utils.printGameState(gs);
+        System.out.println("=======================================");
+        return gs;
     }
 
     private int getThreshhold(int size){
