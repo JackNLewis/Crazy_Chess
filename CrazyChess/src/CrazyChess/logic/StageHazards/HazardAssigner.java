@@ -38,15 +38,15 @@ public class HazardAssigner {
             int randHazardIndex = rand.nextInt(Hazard.values().length);
             Hazard randHazard = Hazard.values()[randHazardIndex];
 
-            return frozenHazard(gameState);
+//            return frozenHazard(gameState);
             //code for randomly choosing hazard
-//            if(randHazard == Hazard.FROZEN){
-//                System.out.println("FROZEN");
-//                return frozenHazard(gameState);
-//            }else if(randHazard == Hazard.BURN){
-//                System.out.println("BURN");
-//                return burnHazard(gameState);
-//            }
+            if(randHazard == Hazard.FROZEN){
+                System.out.println("FROZEN");
+                return frozenHazard(gameState);
+            }else if(randHazard == Hazard.BURN){
+                System.out.println("BURN");
+                return burnHazard(gameState);
+            }
         }
         else{
             if(activeHazard){
@@ -84,8 +84,20 @@ public class HazardAssigner {
     }
 
     private AbstractPiece[][] burnHazard(AbstractPiece[][] gameState){
-        System.out.println("In burn");
-        return gameState;
+//        System.out.println("In burn");
+//    	player cannot move onto that tile if it is a burnTile but only blank tiles affected
+    	
+    	ArrayList<AbstractPiece> blankPieces = ecat.getBlankArrayList(gameState);
+    	Random rand = new Random();
+    	AbstractPiece[][] gs = gameState;
+    	for(int i =0; i<getThreshhold(blankPieces.size()) ; i++) {
+    		int index = rand.nextInt(blankPieces.size());
+    		HazardPiece burnTile = new HazardPiece(blankPieces.get(index).getPosition(), Hazard.BURN, blankPieces.get(index));
+    		System.out.println("Burning: " + burnTile.getOriginalPiece());
+    		gs = utils.placePiece(burnTile, false, gameState);
+    	}
+
+        return gs;
     }
 
     private AbstractPiece[][] despawn(AbstractPiece[][] gameState){

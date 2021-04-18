@@ -2,7 +2,7 @@ package CrazyChess.logic;
 
 import java.util.ArrayList;
 
-
+import CrazyChess.logic.StageHazards.Hazard;
 import CrazyChess.logic.StageHazards.HazardAssigner;
 import CrazyChess.logic.powerups.PowerupMain;
 import CrazyChess.pieces.*;
@@ -338,7 +338,7 @@ public class MainLogic
 //			utils.printGameState(gs);
 //		}
 		
-		
+
 		
 		
 		//Save old position (to place a blank later)

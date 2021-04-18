@@ -49,6 +49,8 @@ public class SBoard {
 
     private boolean aiEnabled = false;
     private AI ai;
+    
+    private HazardPiece hazardPiece;
 
     public SBoard(MainLogic game, SGameScreen SGameScreen){
         initBoard("white");
@@ -224,7 +226,14 @@ public class SBoard {
             System.out.println("p is null in getImage");
         }
         else if(p instanceof HazardPiece){
-            filename = "ice.png";
+//        	filename = "ice.png";
+        	hazardPiece = (HazardPiece) p;
+            if(hazardPiece.getHazard() == Hazard.FROZEN) {
+            	filename = "ice.png";
+            }
+            else if(hazardPiece.getHazard() == Hazard.BURN){
+            	filename = "fire.png";
+            }
         }
         else if(p.getColor().equalsIgnoreCase("white")) {
             name = p.getClass().getSimpleName().toLowerCase();
