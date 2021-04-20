@@ -17,8 +17,8 @@ public class Knight extends AbstractPiece
 	 * @param xCoord    x coordinate
 	 * @param yCoord    y coordinate
 	 */
-	public Knight(String color, int xCoord, int yCoord){
-		super(color, xCoord, yCoord);
+	public Knight(String color, int xCoord, int yCoord, String Type){
+		super(color, xCoord, yCoord, Type);
 	}
 	
 	/**
@@ -27,7 +27,7 @@ public class Knight extends AbstractPiece
 	 * @param color      color of the knight
 	 * @param position   position object to set initial position
 	 */
-	public Knight(String color, Position position){
-		super(color, position);
+	public Knight(String color, Position position, String Type){
+		super(color, position,Type);
 	}
 }

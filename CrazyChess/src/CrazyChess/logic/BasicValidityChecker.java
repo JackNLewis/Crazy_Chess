@@ -1,6 +1,9 @@
 package CrazyChess.logic;
 
 import CrazyChess.pieces.*;
+
+import java.util.ArrayList;
+
 /**
  * This class performs some basic checks to see if a
  * move on the board is at least somewhat valid.
@@ -252,80 +255,88 @@ public class BasicValidityChecker
 	public boolean validityCheckPawn(Pawn p, int xRel, int yRel, boolean isDebug, AbstractPiece[][] gamestate, int turnNo){
 		if(p.getColor().equalsIgnoreCase("black")){
 			//basic movement
-			if(xRel == 0 && yRel == -1 && !utils.getTargetPiece(p,xRel,yRel,isDebug,gamestate).getColor().equalsIgnoreCase("white"))
+			if(xRel == 0 && yRel == -1 && !(utils.getTargetPiece(p,xRel,yRel,isDebug,gamestate).getColor().equalsIgnoreCase("white")||
+											utils.getTargetPiece(p,xRel,yRel,isDebug,gamestate).getColor().equalsIgnoreCase("powerup")))
 				return true;
 			//first turn jump
-			else if(xRel == 0 && yRel == -2 && p.getYpos() == 6){
+			else if(xRel == 0 && yRel == -2 && p.getYpos() == 6&&utils.getPiece(p.getXpos()+xRel, p.getYpos()+yRel, isDebug, gamestate).getColor().equalsIgnoreCase("blank")){
 				p.setDoublejump(turnNo);
 				return true;
 			}
-			//Checks En passant(unfinished)(causes bugs)(probably should be moved into a seperate class):
+			//Checks En passant
 			//Checks if on correct rank
-//			else if(p.getYpos()==3) {
-//				//checks if there is a pawn on the right
-//				if((utils.getPiece(p.getXpos()+1,p.getYpos(), isDebug, gamestate) instanceof Pawn)&&xRel == 1&&yRel==-1) {
-//					//checks if that pawn is of the enemy color
-//					if(utils.getPiece(p.getXpos()+1,p.getYpos(), isDebug, gamestate).getColor().equalsIgnoreCase("white")){
-//						Pawn enemyPawn = (Pawn) utils.getPiece(p.getXpos()+1,p.getYpos(), isDebug, gamestate);
-//						//checks if that pawn just moved
-//						if(turnNo-enemyPawn.getDoublejump()==1) {
-//							return true;
-//							}
-//						}
-//					}
-//				//checks if there is a pawn on the left
-//				if((utils.getPiece(p.getXpos()-1,p.getYpos(), isDebug, gamestate) instanceof Pawn)&&xRel == -1&&yRel==-1) {
-//					//checks if that pawn is of the enemy color
-//					if(utils.getPiece(p.getXpos()+1,p.getYpos(), isDebug, gamestate).getColor().equalsIgnoreCase("white")){
-//						Pawn enemyPawn = (Pawn) utils.getPiece(p.getXpos()-1,p.getYpos(), isDebug, gamestate);
-//						//checks if that pawn just moved
-//						if(turnNo-enemyPawn.getDoublejump()==1) {
-//							return true;
-//							}
-//						}
-//				}
-//			}
+			else if(p.getYpos()==3) {
+				//checks if there is a pawn on the right
+				if((utils.getPiece(p.getXpos()+1,p.getYpos(), isDebug, gamestate) instanceof Pawn)&&xRel == 1&&yRel==-1) {
+					//checks if that pawn is of the enemy color
+					if(utils.getPiece(p.getXpos()+1,p.getYpos(), isDebug, gamestate).getColor().equalsIgnoreCase("white")){
+						Pawn enemyPawn = (Pawn) utils.getPiece(p.getXpos()+1,p.getYpos(), isDebug, gamestate);
+						//checks if that pawn just moved
+						if(turnNo-enemyPawn.getDoublejump()==1) {
+							((Pawn)utils.getPiece(p.getXpos(),p.getYpos(), isDebug, gamestate)).setEnPassant(true);
+							return true;
+							}
+						}
+					}
+				//checks if there is a pawn on the left
+				if((utils.getPiece(p.getXpos()-1,p.getYpos(), isDebug, gamestate) instanceof Pawn)&&xRel == -1&&yRel==-1) {
+					//checks if that pawn is of the enemy color
+					if(utils.getPiece(p.getXpos()-1,p.getYpos(), isDebug, gamestate).getColor().equalsIgnoreCase("white")){
+						Pawn enemyPawn = (Pawn) utils.getPiece(p.getXpos()-1,p.getYpos(), isDebug, gamestate);
+						//checks if that pawn just moved
+						if(turnNo-enemyPawn.getDoublejump()==1) {
+							((Pawn)utils.getPiece(p.getXpos(),p.getYpos(), isDebug, gamestate)).setEnPassant(true);
+							return true;
+							}
+						}
+				}
+			}
 			//making sure piece about to get captured is of enemy color
-			else if((xRel == 1 || xRel == -1) && yRel == -1 && utils.getTargetPiece(p,xRel,yRel,isDebug,gamestate).getColor().equalsIgnoreCase("white"))
+			else if((xRel == 1 || xRel == -1) && yRel == -1 && (utils.getTargetPiece(p,xRel,yRel,isDebug,gamestate).getColor().equalsIgnoreCase("white")||
+															    utils.getTargetPiece(p,xRel,yRel,isDebug,gamestate).getColor().equalsIgnoreCase("powerup")))
 				return true;
 		}
 		else if(p.getColor().equalsIgnoreCase("white")){
 			//basic advance
-			if(xRel == 0 && yRel == 1 && !utils.getTargetPiece(p,xRel,yRel,isDebug,gamestate).getColor().equalsIgnoreCase("black"))
+			if(xRel == 0 && yRel == 1 && !(utils.getTargetPiece(p,xRel,yRel,isDebug,gamestate).getColor().equalsIgnoreCase("black")||
+										   utils.getTargetPiece(p,xRel,yRel,isDebug,gamestate).getColor().equalsIgnoreCase("powerup")))
 				return true;
 			//first turn jump
 			else if(xRel == 0 && yRel == 2 && p.getYpos() == 1){
 				p.setDoublejump(turnNo);
 				return true;
 			}
-			//Checks En passant(unfinished)(causes bugs)(probably should be moved into a seperate class):
+			//Checks En passant
 			//Checks if on correct rank
-//			else if(p.getYpos()==4) {
-//				//checks if there is a pawn on the right
-//				if((utils.getPiece(p.getXpos()+1,p.getYpos(), isDebug, gamestate) instanceof Pawn)&&xRel == 1&&yRel==1) {
-//					//checks if that pawn is of the enemy color
-//					if(utils.getPiece(p.getXpos()+1,p.getYpos(), isDebug, gamestate).getColor().equalsIgnoreCase("black")){
-//						Pawn enemyPawn = (Pawn) utils.getPiece(p.getXpos()+1,p.getYpos(), isDebug, gamestate);
-//						//checks if that pawn just moved
-//						if(turnNo-enemyPawn.getDoublejump()==1) {
-//							return true;
-//							}
-//						}
-//					}
-//				//checks if there is a pawn on the left
-//				if((utils.getPiece(p.getXpos()-1,p.getYpos(), isDebug, gamestate) instanceof Pawn)&&xRel == -1&&yRel==1) {
-//					//checks if that pawn is of the enemy color
-//					if(utils.getPiece(p.getXpos()+1,p.getYpos(), isDebug, gamestate).getColor().equalsIgnoreCase("black")){
-//						Pawn enemyPawn = (Pawn) utils.getPiece(p.getXpos()-1,p.getYpos(), isDebug, gamestate);
-//						//checks if that pawn just moved
-//						if(turnNo-enemyPawn.getDoublejump()==1) {
-//							return true;
-//							}
-//						}
-//				}
-//			}
+			else if(p.getYpos()==4) {
+				//checks if there is a pawn on the right
+				if((utils.getPiece(p.getXpos()+1,p.getYpos(), isDebug, gamestate) instanceof Pawn)&&xRel == 1 && yRel==1) {
+					//checks if that pawn is of the enemy color
+					if(utils.getPiece(p.getXpos()+1,p.getYpos(), isDebug, gamestate).getColor().equalsIgnoreCase("black")){
+						Pawn enemyPawn = (Pawn) utils.getPiece(p.getXpos()+1,p.getYpos(), isDebug, gamestate);
+						//checks if that pawn just moved
+						if(turnNo-enemyPawn.getDoublejump()==1) {
+							((Pawn)utils.getPiece(p.getXpos(),p.getYpos(), isDebug, gamestate)).setEnPassant(true);
+							return true;
+							}
+						}
+					}
+				//checks if there is a pawn on the left
+				if((utils.getPiece(p.getXpos()-1,p.getYpos(), isDebug, gamestate) instanceof Pawn)&&xRel == -1 && yRel==1) {
+					//checks if that pawn is of the enemy color
+					if(utils.getPiece(p.getXpos()-1,p.getYpos(), isDebug, gamestate).getColor().equalsIgnoreCase("black")){
+						Pawn enemyPawn = (Pawn) utils.getPiece(p.getXpos()-1,p.getYpos(), isDebug, gamestate);
+						//checks if that pawn just moved
+						if(turnNo-enemyPawn.getDoublejump()==1) {
+							((Pawn)utils.getPiece(p.getXpos(),p.getYpos(), isDebug, gamestate)).setEnPassant(true);
+							return true;
+							}
+						}
+				}
+			}
 			//making sure piece about to get captured is of enemy color
-			else if((xRel == 1 || xRel == -1) && yRel == 1 && utils.getTargetPiece(p,xRel,yRel,isDebug,gamestate).getColor().equalsIgnoreCase("black"))
+			else if((xRel == 1 || xRel == -1) && yRel == 1 && (utils.getTargetPiece(p,xRel,yRel,isDebug,gamestate).getColor().equalsIgnoreCase("black")||
+															   utils.getTargetPiece(p,xRel,yRel,isDebug,gamestate).getColor().equalsIgnoreCase("powerup")))
 				return true;
 		}
 		return false;
@@ -447,6 +458,7 @@ public class BasicValidityChecker
 	 * @param gamestate   the current game state
 	 * @return            true if move is okay
 	 */
+	
 	public boolean validityCheckQueen(Queen p, int xRel, int yRel, boolean isDebug, AbstractPiece[][] gamestate){
 		AbstractPiece newPos = utils.getTargetPiece(p,xRel,yRel, isDebug, gamestate);
 		if(diagonalCheck(p.getXpos()-1, p.getYpos()+1, "upleft", p, newPos.getPosition(), isDebug, gamestate).equals(newPos.getPosition()))
@@ -509,3 +521,4 @@ public class BasicValidityChecker
 	}
 	
 }
+

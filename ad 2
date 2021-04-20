@@ -1,0 +1,52 @@
+[33mcommit e589d316455039dbe4aefe4f01d14c8eef75161c[m[33m ([m[1;36mHEAD -> [m[1;32mai[m[33m, [m[1;31mai/ai[m[33m)[m
+Author: Ammaar Sultan <awsultan2000@gmail.com>
+Date:   Fri Mar 5 12:18:22 2021 +0000
+
+    basic ai taking best capture available looking only one move ahead
+
+[1mdiff --git a/CrazyChess/.classpath b/CrazyChess/.classpath[m
+[1mindex 38cfbb3..1849902 100644[m
+[1m--- a/CrazyChess/.classpath[m
+[1m+++ b/CrazyChess/.classpath[m
+[36m@@ -2,6 +2,6 @@[m
+ <classpath>[m
+ 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/JavaSE-1.8"/>[m
+ 	<classpathentry kind="src" path="src"/>[m
+[31m-	<classpathentry kind="con" path="org.eclipse.jdt.USER_LIBRARY/JavaFx"/>[m
+[32m+[m	[32m<classpathentry kind="con" path="org.eclipse.jdt.USER_LIBRARY/javafx"/>[m
+ 	<classpathentry kind="output" path="bin"/>[m
+ </classpath>[m
+[1mdiff --git a/CrazyChess/bin/CrazyChess/GUI$1.class b/CrazyChess/bin/CrazyChess/GUI$1.class[m
+[1mindex c2885d7..73cfc98 100644[m
+Binary files a/CrazyChess/bin/CrazyChess/GUI$1.class and b/CrazyChess/bin/CrazyChess/GUI$1.class differ
+[1mdiff --git a/CrazyChess/bin/CrazyChess/GUI.class b/CrazyChess/bin/CrazyChess/GUI.class[m
+[1mindex 4419c22..a85fe6b 100644[m
+Binary files a/CrazyChess/bin/CrazyChess/GUI.class and b/CrazyChess/bin/CrazyChess/GUI.class differ
+[1mdiff --git a/CrazyChess/bin/CrazyChess/logic/BasicValidityChecker.class b/CrazyChess/bin/CrazyChess/logic/BasicValidityChecker.class[m
+[1mindex 0a1139b..8e4f6a3 100644[m
+Binary files a/CrazyChess/bin/CrazyChess/logic/BasicValidityChecker.class and b/CrazyChess/bin/CrazyChess/logic/BasicValidityChecker.class differ
+[1mdiff --git a/CrazyChess/bin/CrazyChess/logic/ExtraChecksAndTools.class b/CrazyChess/bin/CrazyChess/logic/ExtraChecksAndTools.class[m
+[1mindex d2c7aef..bf6e706 100644[m
+Binary files a/CrazyChess/bin/CrazyChess/logic/ExtraChecksAndTools.class and b/CrazyChess/bin/CrazyChess/logic/ExtraChecksAndTools.class differ
+[1mdiff --git a/CrazyChess/bin/CrazyChess/logic/MainLogic.class b/CrazyChess/bin/CrazyChess/logic/MainLogic.class[m
+[1mindex ba550ba..bdf1b23 100644[m
+Binary files a/CrazyChess/bin/CrazyChess/logic/MainLogic.class and b/CrazyChess/bin/CrazyChess/logic/MainLogic.class differ
+[1mdiff --git a/CrazyChess/bin/CrazyChess/logic/Position.class b/CrazyChess/bin/CrazyChess/logic/Position.class[m
+[1mindex 53fd6fd..ed455e6 100644[m
+Binary files a/CrazyChess/bin/CrazyChess/logic/Position.class and b/CrazyChess/bin/CrazyChess/logic/Position.class differ
+[1mdiff --git a/CrazyChess/bin/CrazyChess/logic/Utilities.class b/CrazyChess/bin/CrazyChess/logic/Utilities.class[m
+[1mindex b0d26a5..84e286a 100644[m
+Binary files a/CrazyChess/bin/CrazyChess/logic/Utilities.class and b/CrazyChess/bin/CrazyChess/logic/Utilities.class differ
+[1mdiff --git a/CrazyChess/bin/CrazyChess/pieces/AbstractPiece.class b/CrazyChess/bin/CrazyChess/pieces/AbstractPiece.class[m
+[1mindex fdf8ed6..9b09ecc 100644[m
+Binary files a/CrazyChess/bin/CrazyChess/pieces/AbstractPiece.class and b/CrazyChess/bin/CrazyChess/pieces/AbstractPiece.class differ
+[1mdiff --git a/CrazyChess/bin/CrazyChess/pieces/Bishop.class b/CrazyChess/bin/CrazyChess/pieces/Bishop.class[m
+[1mindex 0e9bd2e..1149b08 100644[m
+Binary files a/CrazyChess/bin/CrazyChess/pieces/Bishop.class and b/CrazyChess/bin/CrazyChess/pieces/Bishop.class differ
+[1mdiff --git a/CrazyChess/bin/CrazyChess/pieces/BlankPiece.class b/CrazyChess/bin/CrazyChess/pieces/BlankPiece.class[m
+[1mindex 7d9472b..e2ae8c7 100644[m
+Binary files a/CrazyChess/bin/CrazyChess/pieces/BlankPiece.class and b/CrazyChess/bin/CrazyChess/pieces/BlankPiece.class differ
+[1mdiff --git a/CrazyChess/bin/CrazyChess/pieces/King.class b/CrazyChess/bin/CrazyChess/pieces/King.class[m
+[1mindex 215abc2..44f109d 100644[m
+Binary files a/CrazyChess/bin/CrazyChess/pieces/King.class and b/CrazyChess/bin/CrazyChess/pieces/King.class differ
+[1mdiff --git a/CrazyChess/bin/CrazyChess/pieces/Knight.class b/CrazyChess/bin/CrazyChess/pieces/

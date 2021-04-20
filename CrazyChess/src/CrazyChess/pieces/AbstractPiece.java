@@ -19,6 +19,8 @@ public abstract class AbstractPiece implements Serializable
 
 	protected String color;
 	protected Position position;
+	protected String Pwtype;
+	
 	
 	/**
 	 * Constructor by coordinates
@@ -27,9 +29,10 @@ public abstract class AbstractPiece implements Serializable
 	 * @param xCoord    x coordinate
 	 * @param yCoord    y coordinate
 	 */
-	public AbstractPiece(String color, int xCoord, int yCoord){
+	public AbstractPiece(String color, int xCoord, int yCoord, String type){
 		this.color = color;
 		this.position = new Position(xCoord, yCoord);
+		this.Pwtype = type;
 	}
 
 	/**
@@ -38,9 +41,10 @@ public abstract class AbstractPiece implements Serializable
 	 * @param color      color of piece
 	 * @param position   position object to set initial position
 	 */
-	public AbstractPiece(String color, Position position){
+	public AbstractPiece(String color, Position position, String type){
 		this.color = color;
 		this.position = position;
+		this.Pwtype = type;
 	}
 	
 	/**
@@ -108,4 +112,37 @@ public abstract class AbstractPiece implements Serializable
 		return color + " " + this.getClass().getSimpleName() + " at (" + position.getXpos() + ", " + position.getYpos() + ")";
 	}
 
+	/**
+	 * Returns the position copy as a Position object, without referencing the original object's position
+	 * This is a very hacky solution and should be changed in the future
+	 *
+	 * @return   position represented by Position object
+	 */
+	public Position getPositionCopy(){
+		
+		int x=0;
+		int y=0;
+		
+		for(x=0; x<position.getXpos(); x++) {
+		}
+		
+		for(y=0; y<position.getYpos(); y++) {
+		}
+		
+		
+		return new Position(x,y);
+	}
+	
+	public void changePowerup(String type){
+		this.Pwtype = type;
+	}
+	
+	public String getPoweruptype(){
+		return Pwtype;
+	}
+
+
+	
+	
+	
 }

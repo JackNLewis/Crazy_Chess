@@ -1,8 +1,10 @@
 package CrazyChess;
 
 import javafx.application.Application;
+
 import javafx.event.EventHandler;
 import javafx.scene.Scene;
+import javafx.scene.control.Button;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
@@ -132,6 +134,11 @@ public class GUI extends Application {
 				System.out.println("Blank space selected without movement");
 			return;
 		}
+		if(chess.getPiece(pos).getColor().equalsIgnoreCase("Powerup") && !lookingForMove){
+			if(chess.isDebug())
+				System.out.println("You can't move powerups");
+			return;
+		}
 		if(selectedSquare.equals(pos)){
 			if(chess.isDebug())
 				System.out.println("Deselecting...");
@@ -171,8 +178,7 @@ public class GUI extends Application {
 			selectedSquare.setXpos(-1);
 			selectedSquare.setYpos(-1);
 			chess.changeTurn();
-			
-			
+
 			AbstractPiece[][] aiMove = ai.AI(chess);
 			
 			
@@ -312,10 +318,13 @@ public class GUI extends Application {
 		String name = p.getClass().getSimpleName().toLowerCase();
 		String color=" ";
 		
+		
 		if(p.getColor().equalsIgnoreCase("white")) {
 			color="W_";
 		}else if (p.getColor().equalsIgnoreCase("black")) {
 			color="B_";
+		}else if (p.getColor().equalsIgnoreCase("powerup")) {
+			color="P_";
 		}else if(p.getColor().equalsIgnoreCase("blank")) {
 			if(chess.isDebug()) {
 				System.out.println("Can't get an image for an empty square");

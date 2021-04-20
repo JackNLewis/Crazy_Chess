@@ -8,18 +8,25 @@ import javafx.scene.layout.StackPane;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
 
+import java.util.ArrayList;
+
 public class Tile {
 
     private StackPane sp;
     private Rectangle background;
-    private ImageView pieceImg;
+    private ArrayList<ImageView> imgs;
     private Position pos;
+    private int tileSize;
 
 
     public Tile(Position pos, int tileSize){
         this.pos = pos;
+        this.tileSize = tileSize;
         sp = new StackPane();
         background = new Rectangle(tileSize,tileSize);
+        background.setArcHeight(10);
+        background.setArcWidth(10);
+        imgs = new ArrayList<>();
         sp.getChildren().add(background);
     }
 
@@ -28,8 +35,10 @@ public class Tile {
      *
      */
     public void addImg(ImageView img){
-        this.pieceImg = img;
-        sp.getChildren().add(pieceImg);
+        imgs.add(img);
+        img.setFitWidth(tileSize-5);
+        img.setFitHeight(tileSize-5);
+        sp.getChildren().add(img);
     }
 
     /**
@@ -37,8 +46,8 @@ public class Tile {
      *
      */
     public void removeImg(){
-        if(pieceImg!=null){
-            sp.getChildren().remove(pieceImg);
+        for(ImageView img: imgs){
+            sp.getChildren().remove(img);
         }
     }
 

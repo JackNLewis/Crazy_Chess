@@ -1,4 +1,5 @@
 package CrazyChess.logic;
+import CrazyChess.logic.StageHazards.HazardPiece;
 import CrazyChess.pieces.*;
 /**
  * Class with some utilities for getting pieces from
@@ -193,8 +194,7 @@ public class Utilities
 	/**
 	 * Very brute function to move a piece in the game state and return the new game state.
 	 * Does not take into consideration any restrictions or rules on movement, will literally
-	 * move any piece anywhere on the board. DOES NOT CHANGE THE COORDINATES IN THE PEACE
-	 * OBJECT ITSELF!
+	 * move any piece anywhere on the board. 
 	 * 
 	 * !!!BE VERY CAREFUL WHEN USING THIS!!!
 	 * @param p           piece to be moved
@@ -209,9 +209,11 @@ public class Utilities
 		int oldX=p.getXpos();
 		int oldY=p.getYpos();
 		
-		AbstractPiece[][] newGamestate = gamestate; //not sure if I need this
-		newGamestate[xNew][yNew]=p;
-		newGamestate[oldX][oldY]=new BlankPiece("Blank", oldX, oldY);
+		AbstractPiece[][] newGamestate = safeCopyGamestate(gamestate); //not sure if I need this
+		AbstractPiece newPiece = safeCopyPiece(p);
+		newPiece.setPosition(xNew, yNew);
+		newGamestate[xNew][yNew]=newPiece;
+		newGamestate[oldX][oldY]=new BlankPiece("Blank", oldX, oldY,"Normal");
 		
 		return newGamestate;
 	}
@@ -236,11 +238,16 @@ public class Utilities
 		AbstractPiece newPiece = safeCopyPiece(p);
 		newPiece.setPosition(newPos);
 		newGamestate[newPos.getXpos()][newPos.getYpos()]=newPiece;
-		newGamestate[oldX][oldY]=new BlankPiece("Blank", oldX, oldY);
+		newGamestate[oldX][oldY]=new BlankPiece("Blank", oldX, oldY,"Normal");
 		
 		return newGamestate;
 	}
 	
+	/**
+	 * Safely copies the inputed gamestate
+	 * @param gamestate    gamestate to be copied
+	 * @return             the copied gamestate
+	 */
 	
 	public AbstractPiece[][] safeCopyGamestate(AbstractPiece[][] gamestate){
 		AbstractPiece[][] copy = new AbstractPiece[8][8];
@@ -253,7 +260,11 @@ public class Utilities
 		return copy;
 	}
 	
-	
+	/**
+	 * Safely copies the inputed piece
+	 * @param gamestate    piece to be copied
+	 * @return             the copied piece
+	 */
 	
 	public AbstractPiece safeCopyPiece(AbstractPiece p) {
 		String pieceType = p.getClass().getSimpleName();
@@ -262,33 +273,37 @@ public class Utilities
 		switch(pieceType) {
 			case "Pawn":
 				Pawn pawnCast=(Pawn) p;
-				Pawn pawnCopy=new Pawn(p.getColor(),p.getPosition());
+				Pawn pawnCopy=new Pawn(p.getColor(),p.getPositionCopy(),p.getPoweruptype());
 				pawnCopy.setDoublejump(pawnCast.getDoublejump());
 				return pawnCopy;
 				//break;
 			case "Rook":
-				copy=new Rook(p.getColor(),p.getPosition());
+				copy=new Rook(p.getColor(),p.getPositionCopy(),p.getPoweruptype());
 				break;
 			case "Knight":
-				copy=new Knight(p.getColor(),p.getPosition());
+				copy=new Knight(p.getColor(),p.getPositionCopy(),p.getPoweruptype());
 				break;
 			case "Bishop":
-				copy=new Bishop(p.getColor(),p.getPosition());
+				copy=new Bishop(p.getColor(),p.getPositionCopy(),p.getPoweruptype());
 				break;
 			case "Queen":
-				copy=new Queen(p.getColor(),p.getPosition());
+				copy=new Queen(p.getColor(),p.getPositionCopy(),p.getPoweruptype());
 				break;
 			case "King":
 				King kingCast=(King) p;
-				King kingCopy=new King(p.getColor(),p.getPosition());
+				King kingCopy=new King(p.getColor(),p.getPositionCopy(),p.getPoweruptype());
 				kingCopy.setWasMoved(kingCast.getWasMoved());
 				kingCopy.setIsChecked(kingCast.getIsChecked());
 				return kingCopy;
 				//break;
 			case "BlankPiece":
-				copy=new BlankPiece(p.getColor(),p.getPosition());
+				copy=new BlankPiece(p.getColor(),p.getPositionCopy(),p.getPoweruptype());
 				break;
-			
+			case "Powerup":
+				copy=new Powerup(p.getPositionCopy(),p.getPoweruptype());
+				break;
+			case "HazardPiece":
+				copy=new HazardPiece(p.getPosition(),((HazardPiece) p).getHazard(),((HazardPiece) p).getOriginalPiece());
 		}
 		return copy;
 	}
@@ -298,7 +313,9 @@ public class Utilities
 		
 		if(p.getColor().equalsIgnoreCase("black")) {
 			result = "B";
-		}else result="W";
+		}else if(p.getColor().equalsIgnoreCase("white")) {
+			result="W";
+		}else result = "P";
 		
 		result=result+p.getClass().getSimpleName().charAt(0);
 		
@@ -314,14 +331,35 @@ public class Utilities
 			for(int j=0; j<8; j++) {
 				String piece;
 				piece="[]";
+				if(gamestate[j][i] == null){
+					System.err.println("Print GS: Null Piece");
+				}
 				if(!gamestate[j][i].getColor().equalsIgnoreCase("blank")) {
 					piece=twoLetterPiece(gamestate[j][i]);
 				}
-				
+				if(gamestate[j][i] instanceof HazardPiece){
+					piece = "HZ";
+				}
+
+
 				line=line+piece;
 			}
 		}
 		System.out.println(line);
+	}
+	
+	/**
+	 *Returns the opposite of the input color 
+	 * @param col    input color
+	 * @return       the opposite of the input color, null if the input color is neither black nor white
+	 */
+	public String oppositeColor(String col) {
+		String newCol = null;
+		if(col.equalsIgnoreCase("black")) {
+			newCol="white";
+		}else newCol="black";
+		
+		return newCol;
 	}
 }
 
