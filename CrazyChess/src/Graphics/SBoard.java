@@ -109,6 +109,10 @@ public class SBoard {
             if(!(piece instanceof BlankPiece)){
                 ImageView img = getImageView(piece);
                 tile.addImg(img);
+                if(piece instanceof HazardPiece){
+                    ImageView imgOrig = getImageView(((HazardPiece) piece).getOriginalPiece());
+                    tile.addImg(imgOrig);
+                }
             }
         }
     }
