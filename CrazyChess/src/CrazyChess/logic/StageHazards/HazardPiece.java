@@ -11,11 +11,7 @@ public class HazardPiece extends AbstractPiece {
     public HazardPiece(Position position, Hazard type,AbstractPiece originalPiece) {
         super("Blank", position, "Normal");
         this.originalPiece = originalPiece;
-//        System.out.println("Hazard info:");
-//        System.out.println("Color: " + getColor());
-//        System.out.println("Pos: " + getPosition());
-//        System.out.println("Pw type: " + getPoweruptype());
-//        System.out.println("Original piece: " + originalPiece);
+        this.hazard = type;
     }
 
     public String toString(){

@@ -38,7 +38,6 @@ public class HazardAssigner {
             int randHazardIndex = rand.nextInt(Hazard.values().length);
             Hazard randHazard = Hazard.values()[randHazardIndex];
 
-//            return frozenHazard(gameState);
             //code for randomly choosing hazard
             if(randHazard == Hazard.FROZEN){
                 System.out.println("FROZEN");
@@ -94,9 +93,10 @@ public class HazardAssigner {
     		int index = rand.nextInt(blankPieces.size());
     		HazardPiece burnTile = new HazardPiece(blankPieces.get(index).getPosition(), Hazard.BURN, blankPieces.get(index));
     		System.out.println("Burning: " + burnTile.getOriginalPiece());
+            System.out.println(burnTile.getHazard().toString());
     		gs = utils.placePiece(burnTile, false, gameState);
     	}
-
+        utils.printGameState(gameState);
         return gs;
     }
 

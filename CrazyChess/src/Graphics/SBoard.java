@@ -227,6 +227,7 @@ public class SBoard {
         }
         
         else if(p instanceof HazardPiece){
+            System.out.println("is hazard piece");
 //        	filename = "fire.png";
         	HazardPiece hazardPiece = (HazardPiece) p;
 //        	if(((HazardPiece) p) == frozenHazard) {
@@ -240,10 +241,11 @@ public class SBoard {
 //        		filename = "fire.png";
 //        	}
             if(hazardPiece.getHazard() == Hazard.FROZEN) {
-            	filename = "ice.png";
+            	filename = "ice.jpg";
             }
             else if(hazardPiece.getHazard() == Hazard.BURN){
             	filename = "fire.png";
+                System.out.println("Hazard image fire");
             }
         }
         else if(p.getColor().equalsIgnoreCase("white")) {
