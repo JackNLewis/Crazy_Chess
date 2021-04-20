@@ -50,7 +50,7 @@ public class SBoard {
     private boolean aiEnabled = false;
     private AI ai;
     
-    private HazardPiece hazardPiece;
+//    private HazardPiece hazardPiece;
 
     public SBoard(MainLogic game, SGameScreen SGameScreen){
         initBoard("white");
@@ -225,9 +225,20 @@ public class SBoard {
         if(p == null){
             System.out.println("p is null in getImage");
         }
+        
         else if(p instanceof HazardPiece){
-//        	filename = "ice.png";
-        	hazardPiece = (HazardPiece) p;
+//        	filename = "fire.png";
+        	HazardPiece hazardPiece = (HazardPiece) p;
+//        	if(((HazardPiece) p) == frozenHazard) {
+//        		filename = "ice.png";
+//        	}
+//        	else if(((HazardPiece) p) == burnHazard) {
+//        		filename = "fire.png";
+//        	}
+ 
+//        	else {
+//        		filename = "fire.png";
+//        	}
             if(hazardPiece.getHazard() == Hazard.FROZEN) {
             	filename = "ice.png";
             }
