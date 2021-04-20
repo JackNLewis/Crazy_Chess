@@ -1,8 +1,8 @@
 package Graphics;
 
 import CrazyChess.logic.*;
-
-
+import CrazyChess.logic.StageHazards.Hazard;
+import CrazyChess.logic.StageHazards.HazardPiece;
 import CrazyChess.logic.powerups.PowerupMain;
 import CrazyChess.pieces.AbstractPiece;
 import CrazyChess.pieces.Bishop;
@@ -61,6 +61,8 @@ public class SBoard {
     
     private boolean aiEnabled = false;
     private AI ai;
+    
+//    private HazardPiece hazardPiece;
 
     public SBoard(MainLogic game, SGameScreen SGameScreen){
         initBoard("white");
@@ -89,6 +91,7 @@ public class SBoard {
             board.getColumnConstraints().add(new ColumnConstraints(squareSize));
             board.getRowConstraints().add(new RowConstraints(squareSize));
         }
+
         for (int i = 0; i < 8; i++) {
             for (int j = 0; j < 8; j++) {
                 Tile tile = new Tile(new Position(i,j), squareSize);
@@ -114,7 +117,6 @@ public class SBoard {
     }
 
     public void renderGameState(AbstractPiece[][] gamesState){
-        System.out.println("Rendering");
         for(Tile tile : tiles){
             int x = tile.getPos().getXpos();
             int y = tile.getPos().getYpos();
@@ -122,9 +124,12 @@ public class SBoard {
             setDefaultColor(tile);
             tile.removeImg();
             if(!(piece instanceof BlankPiece)){
-                //System.out.println(piece.toString());
                 ImageView img = getImageView(piece);
                 tile.addImg(img);
+                if(piece instanceof HazardPiece){
+                    ImageView imgOrig = getImageView(((HazardPiece) piece).getOriginalPiece());
+                    tile.addImg(imgOrig);
+                }
             }
         }
     }
@@ -137,7 +142,7 @@ public class SBoard {
                     String currentColor = game.getTurn();
 //                    System.out.println("current turn " + currentColor);
 //                    System.out.println("current gamestate ");
-                    util.printGameState(game.getGamestate());
+                    //util.printGameState(game.getGamestate());
                     String selectedColor = game.getPiece(tile.getPos()).getColor();
 
                     boolean success = false;
@@ -257,23 +262,46 @@ public class SBoard {
 
 
     public ImageView getImageView(AbstractPiece p) {
-        String name = p.getClass().getSimpleName().toLowerCase();
-        String color=" ";
         String filename = "";
-        if(p.getColor().equalsIgnoreCase("white")) {
+        String name;
+        String color;
+        if(p == null){
+            System.out.println("p is null in getImage");
+        }
+        
+        else if(p instanceof HazardPiece){
+            System.out.println("is hazard piece");
+//        	filename = "fire.png";
+        	HazardPiece hazardPiece = (HazardPiece) p;
+//        	if(((HazardPiece) p) == frozenHazard) {
+//        		filename = "ice.png";
+//        	}
+//        	else if(((HazardPiece) p) == burnHazard) {
+//        		filename = "fire.png";
+//        	}
+ 
+//        	else {
+//        		filename = "fire.png";
+//        	}
+            if(hazardPiece.getHazard() == Hazard.FROZEN) {
+            	filename = "ice.jpg";
+            }
+            else if(hazardPiece.getHazard() == Hazard.BURN){
+            	filename = "fire.png";
+                System.out.println("Hazard image fire");
+            }
+        }
+        else if(p.getColor().equalsIgnoreCase("white")) {
+            name = p.getClass().getSimpleName().toLowerCase();
             color="W_";
             filename = color+name+".png";
         }else if (p.getColor().equalsIgnoreCase("black")) {
+            name = p.getClass().getSimpleName().toLowerCase();
             color="B_";
             filename = color+name+".png";
         }else if(p instanceof Powerup){
             filename = "PowerUp.png";
         }
-        else if(p.getColor().equalsIgnoreCase("blank")) {
-            return null;
-        }
-
-
         ImageView imgView = new ImageView();
         imgView.setImage(new Image("/resources/pieces/"+filename));
         return imgView;

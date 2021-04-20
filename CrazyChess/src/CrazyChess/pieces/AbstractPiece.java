@@ -21,6 +21,7 @@ public abstract class AbstractPiece implements Serializable
 	protected Position position;
 	protected String Pwtype;
 	
+	
 	/**
 	 * Constructor by coordinates
 	 *
@@ -139,4 +140,9 @@ public abstract class AbstractPiece implements Serializable
 	public String getPoweruptype(){
 		return Pwtype;
 	}
+
+
+	
+	
+	
 }

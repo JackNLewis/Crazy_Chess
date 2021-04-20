@@ -1,4 +1,5 @@
 package CrazyChess.logic;
+import CrazyChess.logic.StageHazards.HazardPiece;
 import CrazyChess.pieces.*;
 /**
  * Class with some utilities for getting pieces from
@@ -301,7 +302,8 @@ public class Utilities
 			case "Powerup":
 				copy=new Powerup(p.getPositionCopy(),p.getPoweruptype());
 				break;
-			
+			case "HazardPiece":
+				copy=new HazardPiece(p.getPosition(),((HazardPiece) p).getHazard(),((HazardPiece) p).getOriginalPiece());
 		}
 		return copy;
 	}
@@ -329,10 +331,17 @@ public class Utilities
 			for(int j=0; j<8; j++) {
 				String piece;
 				piece="[]";
+				if(gamestate[j][i] == null){
+					System.err.println("Print GS: Null Piece");
+				}
 				if(!gamestate[j][i].getColor().equalsIgnoreCase("blank")) {
 					piece=twoLetterPiece(gamestate[j][i]);
 				}
-				
+				if(gamestate[j][i] instanceof HazardPiece){
+					piece = "HZ";
+				}
+
+
 				line=line+piece;
 			}
 		}

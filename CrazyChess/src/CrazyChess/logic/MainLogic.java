@@ -3,10 +3,7 @@ package CrazyChess.logic;
 import java.util.ArrayList;
 
 
-
-
-
-
+import CrazyChess.logic.StageHazards.HazardAssigner;
 import CrazyChess.logic.powerups.PowerupMain;
 import CrazyChess.pieces.*;
 
@@ -52,6 +49,8 @@ public class MainLogic
 	BasicValidityChecker bvc = new BasicValidityChecker();
 	ExtraChecksAndTools ecat = new ExtraChecksAndTools();
 	PowerupMain pwrUp = new PowerupMain();
+
+	HazardAssigner hazards = new HazardAssigner();
 	/**
 	 * Constructor for the MainLogic class.
 	 * Initiates the gamestate as an empty board.
@@ -245,6 +244,12 @@ public class MainLogic
 				System.out.println("It is now White's turn.");
 				System.out.println("White's powerups: "+whitePowerUps.toString());}
 		}
+
+		//=======================================STAGE HAZARDS================================================//
+		//GAMESTATE = NEW GAMESTATE
+		gamestate= hazards.assignHazard(gamestate);
+		//=======================================STAGE HAZARDS================================================//
+
 	}
 	
 	/**
@@ -320,15 +325,13 @@ public class MainLogic
 				System.out.println("You cannot move a Dummy piece.");
 			return false;
 		}
-		
-		
-		
+
 //		System.out.println("Turn number: "+turnNo+". Available moves for "+currentTurn+": "+ecat.possibleGamestatesAfterNextMove(currentTurn, isDebug, gamestate, turnNo).size());
 //		for(AbstractPiece[][] gs: ecat.possibleGamestatesAfterNextMove(currentTurn, isDebug, gamestate, turnNo)) {
 //			utils.printGameState(gs);
 //		}
 		
-		
+
 		
 		
 		//Save old position (to place a blank later)
@@ -493,7 +496,7 @@ public class MainLogic
 		
 			//Check if the player is not under check
 			if(currentTurn.equalsIgnoreCase("white")) {
-				utils.printGameState(newGamestate);
+				//utils.printGameState(newGamestate);
 				if(ecat.isInCheck("black", isDebug, newGamestate, turnNo+1)) {
 					if(isDebug) {
 						System.out.println("Black king is now checked!");
@@ -544,18 +547,15 @@ public class MainLogic
 				isEndgame = true;
 			}
 
-
-			gamestate = newGamestate;
-			
 			
 			if(newPiece instanceof Powerup) {
 				if(currentTurn.equalsIgnoreCase("white")) whitePowerUps.add(pwrUp.randomPowerup(isDebug));
 				if(currentTurn.equalsIgnoreCase("black")) blackPowerUps.add(pwrUp.randomPowerup(isDebug));
 				        
 			}
-			
-			
-			
+
+
+			gamestate = newGamestate;
 			return true;
 		}
 		return false;
