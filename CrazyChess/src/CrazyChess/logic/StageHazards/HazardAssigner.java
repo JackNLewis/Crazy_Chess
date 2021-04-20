@@ -12,7 +12,7 @@ import java.util.Random;
 public class HazardAssigner {
 
     final int hazardInterval = 4; //number of go's between hazards spawning
-    int untilHazard = 0; //number of turns before next hazard
+    int untilHazard; //number of turns before next hazard
     int hazardDuration = 2; //number of turns hazards last for
     int hazardTurns = 0; //how many turns hazard has been active
     boolean activeHazard;
@@ -22,6 +22,7 @@ public class HazardAssigner {
     public HazardAssigner(){
         utils = new Utilities();
         activeHazard = false;
+        untilHazard = hazardInterval;
     }
 
 
