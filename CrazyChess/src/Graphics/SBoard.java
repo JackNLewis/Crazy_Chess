@@ -43,6 +43,8 @@ public class SBoard {
     private PowerUpMenu powerUps;
     private PowerupMain powerMain; // Used to see valid powered moves
     
+    public AskForDraw askForDraw; //ask for draw button
+    
     private music sound; // Used to play sound
 
     private boolean aiEnabled = false;
@@ -57,6 +59,7 @@ public class SBoard {
         util = new Utilities();
         powerUps = SGameScreen.getPwrUpMenu();
         powerMain = new PowerupMain();
+        askForDraw = SGameScreen.getAFD();
         sound = new music();
     }
 
@@ -125,14 +128,14 @@ public class SBoard {
                     if(!selected){
 
                         //Make sure you only select tiles of your colour
-                        if(selectedColor.equalsIgnoreCase(currentColor)){
+                        if(selectedColor.equalsIgnoreCase(currentColor) && game.getDrawStatus() == false && game.getDrawAsked() == false){
                             selected = true;
                             selectedTile = tile;
 
                             if(powerUps.getSelectedIndex() != -1){
                                 showPoweredMoves();
                             }else {
-                                showMoves();
+                            	showMoves();
                             }
 
                         }
@@ -180,6 +183,7 @@ public class SBoard {
                                 if(game.getMateStatus(oppColor)){
                                     SGameScreen.setInfoMessage(game.getTurn() + " wins!");
                                     System.out.println(oppColor + " is in check mate");
+                                    askForDraw.setHide();
                                 }
 
                             }

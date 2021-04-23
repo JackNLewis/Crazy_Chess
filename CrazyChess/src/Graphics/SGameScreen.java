@@ -20,13 +20,14 @@ public class SGameScreen {
     private MainLogic game;
     private Label infoMessage;
     private PowerUpMenu pwrUpMenu;
+    private AskForDraw askForDraw;
 
     public SGameScreen(Stage stage){
         game = new MainLogic();
 
         this.stage = stage;
         root = new VBox();
-        scene = new Scene(root,720,600);
+        scene = new Scene(root,920,600);
         scene.getStylesheets().add("/Graphics/css/board.css");
 
         //Add top banner
@@ -39,6 +40,9 @@ public class SGameScreen {
 
         //make power up menu
         pwrUpMenu = new PowerUpMenu(this);
+        
+        //add ask for draw button
+        askForDraw = new AskForDraw(this, game);
 
         //Add actuall board
         board = new SBoard(game, this);
@@ -50,7 +54,7 @@ public class SGameScreen {
 
         boardContainer = new HBox();
         boardContainer.setSpacing(10);
-        boardContainer.getChildren().addAll(board.getBoard(), pwrUpMenu.getPowerUpMenu());
+        boardContainer.getChildren().addAll(board.getBoard(), pwrUpMenu.getPowerUpMenu(), askForDraw.getAskForDraw());
         boardContainer.setAlignment(Pos.CENTER);
         root.getChildren().add(boardContainer);
 
@@ -100,6 +104,10 @@ public class SGameScreen {
 
     public PowerUpMenu getPwrUpMenu(){
         return pwrUpMenu;
+    }
+    
+    public AskForDraw getAFD(){
+    	return askForDraw;
     }
 
     public SBoard getBoard(){
