@@ -45,13 +45,14 @@ public class GameScreen {
         infoMessage.setText("Debug text");
         
         game = new MainLogic();
-        askForDraw = new AskForDraw(this, game, client);
+    //    askForDraw = new AskForDraw(this, game, client);
         
         //Add actuall board
         board = new Board(client);
         boardContainer = new HBox();
         boardContainer.setSpacing(20);
-        boardContainer.getChildren().addAll(board.getBoard(), askForDraw.getAskForDraw());
+        boardContainer.getChildren().add(board.getBoard());
+     //   boardContainer.getChildren().addAll(board.getBoard(), askForDraw.getAskForDraw());
         boardContainer.setAlignment(Pos.CENTER);
         root.getChildren().add(boardContainer);
 
