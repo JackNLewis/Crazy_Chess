@@ -18,7 +18,7 @@ import javafx.stage.Stage;
 import java.util.concurrent.Semaphore;
 
 import CrazyChess.logic.MainLogic;
-import CrazyChess.logic.saveGame.SaveGame;
+import CrazyChess.logic.savegamestate.SaveGame;
 
 public class MenuScreen {
 

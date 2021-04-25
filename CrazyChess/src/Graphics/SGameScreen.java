@@ -3,7 +3,7 @@ package Graphics;
 import java.io.File;
 
 import CrazyChess.logic.MainLogic;
-import CrazyChess.logic.saveGame.SaveGame;
+import CrazyChess.logic.savegamestate.SaveGame;
 import javafx.event.EventHandler;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
