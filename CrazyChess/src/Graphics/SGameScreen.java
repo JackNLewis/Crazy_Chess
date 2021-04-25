@@ -1,11 +1,17 @@
 package Graphics;
 
+import java.io.File;
+
 import CrazyChess.logic.MainLogic;
+import CrazyChess.logic.saveGame.SaveGame;
 import javafx.event.EventHandler;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
+import javafx.scene.control.Menu;
+import javafx.scene.control.MenuBar;
+import javafx.scene.control.MenuItem;
 import javafx.scene.layout.*;
 import javafx.stage.Stage;
 import javafx.stage.WindowEvent;
@@ -29,6 +35,59 @@ public class SGameScreen {
         root = new VBox();
         scene = new Scene(root,720,600);
         scene.getStylesheets().add("/Graphics/css/board.css");
+        
+      //Options menu
+        Menu optionsMenu = new Menu("Options");
+        
+        //Menu items
+        MenuItem save = new MenuItem("Save");
+        save.setOnAction(e -> {
+//        	SaveGame file = new SaveGame();
+//        	file.setFile("savedGame.xml");
+        	File file = new File("saved.xml");
+        	SaveGame saveState = new SaveGame();
+        	
+        	byte[] bytes = saveState.save(game, game.getGamestate());
+        	
+        	try {
+        		saveState.saveDataToFile(bytes, file);
+        		System.out.println("saved successfully");
+        	}
+        	catch (Exception exc) {
+        		System.out.println("Couldn't save: " + exc.getMessage());
+        	}
+        
+        	//file.setFile(configFile);
+
+			//file.setFile.("resources.xml/savedGame.xml");
+//        	try {
+//        		file.saveData();
+//    		}
+//    		catch (Exception exc) {
+//    			System.out.println("Couldn't save: " + exc.getMessage());
+//    		}
+    	});
+        optionsMenu.getItems().add(save);
+        
+        MenuItem reset = new MenuItem("Reset");
+        reset.setOnAction(e -> {
+        	//game.resetBoard();
+        });
+        optionsMenu.getItems().add(reset);
+      //  optionsMenu.getItems().add(new MenuItem("Reset"));
+        
+//        optionsMenu.getItems().add(new SeparatorMenuItem());
+//        optionsMenu.getItems().add(new MenuItem("Exit"));
+        
+        //Main menu bar
+        MenuBar menuBar = new MenuBar();
+        menuBar.getMenus().addAll(optionsMenu);
+        
+		BorderPane menu = new BorderPane();
+		menu.setTop(menuBar);
+
+
+        ((VBox) scene.getRoot()).getChildren().addAll(menuBar);
 
         //Add top banner
         addBanner();
