@@ -17,11 +17,15 @@ import javafx.stage.Stage;
 
 import java.util.concurrent.Semaphore;
 
+import CrazyChess.logic.MainLogic;
+import CrazyChess.logic.saveGame.SaveGame;
+
 public class MenuScreen {
 
     private VBox buttons;
     private Scene scene;
     private Stage stage;
+    private MainLogic game;
 
     public MenuScreen(Stage stage){
         buttons = new VBox();
@@ -43,15 +47,48 @@ public class MenuScreen {
 
     public void addButtons(VBox root){
 
-        //Add New Game
-        Button newButton = new Button("Local Game");
-        newButton.setOnMouseClicked(new EventHandler<MouseEvent>() {
-            @Override
-            public void handle(MouseEvent event) {
-                SGameScreen sp = new SGameScreen(stage);
-                stage.setScene(sp.getScene());
-            }
-        });
+		// Add New Game
+		Button newButton = new Button("Local Game");
+		newButton.setOnMouseClicked(new EventHandler<MouseEvent>() {
+			@Override
+			public void handle(MouseEvent event) {
+				buttons.getChildren().clear();
+
+				Button load = new Button("Load Game");
+				load.setOnMouseClicked(new EventHandler<MouseEvent>() {
+					@Override
+					public void handle(MouseEvent event) {
+						SaveGame loadState = new SaveGame();
+						// File file = ("/CrazyChess/saved.xml");
+						// byte[] bytes = loadState.loadDataFromFile("/CrazyChess/saved.xml");
+						byte[] bytes = loadState.loadDataFromResource("saved.xml");
+
+						// if (file != null) {
+						try {
+							loadState.load(bytes, game, game.getGamestate());
+							System.out.println("Loaded successfully");
+						} catch (Exception exc) {
+							System.out.println("Couldn't load " + exc.getMessage());
+						}
+						// }
+						// else {
+						// System.out.println("File is empty");
+						// MainLogic newGame = new MainLogic();
+						// }
+					}
+				});
+
+				Button newGame = new Button("New Game");
+				newGame.setOnMouseClicked(new EventHandler<MouseEvent>() {
+					@Override
+					public void handle(MouseEvent event) {
+						SGameScreen sp = new SGameScreen(stage);
+						stage.setScene(sp.getScene());
+					}
+				});
+				buttons.getChildren().addAll(load, newGame);
+			};
+		});
 
         //Add Multiplayer Mode
         Button multiplayer = new Button("Multiplayer");

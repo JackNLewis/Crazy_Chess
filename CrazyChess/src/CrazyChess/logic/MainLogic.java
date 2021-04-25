@@ -134,6 +134,10 @@ public class MainLogic
 		return currentTurn;
 	}
 	
+	public void setCurrentTurn(String currentTurn) {
+		this.currentTurn = currentTurn;
+	}
+	
 	/**
 	 * Returns the current game state
 	 * @return current game state
