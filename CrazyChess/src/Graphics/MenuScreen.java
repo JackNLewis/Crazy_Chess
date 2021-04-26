@@ -21,7 +21,7 @@ import java.util.List;
 import java.util.concurrent.Semaphore;
 
 import CrazyChess.logic.MainLogic;
-import CrazyChess.logic.savegamestate.SaveGame;
+import CrazyChess.logic.savegamestate.*;
 import CrazyChess.pieces.AbstractPiece;
 
 public class MenuScreen {
@@ -70,21 +70,30 @@ public class MenuScreen {
 					   
 					    byte[] bytes = loadState.loadDataFromFile(file);
 //						System.out.println("converted to bytes successfully");
+					    MainLogic game = new MainLogic();
 					    
 						try {
 //							System.out.println("tried loading");
 //							loadState.load(bytes);
-							MainLogic game = new MainLogic();
+//							MainLogic game = new MainLogic();
 							loadState.load(bytes, game, game.getGamestate());
 							game.setGamestate(game.getGamestate());
-							game.printGameState();
 							
-//			                game.setGamestate(gamestate);
+//							game.printGameState();
+							
+			                SGameScreen sp = new SGameScreen(game, stage);
+							System.out.println("new screen created");
+			                stage.setScene(sp.getScene());
 							System.out.println("Loaded successfully");
 							
 						} catch (Exception exc) {
 							System.out.println("Couldn't load: " + exc.getMessage());
 						}
+//						SGameScreen sp = new SGameScreen(stage);
+//						MainLogic game = null;
+//						SGameScreen sp = new SGameScreen(game, stage);
+//						System.out.println("new screen created");
+//		                stage.setScene(sp.getScene());
 					}
             	});
             	
@@ -92,7 +101,10 @@ public class MenuScreen {
             	newGame.setOnMouseClicked(new EventHandler<MouseEvent>() {
 					@Override
 					public void handle(MouseEvent event) {
-						SGameScreen sp = new SGameScreen(stage);
+						MainLogic newgame = new MainLogic();
+						newgame.resetBoard();
+						SGameScreen sp = new SGameScreen(newgame, stage);
+//						sp.loadLogic(newgame);
 		                stage.setScene(sp.getScene());
 					}
             	});
@@ -110,7 +122,10 @@ public class MenuScreen {
         VsAI.setOnMouseClicked(new EventHandler<MouseEvent>() {
             @Override
             public void handle(MouseEvent event) {
-                SGameScreen sp = new SGameScreen(stage);
+            	MainLogic newgame = new MainLogic();
+            	newgame.resetBoard();
+                SGameScreen sp = new SGameScreen(newgame, stage);
+//                sp.loadLogic(newgame);
                 sp.getBoard().enableAI();
                 stage.setScene(sp.getScene());
             }

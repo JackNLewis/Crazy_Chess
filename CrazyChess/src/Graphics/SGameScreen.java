@@ -30,8 +30,14 @@ public class SGameScreen {
     private Label infoMessage;
     private PowerUpMenu pwrUpMenu;
 
-    public SGameScreen(Stage stage){
-        game = new MainLogic();
+    public SGameScreen(MainLogic newgame, Stage stage){
+    	if(newgame != null) {
+    		game = newgame;
+    	}
+    	else {
+    		game = new MainLogic();
+    	}
+//        game = new MainLogic();
 
         this.stage = stage;
         root = new VBox();
@@ -92,7 +98,7 @@ public class SGameScreen {
 
         //Add actuall board
         board = new SBoard(game, this);
-        game.resetBoard();
+//        game.resetBoard();
         game.printGameState();
         board.renderGameState(game.getGamestate());
 
@@ -109,49 +115,59 @@ public class SGameScreen {
             }
         });
     }
+    
+	public void loadLogic(MainLogic newgame){
+		if(newgame != null) {
+			game = newgame;
+		}
+		else {
+			 game = new MainLogic();
+			
+		}
+	}
 
-    public Scene getScene(){
-        return this.scene;
-    }
+	public Scene getScene() {
+		return this.scene;
+	}
 
-    public void addBanner(){
-        HBox hbox = new HBox();
-        hbox.getStyleClass().add("banner");
-        playerLabel = new Label();
-        updateMoveLabel("white");
-        playerLabel.getStyleClass().add("banner-text");
-        hbox.setAlignment(Pos.CENTER);
-        hbox.getChildren().add(playerLabel);
+	public void addBanner() {
+		HBox hbox = new HBox();
+		hbox.getStyleClass().add("banner");
+		playerLabel = new Label();
+		updateMoveLabel("white");
+		playerLabel.getStyleClass().add("banner-text");
+		hbox.setAlignment(Pos.CENTER);
+		hbox.getChildren().add(playerLabel);
 
+		root.getChildren().add(hbox);
+	}
 
-        root.getChildren().add(hbox);
-    }
+	public void updateMoveLabel(String player) {
+		if (player.equalsIgnoreCase("white")) {
+			playerLabel.setText("White's Turn");
+		} else {
+			playerLabel.setText("Black's Turn");
+		}
+	}
 
-    public void updateMoveLabel(String player){
-        if(player.equalsIgnoreCase("white")){
-            playerLabel.setText("White's Turn");
-        }else{
-            playerLabel.setText("Black's Turn");
-        }
-    }
+	public void setInfoMessage(String message) {
+		this.infoMessage.setText(message);
+	}
 
-    public void setInfoMessage(String message){
-        this.infoMessage.setText(message);
-    }
+	public void close() {
+		MenuScreen menu = new MenuScreen(stage);
+		stage.setScene(menu.getScene());
+	}
 
-    public void close(){
-        MenuScreen menu = new MenuScreen(stage);
-        stage.setScene(menu.getScene());
-    }
+	public PowerUpMenu getPwrUpMenu() {
+		return pwrUpMenu;
+	}
 
+	public SBoard getBoard() {
+		return this.board;
+	}
 
-    public PowerUpMenu getPwrUpMenu(){
-        return pwrUpMenu;
-    }
-
-    public SBoard getBoard(){
-        return this.board;
-    }
-
-    public void selectPower(String powerUp){}
+	public void selectPower(String powerUp) {
+	}
+  
 }
