@@ -274,4 +274,57 @@ public class PowerupMain
 	    return newGamestate;
 
 	}
+
+	/**
+	 * Method for using powerups. Returns true if the use of the powerup process was successful, false if not.
+	 * If using a powerup was successful, it will also alter the current gamestate.
+	 * @param chess		  	  object of the mainlogic
+	 * @param powerupIndex    index (in whitePowerUps or blackPowerUps) of the powerup to be used
+	 * @param target1         position of the first piece to be used in the powerup
+	 * @param target2         position of the second piece to be used in the powerup (can be NULL)
+	 * @return                true if the use of the powerup process was successful, false if not
+	 */
+	public AbstractPiece[][] usePowerupGivenGamestate(String pwrUpStr, AbstractPiece[][] gamestate, String currentTurn, Position target1, Position target2, boolean isDebug) {
+
+		AbstractPiece[][] copiedGamestate = utils.safeCopyGamestate(gamestate);
+		AbstractPiece[][] gamestateAfterPowerup = powerupAssigner(pwrUpStr.toLowerCase(), copiedGamestate, target1, target2, 0, currentTurn, isDebug);
+
+		return gamestateAfterPowerup;
+	}
+
+	/**
+	 * This function returns all
+	 * powerup possible gamestates
+	 *
+	 * @param chess		  object of the mainlogic
+	 * @param isDebug     is debug mode active
+	 * @param moveNo      current move number
+	 * @return            ArrayList of possible game states after the turn is completed
+	 */
+
+	public ArrayList<AbstractPiece[][]> possiblePwrUpGamestatesAfterNextMove (MainLogic chess, boolean isDebug, int moveNo) {
+
+		String currentTurn = chess.getTurn();
+		ArrayList<String> availablePwrUp = chess.getPowerUps(currentTurn);
+		ArrayList<AbstractPiece[][]> possiblePwrUpGamestate = new ArrayList<AbstractPiece[][]>();
+
+		for (int i = 0; i < availablePwrUp.size(); i++) {
+			String pwrUpStr = availablePwrUp.get(i);
+			AbstractPiece[][] copiedGamestate = utils.safeCopyGamestate(chess.getGamestate());
+			ArrayList<Position> initialPos = initialPowerupMoves(pwrUpStr, copiedGamestate, currentTurn);
+			for (Position initPos: initialPos) {
+				ArrayList<Position> validFinalPos = validPowerupMoves(pwrUpStr, copiedGamestate, initPos, isDebug);
+				if (!validFinalPos.isEmpty()) {
+					for (Position finalPos: validFinalPos) {
+						possiblePwrUpGamestate.add(usePowerupGivenGamestate(
+							pwrUpStr, copiedGamestate,currentTurn, initPos, finalPos, isDebug
+						));
+					}
+				}
+			}
+		}
+
+		return possiblePwrUpGamestate;
+	}
+
 }

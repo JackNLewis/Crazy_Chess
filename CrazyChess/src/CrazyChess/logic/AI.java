@@ -1,5 +1,7 @@
 package CrazyChess.logic;
 import java.util.ArrayList;
+
+import CrazyChess.logic.powerups.PowerupMain;
 import CrazyChess.pieces.*;
 
 public class AI
@@ -7,6 +9,7 @@ public class AI
 	private MainLogic chess;
 	private Utilities utils = new Utilities();
 	private ExtraChecksAndTools ect = new ExtraChecksAndTools();
+	private PowerupMain pwrUp = new PowerupMain();
 	public void AI () {
 		//null constructor
 	}
@@ -88,7 +91,8 @@ public class AI
 	public AbstractPiece[][] minimax (AbstractPiece[][] board, int max_depth, String whoseAI){
 		//don't need to know whoseTurn because its always AI's turn at the 0th board
 		//possg are all the possible immediate moves the AI can take in the current gamestate's turn
-		ArrayList <AbstractPiece[][]> possg = ect.possibleGamestatesAfterNextMove(whoseAI, false, board, 0);
+//		ArrayList <AbstractPiece[][]> possg = ect.possibleGamestatesAfterNextMove(whoseAI, false, board, 0);
+		ArrayList <AbstractPiece[][]> possg = getNextPossibleGamestate();
 
 		//need to pass whoseTurn to next function and it will be whoever is not AI's turn so whoseTurn is decided below
 		String whoseTurn;
@@ -417,6 +421,31 @@ public class AI
 
 		//System.out.println("current value is "+value);
 		return value;
+	}
+
+	/**
+	 * This method check a current game
+	 * and return all possible gamestate
+	 *
+	 * @return            ArrayList of possible next turn game states
+	 */
+	public ArrayList<AbstractPiece[][]> getNextPossibleGamestate(){
+
+		ArrayList<AbstractPiece[][]> posGamestate = new ArrayList<AbstractPiece[][]>();
+
+		posGamestate.addAll(ect.possibleGamestatesAfterNextMove(
+			chess.getTurn(),
+			false,
+			chess.getGamestate(),
+			0
+		));
+		posGamestate.addAll(pwrUp.possiblePwrUpGamestatesAfterNextMove(
+			chess,
+			false,
+			0
+		));
+
+		return posGamestate;
 	}
 
 }
