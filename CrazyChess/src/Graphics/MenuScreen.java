@@ -15,17 +15,23 @@ import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 
+import java.io.File;
+import java.nio.file.Path;
+import java.util.List;
 import java.util.concurrent.Semaphore;
 
 import CrazyChess.logic.MainLogic;
 import CrazyChess.logic.savegamestate.SaveGame;
+import CrazyChess.pieces.AbstractPiece;
 
 public class MenuScreen {
 
     private VBox buttons;
     private Scene scene;
     private Stage stage;
-    private MainLogic game;
+    
+//    MainLogic game = new MainLogic();
+//    private AbstractPiece[][] gamestate;
 
     public MenuScreen(Stage stage){
         buttons = new VBox();
@@ -47,49 +53,54 @@ public class MenuScreen {
 
     public void addButtons(VBox root){
 
-		// Add New Game
-		Button newButton = new Button("Local Game");
-		newButton.setOnMouseClicked(new EventHandler<MouseEvent>() {
-			@Override
-			public void handle(MouseEvent event) {
-				buttons.getChildren().clear();
-
-				Button load = new Button("Load Game");
-				load.setOnMouseClicked(new EventHandler<MouseEvent>() {
+        //Add New Game
+        Button newButton = new Button("Local Game");
+        newButton.setOnMouseClicked(new EventHandler<MouseEvent>() {
+            @Override
+            public void handle(MouseEvent event) {
+            	buttons.getChildren().clear();
+            	
+            	Button load = new Button("Load Game");
+            	load.setOnMouseClicked(new EventHandler<MouseEvent>() {
 					@Override
 					public void handle(MouseEvent event) {
-						SaveGame loadState = new SaveGame();
-						// File file = ("/CrazyChess/saved.xml");
-						// byte[] bytes = loadState.loadDataFromFile("/CrazyChess/saved.xml");
-						byte[] bytes = loadState.loadDataFromResource("saved.xml");
-
-						// if (file != null) {
+						
+					    File file = new File("saved.xml");
+					    SaveGame loadState = new SaveGame();
+					   
+					    byte[] bytes = loadState.loadDataFromFile(file);
+//						System.out.println("converted to bytes successfully");
+					    
 						try {
+//							System.out.println("tried loading");
+//							loadState.load(bytes);
+							MainLogic game = new MainLogic();
 							loadState.load(bytes, game, game.getGamestate());
+							game.setGamestate(game.getGamestate());
+							game.printGameState();
+							
+//			                game.setGamestate(gamestate);
 							System.out.println("Loaded successfully");
+							
 						} catch (Exception exc) {
-							System.out.println("Couldn't load " + exc.getMessage());
+							System.out.println("Couldn't load: " + exc.getMessage());
 						}
-						// }
-						// else {
-						// System.out.println("File is empty");
-						// MainLogic newGame = new MainLogic();
-						// }
 					}
-				});
-
-				Button newGame = new Button("New Game");
-				newGame.setOnMouseClicked(new EventHandler<MouseEvent>() {
+            	});
+            	
+            	Button newGame = new Button("New Game");
+            	newGame.setOnMouseClicked(new EventHandler<MouseEvent>() {
 					@Override
 					public void handle(MouseEvent event) {
 						SGameScreen sp = new SGameScreen(stage);
-						stage.setScene(sp.getScene());
+		                stage.setScene(sp.getScene());
 					}
-				});
-				buttons.getChildren().addAll(load, newGame);
-			};
-		});
-
+            	});
+            	buttons.getChildren().addAll(load,newGame);
+            };
+        });
+        
+        
         //Add Multiplayer Mode
         Button multiplayer = new Button("Multiplayer");
         addMultiplayerButtons(multiplayer);

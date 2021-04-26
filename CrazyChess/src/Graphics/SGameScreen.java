@@ -3,16 +3,18 @@ package Graphics;
 import java.io.File;
 
 import CrazyChess.logic.MainLogic;
-import CrazyChess.logic.savegamestate.SaveGame;
+import CrazyChess.logic.savegamestate.*;
 import javafx.event.EventHandler;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
-import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.Menu;
 import javafx.scene.control.MenuBar;
 import javafx.scene.control.MenuItem;
-import javafx.scene.layout.*;
+import javafx.scene.control.SeparatorMenuItem;
+import javafx.scene.layout.BorderPane;
+import javafx.scene.layout.HBox;
+import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 import javafx.stage.WindowEvent;
 
@@ -42,11 +44,9 @@ public class SGameScreen {
         //Menu items
         MenuItem save = new MenuItem("Save");
         save.setOnAction(e -> {
-//        	SaveGame file = new SaveGame();
-//        	file.setFile("savedGame.xml");
         	File file = new File("saved.xml");
         	SaveGame saveState = new SaveGame();
-        	
+//        	System.out.println("gamestate before " + game);
         	byte[] bytes = saveState.save(game, game.getGamestate());
         	
         	try {
@@ -56,16 +56,6 @@ public class SGameScreen {
         	catch (Exception exc) {
         		System.out.println("Couldn't save: " + exc.getMessage());
         	}
-        
-        	//file.setFile(configFile);
-
-			//file.setFile.("resources.xml/savedGame.xml");
-//        	try {
-//        		file.saveData();
-//    		}
-//    		catch (Exception exc) {
-//    			System.out.println("Couldn't save: " + exc.getMessage());
-//    		}
     	});
         optionsMenu.getItems().add(save);
         
@@ -74,10 +64,10 @@ public class SGameScreen {
         	//game.resetBoard();
         });
         optionsMenu.getItems().add(reset);
-      //  optionsMenu.getItems().add(new MenuItem("Reset"));
+//        optionsMenu.getItems().add(new MenuItem("Reset"));
         
-//        optionsMenu.getItems().add(new SeparatorMenuItem());
-//        optionsMenu.getItems().add(new MenuItem("Exit"));
+        optionsMenu.getItems().add(new SeparatorMenuItem());
+        optionsMenu.getItems().add(new MenuItem("Exit"));
         
         //Main menu bar
         MenuBar menuBar = new MenuBar();
@@ -96,12 +86,12 @@ public class SGameScreen {
         infoMessage = new Label();
         infoMessage.getStyleClass().add("info-message");
         root.getChildren().add(infoMessage);
-        
+
         //make power up menu
         pwrUpMenu = new PowerUpMenu(this);
 
         //Add actuall board
-        board = new SBoard(game,this);
+        board = new SBoard(game, this);
         game.resetBoard();
         game.printGameState();
         board.renderGameState(game.getGamestate());
