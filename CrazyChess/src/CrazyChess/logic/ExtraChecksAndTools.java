@@ -28,7 +28,6 @@ public class ExtraChecksAndTools
 	BasicValidityChecker bvc = new BasicValidityChecker();
 	Utilities utils = new Utilities();
 	int counter = 0;
-//	BishopRookSwitch brs = new BishopRookSwitch();
 	
 	/**
 	 * Function that returns and ArrayList of pieces from
@@ -510,7 +509,7 @@ public class ExtraChecksAndTools
 		return false;
 	}
 	
-	public void updateRuleChange() {
+	public void updateRuleChange1() {
 		if (bvc.getBrs() == false)
 		{
 			Random r = new Random();

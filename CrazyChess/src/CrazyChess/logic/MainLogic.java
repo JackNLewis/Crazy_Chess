@@ -231,7 +231,7 @@ public class MainLogic
 			
 			gamestate=pwrUp.powerupSpawn(gamestate, turnNo, isDebug);
 			
-			ecat.updateRuleChange();
+			ecat.updateRuleChange1();
 			System.out.println("brswitch " + ecat.getBrs());
 
 			
@@ -244,7 +244,7 @@ public class MainLogic
 			currentTurn = "White";
 			turnNo++;
 			
-			ecat.updateRuleChange();
+			ecat.updateRuleChange1();
 			System.out.println("brswitch " + ecat.getBrs());
 			
 			gamestate=pwrUp.powerupSpawn(gamestate, turnNo, isDebug);

@@ -602,34 +602,6 @@ public class BasicValidityChecker
 		return false;
 	}
 	
-/*	public void updateRuleChange()
-	{
-		if (brswitch == false)
-		{
-			Random r = new Random();
-			if (r.nextInt(2) == 0)
-			{
-				brswitch = true;
-				System.out.println("Bishop-Rook switch rule change active. Remaining turns: 5");
-				counter = 1;
-			}
-		}
-		else
-		{
-			if (counter >= 6)
-			{
-				brswitch = false;
-				counter = 0;
-				System.out.println("Bishop-Rook switch rule change switched off.");
-			}
-			else
-			{
-				counter++;
-				System.out.println("Bishop-Rook switch rule change active. Remaining turns: " + (6 - counter));
-			}
-		}
-	}*/
-	
 	public boolean getBrs()
 	{
 		return brswitch;
