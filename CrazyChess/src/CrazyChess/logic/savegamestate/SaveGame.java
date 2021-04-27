@@ -119,62 +119,7 @@ public class SaveGame implements ChessIO {
 		}
 	}
 	
-//	public void load(byte[] data, MainLogic board, AbstractPiece[][] gamestate) {
-//		// AbstractPiece p;
-//		ByteArrayInputStream bais = new ByteArrayInputStream(data);
-//		XMLInputFactory factory = XMLInputFactory.newInstance();
-//		XMLStreamReader reader = null;
-//		try {
-//			reader = factory.createXMLStreamReader(bais);
-//			Stack<String> stack = new Stack<>();
-//			while (reader.hasNext()) {
-//				switch (reader.getEventType()) {
-//				case XMLStreamReader.START_ELEMENT:
-//					stack.push(reader.getName().getLocalPart());
-//					switch (String.join("/", stack)) {
-//					   case "Board":
-//						   // System.out.println("successfully board");
-//						   // how to properly set current turn????
-//						            System.out.println("currentturn: " + reader.getAttributeValue("", "CurrentTurn"));
-//
-//						      // this line causes issues??
-//						            board.setCurrentTurn(reader.getAttributeValue("", "CurrentTurn"));
-//
-//						            System.out.println("successfully board");
-//						            break;
-//					   case "Board/Black/Piece":
-//						       System.out.println("all black pieces");
-//						            loadPiece(reader, board, gamestate);
-//						            System.out.println("all black pieces2");
-//						            break; 
-//					   case "Board/White/Piece":
-//						            System.out.println("all white pieces");
-//						            loadPiece(reader, board, gamestate);
-//						            break;
-//					   default:
-//						            System.out.println("Nothing to read");
-//						            break;
-//					}
-//				    
-//					break;
-//				case XMLStreamReader.END_ELEMENT:
-//					stack.pop();
-//					break;
-//				}
-//				reader.next();
-//			}
-//		} catch (XMLStreamException e) {
-//			e.printStackTrace();
-//		} finally {
-//			if (reader != null) {
-//				try {
-//					reader.close();
-//				} catch (XMLStreamException e) {
-//					e.printStackTrace();
-//				}
-//			}
-//		}
-//	}
+
 	
 	public void load(byte[] data, MainLogic board, AbstractPiece[][] gamestate) {
 		// AbstractPiece p;
@@ -281,62 +226,6 @@ public class SaveGame implements ChessIO {
 //		System.out.println("successfully rendered gamestate");
 	}
 	
-//	private void loadPiece(XMLStreamReader reader, MainLogic board, AbstractPiece[][] gamestate) throws XMLStreamException {
-//		// AbstractPiece[][] gamestate = null;
-//		// AbstractPiece piece;
-//		String type = reader.getAttributeValue("", "Type");
-//		String color = reader.getAttributeValue("", "Colour");
-//		int xcoord = Integer.parseInt(reader.getAttributeValue("", "XCoordinate"));
-//		int ycoord = Integer.parseInt(reader.getAttributeValue("", "YCoordinate"));
-//		String powerup = reader.getAttributeValue("", "Powerup");
-////		AbstractPiece piece = null;
-////		if (type == "Pawn") {
-////			piece = new Pawn(color, xcoord, ycoord, powerup);
-////		} else if (type == "Rook") {
-////			piece = new Rook(color, xcoord, ycoord, powerup);
-////		} else if (type == "Bishop") {
-////			piece = new Bishop(color, xcoord, ycoord, powerup);
-////		} else if (type == "Knight") {
-////			piece = new Knight(color, xcoord, ycoord, powerup);
-////		} else if (type == "King") {
-////			piece = new King(color, xcoord, ycoord, powerup);
-////		} else if (type == "Queen") {
-////			piece = new Queen(color, xcoord, ycoord, powerup);
-////		} else if (type == "Powerup") {
-////			piece = new Powerup(xcoord, ycoord, powerup);
-////		}
-//		
-//		AbstractPiece f;
-//		switch (type) {
-//			case "Rook":
-//				f = new Rook(color, xcoord, ycoord, powerup);
-//				break;
-//			case "Knight":
-//				f = new Knight(color, xcoord, ycoord, powerup);
-//				break;
-//			case "Bishop":
-//				f = new Bishop(color, xcoord, ycoord, powerup);
-//				break;
-//			case "Queen":
-//				f = new Queen(color, xcoord, ycoord, powerup);
-//				break;
-//			case "King":
-//				f = new King(color, xcoord, ycoord, powerup);
-//				break;
-//			case "Pawn":
-//				f = new Pawn(color, xcoord, ycoord, powerup);
-//				break;
-//			default:
-//				throw new IllegalArgumentException("Unknown Piece: \"" + type + "\"");
-//		}
-//
-//		// AbstractPiece piece = new AbstractPiece(color, position, powerup);
-//		// AbstractPiece piece = Utilities.createPiece(color, type, position);
-//		
-//		AbstractPiece[][] gs = utils.placePiece(f, false, gamestate);
-//		board.setGamestate(gs);
-////		System.out.println("successfully rendered gamestate");
-//	}
 
 	@Override
 	public String getFileTypeDescription() {
