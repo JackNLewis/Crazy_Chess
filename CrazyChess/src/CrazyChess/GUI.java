@@ -1,8 +1,10 @@
 package CrazyChess;
 
 import javafx.application.Application;
+
 import javafx.event.EventHandler;
 import javafx.scene.Scene;
+import javafx.scene.control.Button;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
@@ -176,7 +178,13 @@ public class GUI extends Application {
 			selectedSquare.setXpos(-1);
 			selectedSquare.setYpos(-1);
 			chess.changeTurn();
-			updateBoard();
+
+			AbstractPiece[][] aiMove = ai.AI(chess);
+			
+			
+			//chess.setGamestate(aiMove);
+			//updateBoard();
+			//chess.changeTurn();
 			return;
 		}
 		else if(!lookingForMove){//Nothing selected, needs move

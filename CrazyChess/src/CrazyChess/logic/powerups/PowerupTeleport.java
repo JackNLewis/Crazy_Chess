@@ -14,7 +14,7 @@ public class PowerupTeleport
 	Utilities utils = new Utilities();
 	
 	/**
-	 * Swaps 2 pieces on the board.
+	 * Swap two pieces on the board.
 	 * @param gamestate    gamestate to be altered
 	 * @param target1      first piece to be swapped
 	 * @param target2	   second piece to be swapped

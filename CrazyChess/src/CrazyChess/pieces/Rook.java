@@ -18,8 +18,8 @@ public class Rook extends AbstractPiece
 	 * @param xCoord    x coordinate
 	 * @param yCoord    y coordinate
 	 */
-	public Rook(String color, int xCoord, int yCoord){
-		super(color, xCoord, yCoord);
+	public Rook(String color, int xCoord, int yCoord, String Type){
+		super(color, xCoord, yCoord,Type);
 	}
 	
 	/**
@@ -28,8 +28,8 @@ public class Rook extends AbstractPiece
 	 * @param color      color of the rook
 	 * @param position   position object to set initial position
 	 */
-	public Rook(String color, Position position){
-		super(color, position);
+	public Rook(String color, Position position, String Type){
+		super(color, position, Type);
 	}
 	/**
 	 * Setter for wasMoved

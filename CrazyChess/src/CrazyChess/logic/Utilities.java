@@ -1,5 +1,6 @@
 
 package CrazyChess.logic;
+import CrazyChess.logic.StageHazards.HazardPiece;
 import CrazyChess.pieces.*;
 /**
  * Class with some utilities for getting pieces from
@@ -213,7 +214,7 @@ public class Utilities
 		AbstractPiece newPiece = safeCopyPiece(p);
 		newPiece.setPosition(xNew, yNew);
 		newGamestate[xNew][yNew]=newPiece;
-		newGamestate[oldX][oldY]=new BlankPiece("Blank", oldX, oldY);
+		newGamestate[oldX][oldY]=new BlankPiece("Blank", oldX, oldY,"Normal");
 		
 		return newGamestate;
 	}
@@ -238,7 +239,7 @@ public class Utilities
 		AbstractPiece newPiece = safeCopyPiece(p);
 		newPiece.setPosition(newPos);
 		newGamestate[newPos.getXpos()][newPos.getYpos()]=newPiece;
-		newGamestate[oldX][oldY]=new BlankPiece("Blank", oldX, oldY);
+		newGamestate[oldX][oldY]=new BlankPiece("Blank", oldX, oldY,"Normal");
 		
 		return newGamestate;
 	}
@@ -273,39 +274,40 @@ public class Utilities
 		switch(pieceType) {
 			case "Pawn":
 				Pawn pawnCast=(Pawn) p;
-				Pawn pawnCopy=new Pawn(p.getColor(),p.getPositionCopy());
+				Pawn pawnCopy=new Pawn(p.getColor(),p.getPositionCopy(),p.getPoweruptype());
 				pawnCopy.setDoublejump(pawnCast.getDoublejump());
 				return pawnCopy;
 				//break;
 			case "Rook":
-				Rook rookCopy=new Rook(p.getColor(),p.getPositionCopy());
+				Rook rookCopy=new Rook(p.getColor(),p.getPositionCopy(),p.getPoweruptype());
 				rookCopy.setWasMoved(((Rook)p).getWasMoved());
 				return rookCopy;
 				//break;
 			case "Knight":
-				copy=new Knight(p.getColor(),p.getPositionCopy());
+				copy=new Knight(p.getColor(),p.getPositionCopy(),p.getPoweruptype());
 				break;
 			case "Bishop":
-				copy=new Bishop(p.getColor(),p.getPositionCopy());
+				copy=new Bishop(p.getColor(),p.getPositionCopy(),p.getPoweruptype());
 				break;
 			case "Queen":
-				copy=new Queen(p.getColor(),p.getPositionCopy());
+				copy=new Queen(p.getColor(),p.getPositionCopy(),p.getPoweruptype());
 				break;
 			case "King":
 				King kingCast=(King) p;
-				King kingCopy=new King(p.getColor(),p.getPositionCopy());
+				King kingCopy=new King(p.getColor(),p.getPositionCopy(),p.getPoweruptype());
 				kingCopy.setWasMoved(kingCast.getWasMoved());
 				kingCopy.setIsChecked(kingCast.getIsChecked());
 				kingCopy.setCanCastle(kingCast.getCanCastle());
 				return kingCopy;
 				//break;
 			case "BlankPiece":
-				copy=new BlankPiece(p.getColor(),p.getPositionCopy());
+				copy=new BlankPiece(p.getColor(),p.getPositionCopy(),p.getPoweruptype());
 				break;
 			case "Powerup":
-				copy=new Powerup(p.getPositionCopy());
+				copy=new Powerup(p.getPositionCopy(),p.getPoweruptype());
 				break;
-			
+			case "HazardPiece":
+				copy=new HazardPiece(p.getPosition(),((HazardPiece) p).getHazard(),((HazardPiece) p).getOriginalPiece());
 		}
 		return copy;
 	}
@@ -333,10 +335,17 @@ public class Utilities
 			for(int j=0; j<8; j++) {
 				String piece;
 				piece="[]";
+				if(gamestate[j][i] == null){
+					System.err.println("Print GS: Null Piece");
+				}
 				if(!gamestate[j][i].getColor().equalsIgnoreCase("blank")) {
 					piece=twoLetterPiece(gamestate[j][i]);
 				}
-				
+				if(gamestate[j][i] instanceof HazardPiece){
+					piece = "HZ";
+				}
+
+
 				line=line+piece;
 			}
 		}

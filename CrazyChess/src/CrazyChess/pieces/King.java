@@ -20,8 +20,8 @@ public class King extends AbstractPiece
 	 * @param xCoord    x coordinate
 	 * @param yCoord    y coordinate
 	 */
-	public King(String color, int xCoord, int yCoord){
-		super(color, xCoord, yCoord);
+	public King(String color, int xCoord, int yCoord, String Type){
+		super(color, xCoord, yCoord,Type);
 	}
 	
 	/**
@@ -30,8 +30,8 @@ public class King extends AbstractPiece
 	 * @param color      color of the king
 	 * @param position   position object to set initial position
 	 */
-	public King(String color, Position position){
-		super(color, position);
+	public King(String color, Position position, String Type){
+		super(color, position,Type);
 	}
 	/**
 	 * Setter for isChecked

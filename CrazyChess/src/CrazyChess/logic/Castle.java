@@ -123,23 +123,23 @@ public class Castle
 	
 	public void castle(King p, int xRel, int yRel, boolean isDebug, AbstractPiece[][] gamestate, int moveNo) {
 		if (p.getCanCastle() == 1) {
-			gamestate=utils.placePiece(new BlankPiece("Blank", 7, 0), isDebug, gamestate);
-			gamestate=utils.placePiece(new Rook("White", 5, 0), isDebug, gamestate);
+			gamestate=utils.placePiece(new BlankPiece("Blank", 7, 0,"Normal"), isDebug, gamestate);
+			gamestate=utils.placePiece(new Rook("White", 5, 0,"Normal"), isDebug, gamestate);
 			((Rook)utils.getPiece(5,0,isDebug,gamestate)).setWasMoved(true);
 			p.setWasMoved(true);
 		}else if(p.getCanCastle() == 2) {
-			gamestate=utils.placePiece(new BlankPiece("Blank", 7, 7), isDebug, gamestate);
-			gamestate=utils.placePiece(new Rook("Black", 5, 7), isDebug, gamestate);
+			gamestate=utils.placePiece(new BlankPiece("Blank", 7, 7,"Normal"), isDebug, gamestate);
+			gamestate=utils.placePiece(new Rook("Black", 5, 7,"Normal"), isDebug, gamestate);
 			((Rook)utils.getPiece(5,7,isDebug,gamestate)).setWasMoved(true);
 			p.setWasMoved(true);
 		}else if(p.getCanCastle() == 3) {
-			gamestate=utils.placePiece(new BlankPiece("Blank", 0, 0), isDebug, gamestate);
-			gamestate=utils.placePiece(new Rook("White", 3, 0), isDebug, gamestate);
+			gamestate=utils.placePiece(new BlankPiece("Blank", 0, 0,"Normal"), isDebug, gamestate);
+			gamestate=utils.placePiece(new Rook("White", 3, 0,"Normal"), isDebug, gamestate);
 			((Rook)utils.getPiece(3,0,isDebug,gamestate)).setWasMoved(true);
 			p.setWasMoved(true);
 		}else if(p.getCanCastle() == 4) {
-			gamestate=utils.placePiece(new BlankPiece("Blank", 0, 7), isDebug, gamestate);
-			gamestate=utils.placePiece(new Rook("Black", 3, 7), isDebug, gamestate);
+			gamestate=utils.placePiece(new BlankPiece("Blank", 0, 7,"Normal"), isDebug, gamestate);
+			gamestate=utils.placePiece(new Rook("Black", 3, 7,"Normal"), isDebug, gamestate);
 			((Rook)utils.getPiece(3,7,isDebug,gamestate)).setWasMoved(true);
 			p.setWasMoved(true);
 		}else {

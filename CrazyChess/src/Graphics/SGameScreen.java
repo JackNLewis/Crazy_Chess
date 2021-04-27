@@ -4,6 +4,7 @@ import CrazyChess.logic.MainLogic;
 import javafx.event.EventHandler;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
+import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.layout.*;
 import javafx.stage.Stage;
@@ -36,24 +37,21 @@ public class SGameScreen {
         infoMessage = new Label();
         infoMessage.getStyleClass().add("info-message");
         root.getChildren().add(infoMessage);
-
+        
         //make power up menu
         pwrUpMenu = new PowerUpMenu(this);
 
         //Add actuall board
-        board = new SBoard(game, this);
+        board = new SBoard(game,this);
         game.resetBoard();
         game.printGameState();
         board.renderGameState(game.getGamestate());
-
-
 
         boardContainer = new HBox();
         boardContainer.setSpacing(10);
         boardContainer.getChildren().addAll(board.getBoard(), pwrUpMenu.getPowerUpMenu());
         boardContainer.setAlignment(Pos.CENTER);
         root.getChildren().add(boardContainer);
-
 
         stage.setOnCloseRequest(new EventHandler<WindowEvent>() {
             @Override
