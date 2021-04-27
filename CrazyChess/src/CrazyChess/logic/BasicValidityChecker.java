@@ -355,14 +355,18 @@ public class BasicValidityChecker
 	 */
 	public boolean validityCheckRook(Rook p, int xRel, int yRel, boolean isDebug, AbstractPiece[][] gamestate){
 		AbstractPiece newPos = utils.getTargetPiece(p,xRel, yRel, isDebug, gamestate);
-		if(columnAndRowCheck(p.getXpos(), p.getYpos()+1,"up", p, newPos.getPosition(), isDebug, gamestate).equals(newPos.getPosition()))
+		if(columnAndRowCheck(p.getXpos(), p.getYpos()+1,"up", p, newPos.getPosition(), isDebug, gamestate).equals(newPos.getPosition())) {
 			return true;
-		if(columnAndRowCheck(p.getXpos(), p.getYpos()-1,"down", p, newPos.getPosition(), isDebug, gamestate).equals(newPos.getPosition()))
+		}
+		if(columnAndRowCheck(p.getXpos(), p.getYpos()-1,"down", p, newPos.getPosition(), isDebug, gamestate).equals(newPos.getPosition())) {
 			return true;
-		if(columnAndRowCheck(p.getXpos()-1, p.getYpos(),"left", p, newPos.getPosition(), isDebug, gamestate).equals(newPos.getPosition()))
+		}
+		if(columnAndRowCheck(p.getXpos()-1, p.getYpos(),"left", p, newPos.getPosition(), isDebug, gamestate).equals(newPos.getPosition())) {
 			return true;
-		if(columnAndRowCheck(p.getXpos()+1, p.getYpos(),"right", p, newPos.getPosition(), isDebug, gamestate).equals(newPos.getPosition()))
+		}
+		if(columnAndRowCheck(p.getXpos()+1, p.getYpos(),"right", p, newPos.getPosition(), isDebug, gamestate).equals(newPos.getPosition())) {
 			return true;
+		}
 		//if(isDebug)
 		//	System.out.println("Correct position for Rook not found.");
 		return false;
@@ -413,35 +417,27 @@ public class BasicValidityChecker
 		}
 		AbstractPiece newPos = utils.getTargetPiece(p, xRel, yRel, isDebug, gamestate);
 		if(p.getXpos()+1==newPos.getXpos() && p.getYpos()+0==newPos.getYpos()){//(1,0)
-			p.setWasMoved(true);
 			return true;
 		}
 		else if(p.getXpos()+1==newPos.getXpos() && p.getYpos()-1==newPos.getYpos()){//(1,-1)
-			p.setWasMoved(true);
 			return true;
 		}
 		else if(p.getXpos()+0==newPos.getXpos() && p.getYpos()-1==newPos.getYpos()){//(0,-1)
-			p.setWasMoved(true);
 			return true;
 		}
 		else if(p.getXpos()-1==newPos.getXpos() && p.getYpos()-1==newPos.getYpos()){//(-1,-1)
-			p.setWasMoved(true);
 			return true;
 		}
 		else if(p.getXpos()-1==newPos.getXpos() && p.getYpos()+0==newPos.getYpos()){//(-1,0)
-			p.setWasMoved(true);
 			return true;
 		}
 		else if(p.getXpos()-1==newPos.getXpos() && p.getYpos()+1==newPos.getYpos()){//(-1,1)
-			p.setWasMoved(true);
 			return true;
 		}
 		else if(p.getXpos()+0==newPos.getXpos() && p.getYpos()+1==newPos.getYpos()){//(0,1)
-			p.setWasMoved(true);
 			return true;
 		}
 		else if(p.getXpos()+1==newPos.getXpos() && p.getYpos()+1==newPos.getYpos()){//(1,1)
-			p.setWasMoved(true);
 			return true;
 		}
 		return false;

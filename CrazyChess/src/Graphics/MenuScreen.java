@@ -15,13 +15,23 @@ import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 
+import java.io.File;
+import java.nio.file.Path;
+import java.util.List;
 import java.util.concurrent.Semaphore;
+
+import CrazyChess.logic.MainLogic;
+import CrazyChess.logic.savegamestate.*;
+import CrazyChess.pieces.AbstractPiece;
 
 public class MenuScreen {
 
     private VBox buttons;
     private Scene scene;
     private Stage stage;
+    
+//    MainLogic game = new MainLogic();
+//    private AbstractPiece[][] gamestate;
 
     public MenuScreen(Stage stage){
         buttons = new VBox();
@@ -48,11 +58,61 @@ public class MenuScreen {
         newButton.setOnMouseClicked(new EventHandler<MouseEvent>() {
             @Override
             public void handle(MouseEvent event) {
-                SGameScreen sp = new SGameScreen(stage);
-                stage.setScene(sp.getScene());
-            }
+            	buttons.getChildren().clear();
+            	
+            	Button load = new Button("Load Game");
+            	load.setOnMouseClicked(new EventHandler<MouseEvent>() {
+					@Override
+					public void handle(MouseEvent event) {
+						
+					    File file = new File("saved.xml");
+					    SaveGame loadState = new SaveGame();
+					   
+					    byte[] bytes = loadState.loadDataFromFile(file);
+//						System.out.println("converted to bytes successfully");
+					    MainLogic game = new MainLogic();
+					    
+						try {
+//							System.out.println("tried loading");
+//							loadState.load(bytes);
+//							MainLogic game = new MainLogic();
+							loadState.load(bytes, game, game.getGamestate());
+							game.setGamestate(game.getGamestate());
+							
+//							game.printGameState();
+							
+			                SGameScreen sp = new SGameScreen(game, stage);
+							System.out.println("new screen created");
+			                stage.setScene(sp.getScene());
+							System.out.println("Loaded successfully");
+							
+						} catch (Exception exc) {
+							System.out.println("Couldn't load: " + exc.getMessage());
+						}
+//						SGameScreen sp = new SGameScreen(stage);
+//						MainLogic game = null;
+//						SGameScreen sp = new SGameScreen(game, stage);
+//						System.out.println("new screen created");
+//		                stage.setScene(sp.getScene());
+					}
+            	});
+            	
+            	Button newGame = new Button("New Game");
+            	newGame.setOnMouseClicked(new EventHandler<MouseEvent>() {
+					@Override
+					public void handle(MouseEvent event) {
+						MainLogic newgame = new MainLogic();
+						newgame.resetBoard();
+						SGameScreen sp = new SGameScreen(newgame, stage);
+//						sp.loadLogic(newgame);
+		                stage.setScene(sp.getScene());
+					}
+            	});
+            	buttons.getChildren().addAll(load,newGame);
+            };
         });
-
+        
+        
         //Add Multiplayer Mode
         Button multiplayer = new Button("Multiplayer");
         addMultiplayerButtons(multiplayer);
@@ -62,7 +122,10 @@ public class MenuScreen {
         VsAI.setOnMouseClicked(new EventHandler<MouseEvent>() {
             @Override
             public void handle(MouseEvent event) {
-                SGameScreen sp = new SGameScreen(stage);
+            	MainLogic newgame = new MainLogic();
+            	newgame.resetBoard();
+                SGameScreen sp = new SGameScreen(newgame, stage);
+//                sp.loadLogic(newgame);
                 sp.getBoard().enableAI();
                 stage.setScene(sp.getScene());
             }
