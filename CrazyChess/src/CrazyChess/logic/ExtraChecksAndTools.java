@@ -337,7 +337,81 @@ public class ExtraChecksAndTools
 	
 	public ArrayList<Position> validMoves( AbstractPiece p, boolean isDebug, AbstractPiece[][] gamestate, int moveNo){
 		ArrayList<Position> movesList = new ArrayList<Position>();
-		for(int i=0; i<8; i++) {
+		if(p instanceof Pawn) {
+			if(p.getColor().equalsIgnoreCase("white")) {
+				for(int j=p.getXpos()-1; j<=p.getXpos()+1; j++) {
+					for(int i=p.getYpos()+1; i<=p.getYpos()+2; i++) {
+						if(i>=0 && i<8 && j>=0 && j<8) {
+							AbstractPiece targetTile = utils.safeCopyPiece(gamestate[j][i]);
+							if(targetTile instanceof HazardPiece){
+								continue;
+							}
+							if(!(p.getXpos()==targetTile.getXpos()&&p.getYpos()==targetTile.getYpos())) {
+								if(bvc.moveCheckAssigner(p, targetTile.getXpos()-p.getXpos(), targetTile.getYpos()-p.getYpos(), isDebug, gamestate, moveNo)) {
+									if(!targetTile.getColor().equalsIgnoreCase(p.getColor())){ //checks if the candidate tile doesn't have a piece of the same color on it
+										AbstractPiece[][] newGamestate = utils.safeCopyGamestate(gamestate);
+										newGamestate=utils.relocatePiece(p, newGamestate, targetTile.getPosition());
+										if(!isInCheck(p.getColor(), isDebug, newGamestate, moveNo)) {//check if the new possition doesn't put the player in check
+
+											String oppColor = utils.oppositeColor(p.getColor());
+
+											King enemyKing = getKing(oppColor, newGamestate);
+											if(enemyKing == null){
+												System.out.println("Opp Color : " + oppColor);
+												System.out.println("enemy king is null");
+											}
+
+											if(!targetTile.getPosition().equals(enemyKing.getPosition())) {
+												//checks if the new position isn't an enemy king (because you can't capture kings)
+												//If all checks pass, move is valid :)
+												movesList.add(new Position(j, i));
+											}
+										}
+									}
+								}
+							}
+						}
+					}
+				}
+			}
+			if(p.getColor().equalsIgnoreCase("black")) {
+				for(int j=p.getXpos()-1; j<=p.getXpos()+1; j++) {
+					for(int i=p.getYpos()-1; i>=p.getYpos()-2; i--) {
+						if(i>=0 && i<8 && j>=0 && j<8) {
+							AbstractPiece targetTile = utils.safeCopyPiece(gamestate[j][i]);
+							if(targetTile instanceof HazardPiece){
+								continue;
+							}
+							if(!(p.getXpos()==targetTile.getXpos()&&p.getYpos()==targetTile.getYpos())) {
+								if(bvc.moveCheckAssigner(p, targetTile.getXpos()-p.getXpos(), targetTile.getYpos()-p.getYpos(), isDebug, gamestate, moveNo)) {
+									if(!targetTile.getColor().equalsIgnoreCase(p.getColor())){ //checks if the candidate tile doesn't have a piece of the same color on it
+										AbstractPiece[][] newGamestate = utils.safeCopyGamestate(gamestate);
+										newGamestate=utils.relocatePiece(p, newGamestate, targetTile.getPosition());
+										if(!isInCheck(p.getColor(), isDebug, newGamestate, moveNo)) {//check if the new position doesn't put the player in check
+
+											String oppColor = utils.oppositeColor(p.getColor());
+
+											King enemyKing = getKing(oppColor, newGamestate);
+											if(enemyKing == null){
+												System.out.println("Opp Color : " + oppColor);
+												System.out.println("enemy king is null");
+											}
+
+											if(!targetTile.getPosition().equals(enemyKing.getPosition())) {
+												//checks if the new position isn't an enemy king (because you can't capture kings)
+												//If all checks pass, move is valid :)
+												movesList.add(new Position(j, i));
+											}
+										}
+									}
+								}	
+							}
+						}
+					}
+				}
+			}
+
+		}else for(int i=0; i<8; i++) {
 			for(int j=0; j<8; j++) {
 				AbstractPiece targetTile = utils.safeCopyPiece(gamestate[j][i]);
 				if(targetTile instanceof HazardPiece){
