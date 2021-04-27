@@ -3,6 +3,7 @@ package Graphics;
 import CrazyChess.logic.*;
 
 
+
 import CrazyChess.logic.powerups.PowerupMain;
 import CrazyChess.pieces.AbstractPiece;
 import CrazyChess.pieces.Bishop;
@@ -58,6 +59,7 @@ public class SBoard {
     //to add pawn promotion button
     private HBox Wpawnpormote;
     private HBox Bpawnpormote;
+
     
     private boolean aiEnabled = false;
     private AI ai;
@@ -72,6 +74,7 @@ public class SBoard {
         powerUps = SGameScreen.getPwrUpMenu();
         powerMain = new PowerupMain();
         sound = new music();
+
         
     }
 
@@ -109,6 +112,8 @@ public class SBoard {
         board.setHgap(5);
         board.setVgap(5);
         board.setMaxSize(boardSize,boardSize);
+        
+        
 
         addMoveListeners();
     }
@@ -190,22 +195,46 @@ public class SBoard {
                             boolean poweredMove = game.usePowerup(powerUps.getSelectedIndex(), selectedTile.getPos(), tile.getPos());
                             if(poweredMove){
                                 // SUCCESFFUL POWERED MOVE
+                            	/////////////////////////////
+                            	//check sound menu
+                            	if(SGameScreen.isMusicOn()) {
+                            		sound.turnOn();
+                            	}
+                            	else {
+                            		sound.turnOff();
+                            	}
                             	//play sound effects
                             	if(powerUps.getSelectedStr().equalsIgnoreCase("teleport")) {
+                            		if(SGameScreen.isMusicOn() && !SGameScreen.isTeleportOn()) {
+                            			sound.turnOffTeleport();
+                            		}
                             		sound.Teleport();
                             	}
                             	if(powerUps.getSelectedStr().equalsIgnoreCase("minipromote")) {
+                            		if(SGameScreen.isMusicOn() && !SGameScreen.isTeleportOn()) {
+                            			sound.turnOffTeleport();
+                            		}
                             		sound.MiniPromote();
                             	}
                             	if(powerUps.getSelectedStr().equalsIgnoreCase("freecard")) {
+                            		if(SGameScreen.isMusicOn() && !SGameScreen.isFreeCardOn()) {
+                            			sound.turnOffFreeCard();
+                            		}
                             		sound.FreeCard();
                             	}
                             	if(powerUps.getSelectedStr().equalsIgnoreCase("bomb")) {
+                            		if(SGameScreen.isMusicOn() && !SGameScreen.isSetbombOn()) {
+                            			sound.turnOffSetBomb();
+                            		}
                             		sound.SetBomb();
                             	}
                             	if(powerUps.getSelectedStr().equalsIgnoreCase("dummypiece")) {
+                            		if(SGameScreen.isMusicOn() && !SGameScreen.isDummyPieceOn()) {
+                            			sound.turnOffDummy();
+                            		}
                             		sound.DummyPiece();
                             	}
+                            	/////////////////////////////
                                 System.out.println("Successful powered up move");
                                 powerUps.setSelectedIndex(-1);
                             }else{
@@ -233,17 +262,35 @@ public class SBoard {
                                     SGameScreen.setInfoMessage(game.getTurn() + " wins!");
                                     System.out.println(oppColor + " is in check mate");
                                 }
+                                /////////////////////////////
+                                //check sound menu
+                                if(SGameScreen.isMusicOn()) {
+                            		sound.turnOn();
+                            	}
+                            	else {
+                            		sound.turnOff();
+                            	}
                                 if(game.getBB() == 1 || (game.getTurnNo() == game.getBBlt() + 4 &&!(game.getBBlt() == 0))) {
-                            		sound.Bomb();
+                                	if(SGameScreen.isMusicOn() && !SGameScreen.isbombOn()) {
+                            			sound.turnOffbomb();
+                            		}
+                                	sound.Bomb();
                             		game.resetBBombsound();
                             	}
                             	else if(game.getWB() == 1|| (game.getTurnNo() == game.getWBlt() + 4 &&!(game.getWBlt() == 0))) {
+                            		if(SGameScreen.isMusicOn() && !SGameScreen.isbombOn()) {
+                            			sound.turnOffbomb();
+                            		}
                             		sound.Bomb();
                             		game.resetWBombsound();
                             	}
                             	else {
+                            		if(SGameScreen.isMusicOn() && !SGameScreen.ischessmoveOn()) {
+                            			sound.turnOffChessmove();
+                            		}
                             		sound.chessmove();
                             	}
+                                ////////////////////////////////
 
                             }
                             //Normal move was unsuccessful
