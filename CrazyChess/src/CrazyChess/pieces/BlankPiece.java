@@ -5,8 +5,8 @@
 
 
 package CrazyChess.pieces;
-import CrazyChess.logic.Position;
 
+import CrazyChess.logic.Position;
 
 public class BlankPiece extends AbstractPiece
 {
@@ -41,4 +41,5 @@ public class BlankPiece extends AbstractPiece
 	public String toString(){
 		return "Blank space at (" + position.getXpos() + ", " + position.getYpos() + ")";
 	}
+	
 }

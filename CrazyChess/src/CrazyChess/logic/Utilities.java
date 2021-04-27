@@ -1,3 +1,4 @@
+
 package CrazyChess.logic;
 import CrazyChess.logic.StageHazards.HazardPiece;
 import CrazyChess.pieces.*;
@@ -278,8 +279,10 @@ public class Utilities
 				return pawnCopy;
 				//break;
 			case "Rook":
-				copy=new Rook(p.getColor(),p.getPositionCopy(),p.getPoweruptype());
-				break;
+				Rook rookCopy=new Rook(p.getColor(),p.getPositionCopy(),p.getPoweruptype());
+				rookCopy.setWasMoved(((Rook)p).getWasMoved());
+				return rookCopy;
+				//break;
 			case "Knight":
 				copy=new Knight(p.getColor(),p.getPositionCopy(),p.getPoweruptype());
 				break;
@@ -294,6 +297,7 @@ public class Utilities
 				King kingCopy=new King(p.getColor(),p.getPositionCopy(),p.getPoweruptype());
 				kingCopy.setWasMoved(kingCast.getWasMoved());
 				kingCopy.setIsChecked(kingCast.getIsChecked());
+				kingCopy.setCanCastle(kingCast.getCanCastle());
 				return kingCopy;
 				//break;
 			case "BlankPiece":

@@ -5,7 +5,6 @@ import java.util.ArrayList;
 import CrazyChess.logic.StageHazards.Hazard;
 import CrazyChess.logic.StageHazards.HazardPiece;
 import CrazyChess.pieces.*;
-import com.sun.xml.internal.ws.api.model.wsdl.WSDLOutput;
 
 
 /**

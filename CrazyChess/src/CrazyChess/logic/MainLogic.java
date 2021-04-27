@@ -49,7 +49,7 @@ public class MainLogic
 	BasicValidityChecker bvc = new BasicValidityChecker();
 	ExtraChecksAndTools ecat = new ExtraChecksAndTools();
 	PowerupMain pwrUp = new PowerupMain();
-
+	Castle cstl = new Castle();
 	HazardAssigner hazards = new HazardAssigner();
 	/**
 	 * Constructor for the MainLogic class.
@@ -371,6 +371,9 @@ public class MainLogic
 				isValid=true;
 			}
 		}
+		if(isValid == false && p instanceof King) {
+			isValid = cstl.castleCheck((King)p, xRel, yRel, isDebug, gamestate, turnNo);
+		}
 		
 //
 //		if(newPiece instanceof King){
@@ -433,10 +436,18 @@ public class MainLogic
 		//gamestate=utils.placePiece(new BlankPiece("Blank",oldPos.getXpos(), oldPos.getYpos()), isDebug, gamestate);
 		
 		//Constructing new possible gamestate
-		if(isValid) {
+		//First checks if it can castle
+		if(isValid){
+			if(p instanceof King && ((King)p).getCanCastle() != 0)
+				cstl.castle((King)p, xRel, yRel, isDebug, gamestate, turnNo);
 			AbstractPiece[][] newGamestate = utils.safeCopyGamestate(gamestate);
-			AbstractPiece copiedPiece = utils.getPiece(p.getPosition(), isDebug, newGamestate);
+			AbstractPiece copiedPiece = utils.safeCopyPiece(p);
 			copiedPiece.setPosition(newPiece.getXpos(), newPiece.getYpos());
+			if(copiedPiece instanceof King)
+				((King)copiedPiece).setWasMoved(true);
+			if(copiedPiece instanceof Rook) {
+				((Rook)copiedPiece).setWasMoved(true);
+			}
 			
 			//check the bomb
 			if(newPiece.getPoweruptype().equalsIgnoreCase("bomb")) {
@@ -465,8 +476,6 @@ public class MainLogic
 			//and set the old position to a Blank place
 			}
 			newGamestate=utils.placePiece(new BlankPiece("Blank",oldPos.getXpos(), oldPos.getYpos(),"Normal"), isDebug, newGamestate);
-		
-		
 		
 		
 		
