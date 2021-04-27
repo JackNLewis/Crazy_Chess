@@ -30,6 +30,7 @@ public class MainLogic
 	protected boolean isWhiteChecked;  //boolean to show if the white player is under check
 	protected boolean isWhiteMated;    //boolean to show if the white player is mated
 
+	protected boolean isDrawAsked;		//boolean to show if a draw was asked
 	protected boolean isDraw;		   //boolean to show if the game is draw
 	protected boolean isEndgame;       //boolean to show if the game is ended
 	
@@ -49,6 +50,7 @@ public class MainLogic
 	BasicValidityChecker bvc = new BasicValidityChecker();
 	ExtraChecksAndTools ecat = new ExtraChecksAndTools();
 	PowerupMain pwrUp = new PowerupMain();
+//	BishopRookSwitch brs = new BishopRookSwitch();
 
 	HazardAssigner hazards = new HazardAssigner();
 	/**
@@ -229,6 +231,9 @@ public class MainLogic
 			
 			gamestate=pwrUp.powerupSpawn(gamestate, turnNo, isDebug);
 			
+			ecat.updateRuleChange();
+			System.out.println("brswitch " + ecat.getBrs());
+
 			
 			if(isDebug)
 				if(isDebug) {
@@ -238,6 +243,10 @@ public class MainLogic
 		else{
 			currentTurn = "White";
 			turnNo++;
+			
+			ecat.updateRuleChange();
+			System.out.println("brswitch " + ecat.getBrs());
+			
 			gamestate=pwrUp.powerupSpawn(gamestate, turnNo, isDebug);
 			
 			if(isDebug) {
@@ -250,6 +259,31 @@ public class MainLogic
 		gamestate= hazards.assignHazard(gamestate);
 		//=======================================STAGE HAZARDS================================================//
 
+	}
+	
+	/**
+	 * Switches the turn to the opposite of what it currently is, but does not increase the number of turns.
+	 * Used for the "ask for draw" button.
+	 * If for some reason the turn is neither Black nor White
+	 * by default the method sets it to white
+	 */
+	public void switchTurn(){
+		if(currentTurn.equalsIgnoreCase("White")){
+			currentTurn = "Black";
+			gamestate=pwrUp.powerupSpawn(gamestate, turnNo, isDebug);
+			if(isDebug)
+				if(isDebug) {
+					System.out.println("It is now Black's turn.");
+					System.out.println("Black's powerups: "+blackPowerUps.toString());}
+		}
+		else{
+			currentTurn = "White";
+			gamestate=pwrUp.powerupSpawn(gamestate, turnNo, isDebug);
+			
+			if(isDebug) {
+				System.out.println("It is now White's turn.");
+				System.out.println("White's powerups: "+whitePowerUps.toString());}
+		}
 	}
 	
 	/**
@@ -310,6 +344,10 @@ public class MainLogic
 	
 
 	protected boolean move(AbstractPiece p, int xRel, int yRel){
+		if(isDrawAsked == true || isDraw == true){
+			return false;
+		}
+		
 		if(p.getXpos() > 7 || p.getXpos() < 0 || p.getYpos() > 7 || p.getYpos() < 0 || p == null){ //Basic check to see if p is on board
 			if(isDebug)
 				System.out.println("Invalid piece position.");
@@ -645,6 +683,26 @@ public class MainLogic
 		}else{
 			return whitePowerUps;
 		}
+	}
+	
+	public boolean getDrawAsked(){
+		return isDrawAsked;
+	}
+	
+	public void setDrawAsked(){
+		isDrawAsked = true;
+	}
+	
+	public boolean getDraw(){
+		return isDraw;
+	}
+	
+	public void setDraw(){
+		isDraw = true;
+	}
+	
+	public void refuseDraw(){
+		isDrawAsked = false;
 	}
 
 	public void setCheck(String player,boolean check){

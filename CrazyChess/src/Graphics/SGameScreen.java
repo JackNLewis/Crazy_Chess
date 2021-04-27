@@ -20,6 +20,8 @@ public class SGameScreen {
     private Stage stage;
     private MainLogic game;
     private Label infoMessage;
+    private Label ruleChangeInfo;
+    private AskForDraw askForDraw;
     private PowerUpMenu pwrUpMenu;
 
     public SGameScreen(Stage stage){
@@ -27,7 +29,7 @@ public class SGameScreen {
 
         this.stage = stage;
         root = new VBox();
-        scene = new Scene(root,720,600);
+        scene = new Scene(root,920,620);
         scene.getStylesheets().add("/Graphics/css/board.css");
 
         //Add top banner
@@ -38,9 +40,16 @@ public class SGameScreen {
         infoMessage.getStyleClass().add("info-message");
         root.getChildren().add(infoMessage);
         
+        //Add the rule change info
+        ruleChangeInfo = new Label();
+        ruleChangeInfo.getStyleClass().add("info-message");
+        root.getChildren().add(ruleChangeInfo);
+        
         //make power up menu
         pwrUpMenu = new PowerUpMenu(this);
 
+        askForDraw = new AskForDraw(this, game);
+        
         //Add actuall board
         board = new SBoard(game,this);
         game.resetBoard();
@@ -49,7 +58,7 @@ public class SGameScreen {
 
         boardContainer = new HBox();
         boardContainer.setSpacing(10);
-        boardContainer.getChildren().addAll(board.getBoard(), pwrUpMenu.getPowerUpMenu());
+        boardContainer.getChildren().addAll(board.getBoard(), pwrUpMenu.getPowerUpMenu(), askForDraw.getAskForDraw());
         boardContainer.setAlignment(Pos.CENTER);
         root.getChildren().add(boardContainer);
 

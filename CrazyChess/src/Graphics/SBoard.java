@@ -48,6 +48,8 @@ public class SBoard {
     private double boardSize;
     private Tile selectedTile;
 
+    private AskForDraw askForDraw;
+    
     //to do with power up
     private ArrayList<Position> validMoves;
     private PowerUpMenu powerUps;
@@ -71,6 +73,7 @@ public class SBoard {
         selected = false;
         ect = new ExtraChecksAndTools();
         util = new Utilities();
+        askForDraw = new AskForDraw(SGameScreen, game);
         powerUps = SGameScreen.getPwrUpMenu();
         powerMain = new PowerupMain();
         sound = new music();
@@ -165,6 +168,9 @@ public class SBoard {
 
                     //If tile not selected
                     if(!selected){
+                    	if(game.getDrawAsked() == true || game.getDraw() == true){
+                    		return;
+                    	}
                         //Make sure you only select tiles of your colour
                         if(selectedColor.equalsIgnoreCase(currentColor)){
                             selected = true;
@@ -190,8 +196,7 @@ public class SBoard {
                     }
                     //Tile is selected so execute a move
                     else{
-                    	
-                        if(tile.equals(selectedTile)){
+                        if(tile.equals(selectedTile) || game.getDrawAsked() == true || game.getDraw() == true){
                             //deselect current tile
                             renderGameState(game.getGamestate());
                             validMoves = null;
@@ -318,6 +323,7 @@ public class SBoard {
         if(game.getMateStatus(oppColor)){
             SGameScreen.setInfoMessage(game.getTurn() + " wins!");
             System.out.println(oppColor + " is in check mate");
+            askForDraw.hide();
         }
     }
     private void setDefaultColor(Tile tile){

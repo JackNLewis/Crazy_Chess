@@ -1,6 +1,7 @@
 package CrazyChess.logic;
 
 import java.util.ArrayList;
+import java.util.Random;
 
 import CrazyChess.logic.StageHazards.Hazard;
 import CrazyChess.logic.StageHazards.HazardPiece;
@@ -26,6 +27,8 @@ public class ExtraChecksAndTools
 {
 	BasicValidityChecker bvc = new BasicValidityChecker();
 	Utilities utils = new Utilities();
+	int counter = 0;
+//	BishopRookSwitch brs = new BishopRookSwitch();
 	
 	/**
 	 * Function that returns and ArrayList of pieces from
@@ -505,6 +508,37 @@ public class ExtraChecksAndTools
 			return true;
 		}
 		return false;
+	}
+	
+	public void updateRuleChange() {
+		if (bvc.getBrs() == false)
+		{
+			Random r = new Random();
+			if (r.nextInt(2) == 0)
+			{
+				bvc.setBrs();
+				System.out.println("Bishop-Rook switch rule change active. Remaining turns: 5");
+				counter = 1;
+			}
+		}
+		else
+		{
+			if (counter >= 6)
+			{
+				bvc.endBrs();
+				counter = 0;
+				System.out.println("Bishop-Rook switch rule change switched off.");
+			}
+			else
+			{
+				counter++;
+				System.out.println("Bishop-Rook switch rule change active. Remaining turns: " + (6 - counter));
+			}
+		}
+	}
+	
+	public boolean getBrs() {
+		return bvc.getBrs();
 	}
 
 }
