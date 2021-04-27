@@ -47,6 +47,25 @@ public class ExtraChecksAndTools
 		return temp;
 	}
 	/**
+	 * Function that returns an ArrayList of hazard pieces from
+	 * a given game state
+	 * @param gamestate    any game state
+	 * @return An ArrayList of hazard pieces in the game state
+	 */
+	public ArrayList<AbstractPiece> getHazardPieces(AbstractPiece[][] gamestate){
+		ArrayList<AbstractPiece> hazards = new ArrayList<AbstractPiece>();
+		for(int i=0; i<8; i++) {
+			for(int j=0; j<8; j++) {
+				if((gamestate[j][i] instanceof HazardPiece)) {
+					hazards.add(gamestate[j][i]);
+				}
+			}
+		}
+		return hazards;
+	}
+	
+	
+	/**
 	 * Function that returns and ArrayList of blank pieces from
 	 * a given game state
 	 * @param gamestate    any game state

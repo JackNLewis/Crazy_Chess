@@ -32,12 +32,15 @@ import CrazyChess.logic.ExtraChecksAndTools;
 import CrazyChess.logic.MainLogic;
 import CrazyChess.logic.Position;
 import CrazyChess.logic.Utilities;
+import CrazyChess.logic.StageHazards.Hazard;
 import CrazyChess.logic.StageHazards.HazardPiece;
 import CrazyChess.pieces.*;
 import Graphics.SGameScreen;
 	
 public class SaveGame implements ChessIO {
 	
+//	MainLogic board = new MainLogic();
+//	AbstractPiece[][] gs = new AbstractPiece[8][8];
 	public AbstractPiece p;
 	AbstractPiece color;
 	Utilities utils = new Utilities();
@@ -53,9 +56,13 @@ public class SaveGame implements ChessIO {
 
 	@Override
 	public byte[] save(MainLogic board, AbstractPiece[][] gamestate) {
+//		AbstractPiece[][] gamestate;
+//		ArrayList<AbstractPiece> pieces = ecat.gamestateToPieceArrayList(gamestate);
 		
 		ArrayList<AbstractPiece> blackPieces = ecat.getBlackPieces(gamestate);
 		ArrayList<AbstractPiece> whitePieces = ecat.getWhitePieces(gamestate);
+		ArrayList<AbstractPiece> blankPieces = ecat.getBlankArrayList(gamestate);
+		ArrayList<AbstractPiece> hazardPieces = ecat.getHazardPieces(gamestate);
 
 		ByteArrayOutputStream baos = new ByteArrayOutputStream();
 		
@@ -71,6 +78,8 @@ public class SaveGame implements ChessIO {
 //			writer.writeAttribute("StageHazard", gamestate.);
 			writePieces(blackPieces, writer);
 			writePieces(whitePieces, writer);
+			writePieces(blankPieces, writer);
+			writeHazardPieces(hazardPieces, writer);
 
 			writer.writeEndElement();
 		} catch (XMLStreamException ex) {
@@ -92,9 +101,6 @@ public class SaveGame implements ChessIO {
 		writer.writeStartElement(pieces.get(0).getColor());
 		for (AbstractPiece piece : pieces) {
 			writer.writeEmptyElement("Piece");
-//			if(piece instanceof HazardPiece) {
-//				
-//			}
 			writer.writeAttribute("Type", piece.getClass().getSimpleName());
 			writer.writeAttribute("Colour", piece.getColor());
 			writer.writeAttribute("XCoordinate", String.valueOf(piece.getXpos()));
@@ -106,6 +112,19 @@ public class SaveGame implements ChessIO {
 		writer.writeEndElement();
 	}
 	
+	private void writeHazardPieces(ArrayList<AbstractPiece> pieces, XMLStreamWriter writer) throws XMLStreamException {
+		writer.writeStartElement("Hazard");
+		for (AbstractPiece piece : pieces) {
+			writer.writeEmptyElement("Piece");
+			writer.writeAttribute("Type", ((HazardPiece) piece).getOriginalPiece().getClass().getSimpleName() +"");
+			writer.writeAttribute("OriginalPiece", ((HazardPiece) piece).getOriginalPiece() +"");
+			writer.writeAttribute("XCoordinate", String.valueOf(piece.getXpos()));
+			writer.writeAttribute("YCoordinate", String.valueOf(piece.getYpos()));
+			writer.writeAttribute("Powerup", piece.getPoweruptype() + "");
+			writer.writeAttribute("HazardType", ((HazardPiece) piece).getHazard() + "");
+		}
+		writer.writeEndElement();
+	}
 	public static byte[] loadDataFromFile(File file) {
 		try {
 			return Files.readAllBytes(Paths.get(file.toURI()));
@@ -114,6 +133,7 @@ public class SaveGame implements ChessIO {
 			return null;
 		}
 	}
+	
 	
 	public void load(byte[] data, MainLogic board, AbstractPiece[][] gamestate) {
 		// AbstractPiece p;
@@ -133,18 +153,25 @@ public class SaveGame implements ChessIO {
 						            System.out.println("currentturn: " + reader.getAttributeValue("", "CurrentTurn"));
 						            board.setCurrentTurnColor(reader.getAttributeValue("", "CurrentTurn"));
 						            board.setCurrentTurn(Integer.parseInt(reader.getAttributeValue("", "TurnNo")));
-						            System.out.println("successfully written turn");
+//						            System.out.println("successfully written turn");
 						            break;
 					   case "Board/Black/Piece":
-						            System.out.println("black pieces");
+//						            System.out.println("black pieces");
 						            loadPiece(reader, gamestate);
-//						            board.setGamestate(gamestate);
 						            System.out.println("DONE black pieces");
 						            break; 
 					   case "Board/White/Piece":
-						            System.out.println("white pieces");
+//						            System.out.println("white pieces");
 						            loadPiece(reader, gamestate);
 						            System.out.println("DONE white pieces");
+						            break;
+					   case "Board/Blank/Piece":
+						            loadPiece(reader, gamestate);
+						            System.out.println("DONE blanks");
+						            break;
+					   case "Board/Hazard/Piece":
+						            loadHazardPiece(reader, gamestate);
+						            System.out.println("DONE hazard pieces");
 						            break;
 					   default:
 						            System.out.println("Next");
@@ -174,7 +201,6 @@ public class SaveGame implements ChessIO {
 	}
 
 	private AbstractPiece[][] loadPiece(XMLStreamReader reader, AbstractPiece[][] gamestate) throws XMLStreamException {
-
 		String type = reader.getAttributeValue("", "Type");
 		String color = reader.getAttributeValue("", "Colour");
 		int xcoord = Integer.parseInt(reader.getAttributeValue("", "XCoordinate"));
@@ -201,17 +227,82 @@ public class SaveGame implements ChessIO {
 			case "Pawn":
 				p = new Pawn(color, xcoord, ycoord, powerup);
 				break;
+			case "BlankPiece":
+			    p = new BlankPiece(color, xcoord, ycoord, powerup);	
+			    break;
 			default:
 				throw new IllegalArgumentException("Unknown Piece: \"" + type + "\"");
 		}
-
 		System.out.println("written piece successfully: " + p);
 		
 		gs = utils.placePiece(p, false, gamestate);
 		System.out.println("place piece onto gamestate successfully");
 		return gs;
+
 	}
-	
+	private AbstractPiece[][] loadHazardPiece(XMLStreamReader reader, AbstractPiece[][] gamestate) throws XMLStreamException {
+		String type = reader.getAttributeValue("", "Type");
+		String OriginalPiece = reader.getAttributeValue("", "OriginalPiece");
+		String HazardType = reader.getAttributeValue("", "HazardType");
+		String powerup = reader.getAttributeValue("", "Powerup");
+        
+		int xcoord = Integer.parseInt(reader.getAttributeValue("", "XCoordinate"));
+		int ycoord = Integer.parseInt(reader.getAttributeValue("", "YCoordinate"));
+		Position position = new Position(xcoord, ycoord);
+		
+		Hazard hazardTile = null;
+		if(HazardType == "FROZEN") {
+			hazardTile = Hazard.FROZEN;
+		}
+		else if(HazardType == "BURN") {
+			hazardTile = Hazard.BURN;
+		}
+		
+		String color = null;
+		if(OriginalPiece.startsWith("White")) {
+			color = "White";
+		}
+		else if(OriginalPiece.startsWith("Black")) {
+			color = "Black";
+		}
+		else if(OriginalPiece.startsWith("Blank")) {
+			color = "Blank";
+		}
+		
+		AbstractPiece original;
+		switch (type) {
+		case "Rook":
+			original = new Rook(color, position, powerup);
+			break;
+		case "Knight":
+			original = new Knight(color, position, powerup);
+			break;
+		case "Bishop":
+			original = new Bishop(color, position, powerup);
+			break;
+		case "Queen":
+			original = new Queen(color, position, powerup);
+			break;
+		case "King":
+			original = new King(color, position, powerup);
+			break;
+		case "Pawn":
+			original = new Pawn(color, position, powerup);
+			break;
+		case "BlankPiece":
+			original = new BlankPiece(color, position, powerup);
+			break;
+		default:
+			throw new IllegalArgumentException("Unknown Piece: \"" + type + "\"");
+	    }
+
+		AbstractPiece[][] gs = gamestate;
+		p  = new HazardPiece(position, hazardTile, original);
+		gs = utils.placePiece(p, false, gamestate);
+		System.out.println("place HazardPiece onto gamestate successfully");
+		return gs;
+
+	}
 
 	@Override
 	public String getFileTypeDescription() {
