@@ -5,8 +5,8 @@
 
 
 package CrazyChess.pieces;
-import CrazyChess.logic.Position;
 
+import CrazyChess.logic.Position;
 
 public class BlankPiece extends AbstractPiece
 {
