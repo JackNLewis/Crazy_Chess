@@ -14,13 +14,13 @@ public class AI
 	public AbstractPiece[][] AI (MainLogic chess) {
 		this.chess = chess;
 
-		System.out.println("turn is "+chess.getTurn());
+		//System.out.println("turn is "+chess.getTurn());
 		//ExtraChecksAndTools ect = new ExtraChecksAndTools();
 		//AbstractPiece[][] bestBoard = minimax(chess.getGamestate(),1,chess.getTurn());
 		//ArrayList <AbstractPiece[][]> possg = ect.possibleGamestatesAfterNextMove(chess.getTurn(), false, chess.getGamestate(), 0);
 		AbstractPiece[][] bestMove = minimax(chess.getGamestate(),3,chess.getTurn());
-		System.out.println("best move is:");
-		utils.printGameState(bestMove);
+		//System.out.println("best move is:");
+		//utils.printGameState(bestMove);
 		return bestMove;
 		/*AbstractPiece[][] bestBoard = findBestOutcome(possg,chess.getTurn());
 		System.out.println("Best board is:");
@@ -61,19 +61,19 @@ public class AI
 		//will store the value of bestMove
 		int temp;
 
-		System.out.println("in minimax:");
+		//System.out.println("in minimax:");
 		if (whoseAI.equals("Black")) {
 			//in black's case the lower the value the better
 			bestValue = Integer.MAX_VALUE;
 			//sets bestval to max value so it will be set to the first returning value from the explorePaths function
-			System.out.println("Bestval is init as: "+bestValue);
+			//System.out.println("Bestval is init as: "+bestValue);
 			for (int i=0;i<possg.size();i++) {
 				temp = explorePaths(possg.get(i),1,max_depth,whoseAI,whoseTurn,Integer.MAX_VALUE,Integer.MIN_VALUE);
 				//if temp (this move) has a lower risk for black then set bestMove and bestValue to temp and the current board
 				if (temp<bestValue) {
 					bestValue=temp;
 					bestMove=possg.get(i);
-					System.out.println("New best value of "+bestValue+" for board: ");
+					//System.out.println("New best value of "+bestValue+" for board: ");
 					utils.printGameState(bestMove);
 				}
 			}
@@ -82,19 +82,19 @@ public class AI
 			//in white's case its the same except the higher the value the better
 			bestValue = Integer.MIN_VALUE;
 			//sets bestval to min value so it will be set to the first returning value from the explorePaths function
-			System.out.println("Bestval is init as: "+bestValue);
+			//System.out.println("Bestval is init as: "+bestValue);
 			for (int i=0;i<possg.size();i++) {
 				temp = explorePaths(possg.get(i),1,max_depth,whoseAI,whoseTurn,Integer.MAX_VALUE,Integer.MIN_VALUE);
 				//if temp (this move) has a lower risk for black then set bestMove and bestValue to temp and the current board
 				if (temp>bestValue) {
 					bestValue=temp;
 					bestMove=possg.get(i);
-					System.out.println("New best value of "+bestValue+" for board: ");
+					//System.out.println("New best value of "+bestValue+" for board: ");
 					utils.printGameState(bestMove);
 				}
 			}
 		}
-		System.out.println("final best value of "+bestValue+" for board: ");
+		//System.out.println("final best value of "+bestValue+" for board: ");
 		utils.printGameState(bestMove);
 		return bestMove;
 	}
@@ -151,11 +151,11 @@ public class AI
 				worst = Integer.MIN_VALUE;
 				//the higher the worse
 				for (int i=0;i<possg.size();i++) {
-					System.out.println("Sending with preMin of "+worst+" as white (to next black layer)");
+					//System.out.println("Sending with preMin of "+worst+" as white (to next black layer)");
 					temp = explorePaths(possg.get(i),(curr_depth+1),max_depth,whoseAI,whoseTurnNext,Integer.MAX_VALUE,worst);
 					//if the path explored is too big for black to choose it in the previous layer cancel (alpha beta pruning)
 					if(temp>preMax) {
-						System.out.println("\nStopping early as "+temp+" > "+preMax+" on White's turn\n");
+						//System.out.println("\nStopping early as "+temp+" > "+preMax+" on White's turn\n");
 						return temp; 
 						//temp will suffice as it's too large to be chosen and will be ignored via the if statement
 					}
@@ -166,7 +166,7 @@ public class AI
 					}
 				}
 				//return worst up the tree
-				System.out.println("\nSearched the whole branch (no alpha beta)\n");
+				//System.out.println("\nSearched the whole branch (no alpha beta)\n");
 				return worst;
 			}
 			//but if it's black's turn we choose the best (max) outcome as black controls the outcome
@@ -174,12 +174,12 @@ public class AI
 				best = Integer.MAX_VALUE;
 				//lower the better for black so start at highest
 				for (int i=0;i<possg.size();i++) {
-					System.out.println("Sending with preMax of "+best+" as black (to next white layer)");
+					//System.out.println("Sending with preMax of "+best+" as black (to next white layer)");
 					temp = explorePaths(possg.get(i),(curr_depth+1),max_depth,whoseAI,whoseTurnNext,best,Integer.MIN_VALUE);
 
 					if(temp<preMin) {
 						//if too small for earlier white optimal layer to choose this branch stop searching and return
-						System.out.println("\nStopping early as "+temp+" < "+preMin+" on Black's turn\n");
+						//System.out.println("\nStopping early as "+temp+" < "+preMin+" on Black's turn\n");
 						return temp;
 					}
 
@@ -188,7 +188,7 @@ public class AI
 						best=temp;
 					}
 				}
-				System.out.println("\nNo pruning, whole tree searched\n");
+				//System.out.println("\nNo pruning, whole tree searched\n");
 				return best;
 			}
 			/*}
