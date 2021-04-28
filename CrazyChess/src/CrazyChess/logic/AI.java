@@ -47,7 +47,7 @@ public class AI
 	public AbstractPiece[][] minimax (AbstractPiece[][] board, int max_depth, String whoseAI){
 		//don't need to know whoseTurn because its always AI's turn at the 0th board
 		//possg are all the possible immediate moves the AI can take in the current gamestate's turn
-		HashMap<AbstractPiece[][], Integer> possgWithPwr = ect.possibleGamestatesAfterNextMove(whoseAI, false, board, 0);
+		HashMap<AbstractPiece[][], Integer> possgWithPwr = ect.possibleGamestatesAfterNextMove(whoseAI, false, board, 0, chess.getPowerUps(whoseAI));
 		ArrayList<AbstractPiece[][]> possg = new ArrayList<>(possgWithPwr.keySet());
 		//need to pass whoseTurn to next function and it will be whoever is not AI's turn so whoseTurn is decided below
 		String whoseTurn;
@@ -120,7 +120,7 @@ public class AI
 
 
 	public int explorePaths (AbstractPiece[][] board,int curr_depth, int max_depth, String whoseAI, String whoseTurn, int preMax, int preMin) {
-		HashMap<AbstractPiece[][], Integer> possgWithPwr = ect.possibleGamestatesAfterNextMove(whoseAI, false, board, 0);
+		HashMap<AbstractPiece[][], Integer> possgWithPwr = ect.possibleGamestatesAfterNextMove(whoseAI, false, board, 0, chess.getPowerUps(whoseAI));
 		ArrayList<AbstractPiece[][]> possg = new ArrayList<>(possgWithPwr.keySet());
 		if(curr_depth==max_depth-1) {
 			//-1 because we use possg so we look one more move ahead

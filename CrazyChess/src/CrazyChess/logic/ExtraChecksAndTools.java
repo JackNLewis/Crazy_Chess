@@ -338,7 +338,7 @@ public class ExtraChecksAndTools
 	 * @return         	 ArrayList of Positions a piece can go to
 	 */
 	
-	public HashMap<Position, Integer> validMoves(AbstractPiece p, boolean isDebug, AbstractPiece[][] gamestate, int moveNo){
+	public HashMap<Position, Integer> validMoves(AbstractPiece p, boolean isDebug, AbstractPiece[][] gamestate, int moveNo, ArrayList<String> powerUps){
 		HashMap<Position, Integer> movesList = new HashMap<Position, Integer>();
 		for(int i=0; i<8; i++) {
 			for(int j=0; j<8; j++) {
@@ -387,7 +387,7 @@ public class ExtraChecksAndTools
 	 * @return            ArrayList of possible game states after the turn is completed
 	 */
 	
-	public HashMap<AbstractPiece[][], Integer> possibleGamestatesAfterNextMove (String whoseTurn, boolean isDebug, AbstractPiece[][] gamestate, int moveNo){
+	public HashMap<AbstractPiece[][], Integer> possibleGamestatesAfterNextMove (String whoseTurn, boolean isDebug, AbstractPiece[][] gamestate, int moveNo, ArrayList<String> powerUps){
 		String oppColor = utils.oppositeColor(whoseTurn);
 		ArrayList<AbstractPiece> piecesToCheck = new ArrayList<AbstractPiece>();
 		if(whoseTurn.equalsIgnoreCase("white")) {
@@ -401,7 +401,9 @@ public class ExtraChecksAndTools
 		ArrayList<AbstractPiece> whitePieces = getWhitePieces(gamestate);
 		//System.out.println("Got the white pieces");
 		for(AbstractPiece p : piecesToCheck) {
-			HashMap<Position, Integer> validPieceMoves = validMoves(p, isDebug, gamestate, moveNo);
+			// Regular valid moves
+			HashMap<Position, Integer> validPieceMoves = validMoves(p, isDebug, gamestate, moveNo, powerUps);
+
 			for(Position vp : validPieceMoves.keySet()) {
 				//generate gamestate for each one. Excluding moves where you capture enemy king
 				AbstractPiece[][] newGamestate = utils.safeCopyGamestate(gamestate);
@@ -409,7 +411,18 @@ public class ExtraChecksAndTools
 					newGamestate=utils.relocatePiece(p, newGamestate, vp.getXpos(), vp.getYpos()); //might cause some bugs
 					listOfGamestates.put(newGamestate, validPieceMoves.get(vp));
 				}
+			}
 
+			// Powerup valid moves
+			for (int i = 0; i < powerUps.size(); i++) {
+				String pwrUpStr = powerUps.get(i);
+				AbstractPiece[][] copiedGamestate = utils.safeCopyGamestate(gamestate);
+				ArrayList<Position> validPowerupMoves = pwrUp.validPowerupMoves(pwrUpStr, copiedGamestate, p.getPosition(), isDebug);
+				if (!validPowerupMoves.isEmpty()) {
+					for (Position finalPos: validPowerupMoves) {
+						listOfGamestates.put(pwrUp.usePowerupGivenGamestate(pwrUpStr, copiedGamestate, p.getColor(), p.getPosition(), finalPos, isDebug), i);
+					}
+				}
 			}
 		}
 
@@ -432,14 +445,14 @@ public class ExtraChecksAndTools
 	 * @param moveNo      current move number
 	 * @return            true if the player is in checkmate, false if they still have possible moves
 	 */
-	public boolean isInCheckmate(String color, boolean isDebug, AbstractPiece[][] gamestate, int moveNo){
+	public boolean isInCheckmate(String color, boolean isDebug, AbstractPiece[][] gamestate, int moveNo, ArrayList<String> powerUps){
 		
 		boolean isMated = false;
 		
 		//just to be safe, check for a check
 		if(isInCheck(color, isDebug, gamestate, moveNo)) {
 			isMated=true;
-			HashMap<AbstractPiece[][], Integer> nextMoves = possibleGamestatesAfterNextMove(color, isDebug, gamestate, moveNo);
+			HashMap<AbstractPiece[][], Integer> nextMoves = possibleGamestatesAfterNextMove(color, isDebug, gamestate, moveNo, powerUps);
 			for(AbstractPiece[][] g : nextMoves.keySet()) {
 				if(!isInCheck(color, isDebug, g, moveNo)) {
 					isMated =  false;
@@ -459,7 +472,7 @@ public class ExtraChecksAndTools
 	 * @param moveNo      current move number
 	 * @return            true if the game state is in draw, false if it still has possible moves
 	 */
-	public boolean isInDraw(String currentTurn, boolean isDebug, AbstractPiece[][] gamestate, int moveNo){
+	public boolean isInDraw(String currentTurn, boolean isDebug, AbstractPiece[][] gamestate, int moveNo, ArrayList<String> powerUps){
 
 		ArrayList<AbstractPiece> piecesToCheck;
 		ArrayList<AbstractPiece> currentPieces = gamestateToPieceArrayList(gamestate);
@@ -488,7 +501,7 @@ public class ExtraChecksAndTools
 		// Check whether valid move exists
 		ArrayList<Position> allValidMoves = new ArrayList<Position>();
 		for (AbstractPiece piece : piecesToCheck) {
-			allValidMoves.addAll(validMoves(piece, isDebug, gamestate, moveNo).keySet());
+			allValidMoves.addAll(validMoves(piece, isDebug, gamestate, moveNo, powerUps).keySet());
 		}
 
 		if (allValidMoves.isEmpty()) {

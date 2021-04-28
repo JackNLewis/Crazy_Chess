@@ -165,7 +165,7 @@ public class MainLogic
 				isWhiteChecked = false;
 			}
 		}
-		if(ecat.isInCheckmate(oppColor,false,newGamestate,turnNo+1)){
+		if(ecat.isInCheckmate(oppColor,false,newGamestate,turnNo+1, getPowerUps(currentTurn))){
 			if(oppColor.equalsIgnoreCase("black")){
 				isBlackMated = true;
 			}else{
@@ -173,7 +173,7 @@ public class MainLogic
 			}
 			isEndgame = true;
 		}
-		if (ecat.isInDraw(currentTurn, isDebug, newGamestate, turnNo+1) && !isEndgame) {
+		if (ecat.isInDraw(currentTurn, isDebug, newGamestate, turnNo+1, getPowerUps(currentTurn)) && !isEndgame) {
 			if (isDebug) {
 				System.out.println("The game resulted in a draw");
 			}
@@ -373,7 +373,7 @@ public class MainLogic
 //		}
 		
 		//Checks the move validity
-		ArrayList<Position> moveList = new ArrayList<Position>(ecat.validMoves(p, isDebug, gamestate, turnNo).keySet());
+		ArrayList<Position> moveList = new ArrayList<Position>(ecat.validMoves(p, isDebug, gamestate, turnNo, getPowerUps(currentTurn)).keySet());
 		if(moveList.isEmpty()) {
 			if(isDebug)
 				System.out.println("Piece has no valid moves");
@@ -548,27 +548,27 @@ public class MainLogic
 
 			//checks if the new gamestate will be a checkmate for the oponent
 			if(currentTurn.equalsIgnoreCase("white")) {
-				if(ecat.isInCheckmate("black", isDebug, newGamestate, turnNo+1)) {
+				if(ecat.isInCheckmate("black", isDebug, newGamestate, turnNo+1, getPowerUps(currentTurn))) {
 					if(isDebug) {
 						System.out.println("White checkmated black");
 					}
 					isBlackMated = true;
 					isEndgame = true;
-				}else if(isBlackChecked) System.out.println(ecat.validMoves(ecat.getKing("black", newGamestate), isDebug, newGamestate, turnNo).size());
+				}else if(isBlackChecked) System.out.println(ecat.validMoves(ecat.getKing("black", newGamestate), isDebug, newGamestate, turnNo, getPowerUps(currentTurn)).size());
 			}
 			if(currentTurn.equalsIgnoreCase("black")) {
-				if(ecat.isInCheckmate("white", isDebug, newGamestate, turnNo+1)) {
+				if(ecat.isInCheckmate("white", isDebug, newGamestate, turnNo+1, getPowerUps(currentTurn))) {
 					if(isDebug) {
 						System.out.println("Black checkmated white");
 					}
 					isWhiteMated = true;
 					isEndgame = true;
-				}else if(isWhiteChecked) System.out.println(ecat.validMoves(ecat.getKing("white", newGamestate), isDebug, newGamestate, turnNo).size());
+				}else if(isWhiteChecked) System.out.println(ecat.validMoves(ecat.getKing("white", newGamestate), isDebug, newGamestate, turnNo, getPowerUps(currentTurn)).size());
 			}
 
 			// Check if the new gamestate will be a draw
 
-			if (ecat.isInDraw(currentTurn, isDebug, newGamestate, turnNo+1) && !isEndgame) {
+			if (ecat.isInDraw(currentTurn, isDebug, newGamestate, turnNo+1, getPowerUps(currentTurn)) && !isEndgame) {
 				if (isDebug) {
 					System.out.println("The game resulted in a draw");
 				}
