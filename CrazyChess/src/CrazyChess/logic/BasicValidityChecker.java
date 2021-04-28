@@ -18,7 +18,7 @@ public class BasicValidityChecker
 {
 	Utilities utils = new Utilities();
 	private boolean brswitch;
-	private int counter;
+//	private int counter;
 	
 	/**
 	 * A method that checks what validity checker method to use for the piece 
@@ -32,7 +32,7 @@ public class BasicValidityChecker
 	 */
 	public boolean moveCheckAssigner(AbstractPiece p, int xRel, int yRel, boolean isDebug, AbstractPiece[][] gamestate, int moveNo){
 	//	brs.setBrswitch();
-		System.out.println("brswitch " + brswitch);
+	//	System.out.println("brswitch " + brswitch);
 		if(p instanceof BlankPiece){
 			if(isDebug)
 				System.out.println("Blank spaces cannot be moved.");
@@ -49,13 +49,13 @@ public class BasicValidityChecker
 			return validityCheckQueen((Queen)p, xRel, yRel, isDebug, gamestate);
 		else if(p instanceof Knight)
 			return validityCheckKnight((Knight)p, xRel, yRel, isDebug, gamestate);
-		if(brswitch == true) {
+		if(brswitch) {
 			if(p instanceof Rook)
 				return validityCheckRooktoBishop((Rook)p, xRel, yRel, isDebug, gamestate);
 			else if(p instanceof Bishop)
 				return validityCheckBishoptoRook((Bishop)p, xRel, yRel, isDebug, gamestate);
 		}
-		else if(brswitch == false) {
+		else if(!brswitch) {
 			if(p instanceof Rook)
 				return validityCheckRook((Rook)p, xRel, yRel, isDebug, gamestate);
 			else if(p instanceof Bishop)

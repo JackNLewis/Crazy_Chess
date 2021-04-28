@@ -38,7 +38,7 @@ public class SBoard {
 
     //Used for checking
     private MainLogic game;
-    private ExtraChecksAndTools ect;
+  //  private ExtraChecksAndTools ect;
     private Utilities util;
 
     //board logic
@@ -71,7 +71,7 @@ public class SBoard {
         this.game = game;
         this.SGameScreen = SGameScreen;
         selected = false;
-        ect = new ExtraChecksAndTools();
+     //   ect = new ExtraChecksAndTools();
         util = new Utilities();
         askForDraw = new AskForDraw(SGameScreen, game);
         powerUps = SGameScreen.getPwrUpMenu();
@@ -168,7 +168,7 @@ public class SBoard {
 
                     //If tile not selected
                     if(!selected){
-                    	if(game.getDrawAsked() == true || game.getDraw() == true){
+                    	if(game.getDrawAsked() || game.getDraw()){
                     		return;
                     	}
                         //Make sure you only select tiles of your colour
@@ -196,7 +196,7 @@ public class SBoard {
                     }
                     //Tile is selected so execute a move
                     else{
-                        if(tile.equals(selectedTile) || game.getDrawAsked() == true || game.getDraw() == true){
+                        if(tile.equals(selectedTile) || game.getDrawAsked() || game.getDraw()){
                             //deselect current tile
                             renderGameState(game.getGamestate());
                             validMoves = null;
@@ -248,6 +248,7 @@ public class SBoard {
                         game.changeTurn();
                         //powerUps.showPowers(game.getTurn());
                         SGameScreen.updateMoveLabel(game.getTurn());
+                      /*  SGameScreen.*/updateRuleChangeInfo();
                         selectedTile = null;
                         validMoves = null;
                         selected = false;
@@ -340,7 +341,8 @@ public class SBoard {
         if(selectedTile ==null){
             return;
         }
-        validMoves = ect.validMoves(game.getPiece(selectedTile.getPos()),false,game.getGamestate(),game.getTurnNo());
+      //  validMoves = ect.validMoves(game.getPiece(selectedTile.getPos()),false,game.getGamestate(),game.getTurnNo());
+        validMoves = game.getEcat().validMoves(game.getPiece(selectedTile.getPos()),false,game.getGamestate(),game.getTurnNo());
         for(Tile tile: tiles){
             for(Position pos: validMoves){
                 if(tile.getPos().equals(pos)){
@@ -537,5 +539,14 @@ public class SBoard {
             SGameScreen.setInfoMessage("AI Wins");
         }
         SGameScreen.updateMoveLabel(game.getTurn());
+    }
+    
+    public void updateRuleChangeInfo(){
+   // 	System.out.println("qqqqqqqqqq");
+        if(game.getBrs()){
+            SGameScreen.getRCinfo().setText("Bishop-Rook rule change active! Turns left: " + game.getCounter());
+        }else{
+        	SGameScreen.getRCinfo().setText("");
+        }
     }
 }

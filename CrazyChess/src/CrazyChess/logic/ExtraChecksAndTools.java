@@ -27,7 +27,7 @@ public class ExtraChecksAndTools
 {
 	BasicValidityChecker bvc = new BasicValidityChecker();
 	Utilities utils = new Utilities();
-	int counter = 0;
+	int counter = -1;
 	
 	/**
 	 * Function that returns and ArrayList of pieces from
@@ -509,29 +509,33 @@ public class ExtraChecksAndTools
 		return false;
 	}
 	
+	/**
+	 * A method that randomly triggers rule change 1 (bishop-rook switch)
+	 */
+	
 	public void updateRuleChange1() {
-		if (bvc.getBrs() == false)
+		if (!bvc.getBrs())
 		{
 			Random r = new Random();
-			if (r.nextInt(2) == 0)
+			if (r.nextInt(2) == 0) //will modify this for the final game to happen less often
 			{
 				bvc.setBrs();
-				System.out.println("Bishop-Rook switch rule change active. Remaining turns: 5");
-				counter = 1;
+				System.out.println("Bishop-Rook switch rule change active. Remaining turns: 6");
+				counter = 6;
 			}
 		}
 		else
 		{
-			if (counter >= 6)
+			if (counter == 0)
 			{
 				bvc.endBrs();
-				counter = 0;
+				counter = -1;
 				System.out.println("Bishop-Rook switch rule change switched off.");
 			}
 			else
 			{
-				counter++;
-				System.out.println("Bishop-Rook switch rule change active. Remaining turns: " + (6 - counter));
+				counter--;
+				System.out.println("Bishop-Rook switch rule change active. Remaining turns: " + counter);
 			}
 		}
 	}
@@ -539,5 +543,8 @@ public class ExtraChecksAndTools
 	public boolean getBrs() {
 		return bvc.getBrs();
 	}
-
+	
+	public int getCounter() {
+		return counter;
+	}
 }

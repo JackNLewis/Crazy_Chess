@@ -113,5 +113,9 @@ public class SGameScreen {
         return this.board;
     }
 
+    public Label getRCinfo() {
+    	return ruleChangeInfo;
+    }
+    
     public void selectPower(String powerUp){}
 }

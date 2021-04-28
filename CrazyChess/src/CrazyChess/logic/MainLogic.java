@@ -47,8 +47,8 @@ public class MainLogic
 	ArrayList<String> blackPowerUps = new ArrayList<String>();  //ArrayList tp store black's powerups
 	
 	Utilities utils = new Utilities();
-	BasicValidityChecker bvc = new BasicValidityChecker();
-	ExtraChecksAndTools ecat = new ExtraChecksAndTools();
+//	BasicValidityChecker bvc = new BasicValidityChecker();
+	private ExtraChecksAndTools ecat = new ExtraChecksAndTools(); //todo getter setter
 	PowerupMain pwrUp = new PowerupMain();
 //	BishopRookSwitch brs = new BishopRookSwitch();
 
@@ -344,7 +344,7 @@ public class MainLogic
 	
 
 	protected boolean move(AbstractPiece p, int xRel, int yRel){
-		if(isDrawAsked == true || isDraw == true){
+		if(isDrawAsked || isDraw){
 			return false;
 		}
 		
@@ -685,6 +685,11 @@ public class MainLogic
 		}
 	}
 	
+	public boolean getBrs() {
+	//	return bvc.getBrs();
+		return ecat.getBrs();
+	}
+	
 	public boolean getDrawAsked(){
 		return isDrawAsked;
 	}
@@ -741,5 +746,13 @@ public class MainLogic
 	
 	public int getBBlt() {
 		return BBlt;
+	}
+	
+	public ExtraChecksAndTools getEcat() {
+		return ecat;
+	}
+	
+	public int getCounter() {
+		return ecat.getCounter();
 	}
 }
