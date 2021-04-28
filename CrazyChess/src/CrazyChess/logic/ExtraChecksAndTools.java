@@ -406,8 +406,7 @@ public class ExtraChecksAndTools
 				//generate gamestate for each one. Excluding moves where you capture enemy king
 				AbstractPiece[][] newGamestate = utils.safeCopyGamestate(gamestate);
 				if(!(vp.getXpos()==getKing(oppColor, newGamestate).getXpos() && vp.getYpos()==getKing(oppColor, newGamestate).getYpos())) {
-					AbstractPiece safeP = utils.safeCopyPiece(p);
-					newGamestate=utils.relocatePiece(safeP, newGamestate, vp.getXpos(), vp.getYpos()); //might cause some bugs
+					newGamestate=utils.relocatePiece(p, newGamestate, vp.getXpos(), vp.getYpos()); //might cause some bugs
 					listOfGamestates.put(newGamestate, validPieceMoves.get(vp));
 				}
 
