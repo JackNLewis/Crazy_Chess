@@ -10,7 +10,8 @@ import java.util.concurrent.ThreadLocalRandom;
 public class PowerupMain
 {
 	Utilities utils = new Utilities();
-	ExtraChecksAndTools ecat = new ExtraChecksAndTools();
+	ExtraChecksAndTools ecat = new ExtraChecksAndTools(1);
+
 	/**
 	 * Uses the desired   powerup and returns an altered gamestate
 	 * @param powerup     powerup to be used

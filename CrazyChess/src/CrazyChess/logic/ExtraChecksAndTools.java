@@ -27,7 +27,19 @@ public class ExtraChecksAndTools
 {
 	BasicValidityChecker bvc = new BasicValidityChecker();
 	Utilities utils = new Utilities();
-	PowerupMain pwrUp = new PowerupMain();
+	PowerupMain pwrUp;
+
+	// Default constructor
+	public ExtraChecksAndTools() {
+		pwrUp = new PowerupMain();
+	}
+
+	// Constructor to prevent circular dependencies
+	public ExtraChecksAndTools(int createCode) {
+		if (createCode != 1) {
+			pwrUp = new PowerupMain();
+		}
+	}
 	
 	/**
 	 * Function that returns and ArrayList of pieces from
