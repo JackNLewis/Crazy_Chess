@@ -175,7 +175,7 @@ public class SBoard {
                                     System.out.println("place bomb and change turn");
                                     boolean poweredMove = game.usePowerup(powerUps.getSelectedIndex(), tile.getPos(),null);
                                     if(poweredMove){
-                                        playSound();
+                                        playPwSound()
                                         System.out.println("Successful bomb place");
                                         success = true;
                                     }
@@ -211,7 +211,7 @@ public class SBoard {
                             if(poweredMove){
                                 // SUCCESFFUL POWERED MOVE
                             	//play sound effects
-                            	playSound();
+                            	playPwSound()
                                 System.out.println("Successful powered up move");
                                 success = true;
                             }else{
@@ -228,6 +228,7 @@ public class SBoard {
                             if(normalMove){
                                 System.out.println("Successful move");
                                 updateGui();
+				playNormalSound();
                                 success = true;
                             }
                             //Normal move was unsuccessful
@@ -380,24 +381,78 @@ public class SBoard {
         selected = false;
     }
 
-    private void playSound(){
+    //to play chessmove and Bomb sound
+    private void playNormalSound(){
+    	if(SGameScreen.isMusicOn()) {
+    		sound.turnOn();
+    	}
+    	else {
+    		sound.turnOff();
+    	}
+        if(game.getBB() == 1 || (game.getTurnNo() == game.getBBlt() + 4 &&!(game.getBBlt() == 0))) {
+        	if(SGameScreen.isMusicOn() && !SGameScreen.isbombOn()) {
+    			sound.turnOffbomb();
+    		}
+        	sound.Bomb();
+    		game.resetBBombsound();
+    	}
+    	else if(game.getWB() == 1|| (game.getTurnNo() == game.getWBlt() + 4 &&!(game.getWBlt() == 0))) {
+    		if(SGameScreen.isMusicOn() && !SGameScreen.isbombOn()) {
+    			sound.turnOffbomb();
+    		}
+    		sound.Bomb();
+    		game.resetWBombsound();
+    	}
+    	else {
+    		if(SGameScreen.isMusicOn() && !SGameScreen.ischessmoveOn()) {
+    			sound.turnOffChessmove();
+    		}
+    		sound.chessmove();
+    	}
+    }
+    
+    //to play powerups sound
+    private void playPwSound(){
         // SUCCESFFUL POWERED MOVE
         //play sound effects
-        if(powerUps.getSelectedStr().equalsIgnoreCase("teleport")) {
-            sound.Teleport();
-        }
-        if(powerUps.getSelectedStr().equalsIgnoreCase("minipromote")) {
-            sound.MiniPromote();
-        }
-        if(powerUps.getSelectedStr().equalsIgnoreCase("freecard")) {
-            sound.FreeCard();
-        }
-        if(powerUps.getSelectedStr().equalsIgnoreCase("bomb")) {
-            sound.Bomb();
-        }
-        if(powerUps.getSelectedStr().equalsIgnoreCase("dummypiece")) {
-            sound.DummyPiece();
-        }
+    	//check sound menu
+    	if(SGameScreen.isMusicOn()) {
+    		sound.turnOn();
+    	}
+    	else {
+    		sound.turnOff();
+    	}
+    	//play sound effects
+    	if(powerUps.getSelectedStr().equalsIgnoreCase("teleport")) {
+    		if(SGameScreen.isMusicOn() && !SGameScreen.isTeleportOn()) {
+    			sound.turnOffTeleport();
+    		}
+    		sound.Teleport();
+    	}
+    	if(powerUps.getSelectedStr().equalsIgnoreCase("minipromote")) {
+    		if(SGameScreen.isMusicOn() && !SGameScreen.isTeleportOn()) {
+    			sound.turnOffTeleport();
+    		}
+    		sound.MiniPromote();
+    	}
+    	if(powerUps.getSelectedStr().equalsIgnoreCase("freecard")) {
+    		if(SGameScreen.isMusicOn() && !SGameScreen.isFreeCardOn()) {
+    			sound.turnOffFreeCard();
+    		}
+    		sound.FreeCard();
+    	}
+    	if(powerUps.getSelectedStr().equalsIgnoreCase("bomb")) {
+    		if(SGameScreen.isMusicOn() && !SGameScreen.isSetbombOn()) {
+    			sound.turnOffSetBomb();
+    		}
+    		sound.SetBomb();
+    	}
+    	if(powerUps.getSelectedStr().equalsIgnoreCase("dummypiece")) {
+    		if(SGameScreen.isMusicOn() && !SGameScreen.isDummyPieceOn()) {
+    			sound.turnOffDummy();
+    		}
+    		sound.DummyPiece();
+    	}
         System.out.println("Successful powered up move");
         powerUps.setSelectedIndex(-1);
     }
