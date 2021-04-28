@@ -175,7 +175,7 @@ public class SBoard {
                                     System.out.println("place bomb and change turn");
                                     boolean poweredMove = game.usePowerup(powerUps.getSelectedIndex(), tile.getPos(),null);
                                     if(poweredMove){
-                                        playPwSound()
+                                        playPwSound();
                                         System.out.println("Successful bomb place");
                                         success = true;
                                     }
