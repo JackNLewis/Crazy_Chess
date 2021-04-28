@@ -413,7 +413,7 @@ public class ExtraChecksAndTools
 		ArrayList<AbstractPiece> whitePieces = getWhitePieces(gamestate);
 		//System.out.println("Got the white pieces");
 		for(AbstractPiece p : piecesToCheck) {
-			// Regular valid moves
+			// Regular game states
 			HashMap<Position, Integer> validPieceMoves = validMoves(p, isDebug, gamestate, moveNo, powerUps);
 
 			for(Position vp : validPieceMoves.keySet()) {
@@ -425,7 +425,7 @@ public class ExtraChecksAndTools
 				}
 			}
 
-			// Powerup valid moves
+			// Powerup game states
 			for (int i = 0; i < powerUps.size(); i++) {
 				String pwrUpStr = powerUps.get(i);
 				AbstractPiece[][] copiedGamestate = utils.safeCopyGamestate(gamestate);
