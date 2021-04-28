@@ -371,6 +371,7 @@ public class ExtraChecksAndTools
 								if(enemyKing == null){
 									System.out.println("Opp Color : " + oppColor);
 									System.out.println("enemy king is null");
+									continue;
 								}
 
 								if(!targetTile.getPosition().equals(enemyKing.getPosition())) {
@@ -432,7 +433,10 @@ public class ExtraChecksAndTools
 				ArrayList<Position> validPowerupMoves = pwrUp.validPowerupMoves(pwrUpStr, copiedGamestate, p.getPosition(), isDebug);
 				if (!validPowerupMoves.isEmpty()) {
 					for (Position finalPos: validPowerupMoves) {
-						listOfGamestates.put(pwrUp.usePowerupGivenGamestate(pwrUpStr, copiedGamestate, p.getColor(), p.getPosition(), finalPos, isDebug), i);
+						AbstractPiece[][] modifiedGames = pwrUp.usePowerupGivenGamestate(pwrUpStr, copiedGamestate, p.getColor(), p.getPosition(), finalPos, isDebug);
+						if (modifiedGames != null) {
+							listOfGamestates.put(modifiedGames, i);
+						}
 					}
 				}
 			}
