@@ -1,9 +1,11 @@
 package CrazyChess.logic;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 
 import CrazyChess.logic.StageHazards.Hazard;
 import CrazyChess.logic.StageHazards.HazardPiece;
+import CrazyChess.logic.powerups.PowerupMain;
 import CrazyChess.pieces.*;
 
 
@@ -25,6 +27,7 @@ public class ExtraChecksAndTools
 {
 	BasicValidityChecker bvc = new BasicValidityChecker();
 	Utilities utils = new Utilities();
+	PowerupMain pwrUp = new PowerupMain();
 	
 	/**
 	 * Function that returns and ArrayList of pieces from
@@ -335,8 +338,8 @@ public class ExtraChecksAndTools
 	 * @return         	 ArrayList of Positions a piece can go to
 	 */
 	
-	public ArrayList<Position> validMoves( AbstractPiece p, boolean isDebug, AbstractPiece[][] gamestate, int moveNo){
-		ArrayList<Position> movesList = new ArrayList<Position>();
+	public HashMap<Position, Integer> validMoves(AbstractPiece p, boolean isDebug, AbstractPiece[][] gamestate, int moveNo){
+		HashMap<Position, Integer> movesList = new HashMap<Position, Integer>();
 		for(int i=0; i<8; i++) {
 			for(int j=0; j<8; j++) {
 				AbstractPiece targetTile = utils.safeCopyPiece(gamestate[j][i]);
@@ -361,7 +364,7 @@ public class ExtraChecksAndTools
 								if(!targetTile.getPosition().equals(enemyKing.getPosition())) {
 									//checks if the new position isn't an enemy king (because you can't capture kings)
 									//If all checks pass, move is valid :)
-									movesList.add(new Position(j, i));
+									movesList.put(new Position(j, i), -1);
 								}
 							}
 						}
@@ -384,52 +387,41 @@ public class ExtraChecksAndTools
 	 * @return            ArrayList of possible game states after the turn is completed
 	 */
 	
-	public ArrayList<AbstractPiece[][]> possibleGamestatesAfterNextMove (String whoseTurn, boolean isDebug, AbstractPiece[][] gamestate, int moveNo){
+	public HashMap<AbstractPiece[][], Integer> possibleGamestatesAfterNextMove (String whoseTurn, boolean isDebug, AbstractPiece[][] gamestate, int moveNo){
+		String oppColor = utils.oppositeColor(whoseTurn);
+		ArrayList<AbstractPiece> piecesToCheck = new ArrayList<AbstractPiece>();
 		if(whoseTurn.equalsIgnoreCase("white")) {
-			ArrayList<AbstractPiece[][]> listOfGamestates = new ArrayList<AbstractPiece[][]>();
-			//System.out.println("Getting white pieces");
-			ArrayList<AbstractPiece> whitePieces = getWhitePieces(gamestate);
-			//System.out.println("Got the white pieces");
-			for(AbstractPiece p : whitePieces) {
-				ArrayList<Position> validPositions = validMoves(p, isDebug, gamestate, moveNo);
-				for(Position vp : validPositions) {
-					//generate gamestate for each one. Excluding moves where you capture enemy king
-					AbstractPiece[][] newGamestate = utils.safeCopyGamestate(gamestate);
-					if(!(vp.getXpos()==getKing("black", newGamestate).getXpos()&&vp.getYpos()==getKing("black", newGamestate).getYpos())) {
-						newGamestate=utils.relocatePiece(p, newGamestate, vp.getXpos(), vp.getYpos()); //might cause some bugs
-						listOfGamestates.add(newGamestate);
-					}
-					
+			piecesToCheck = getWhitePieces(gamestate);
+		} else {
+			piecesToCheck = getBlackPieces(gamestate);
+		}
+
+		HashMap<AbstractPiece[][], Integer> listOfGamestates = new HashMap<AbstractPiece[][], Integer>();
+		//System.out.println("Getting white pieces");
+		ArrayList<AbstractPiece> whitePieces = getWhitePieces(gamestate);
+		//System.out.println("Got the white pieces");
+		for(AbstractPiece p : piecesToCheck) {
+			HashMap<Position, Integer> validPieceMoves = validMoves(p, isDebug, gamestate, moveNo);
+			for(Position vp : validPieceMoves.keySet()) {
+				//generate gamestate for each one. Excluding moves where you capture enemy king
+				AbstractPiece[][] newGamestate = utils.safeCopyGamestate(gamestate);
+				if(!(vp.getXpos()==getKing(oppColor, newGamestate).getXpos() && vp.getYpos()==getKing(oppColor, newGamestate).getYpos())) {
+					AbstractPiece safeP = utils.safeCopyPiece(p);
+					newGamestate=utils.relocatePiece(safeP, newGamestate, vp.getXpos(), vp.getYpos()); //might cause some bugs
+					listOfGamestates.put(newGamestate, validPieceMoves.get(vp));
 				}
+
 			}
-			return listOfGamestates;
 		}
-		else if (whoseTurn.equalsIgnoreCase("black")) {
-			ArrayList<AbstractPiece[][]> listOfGamestates = new ArrayList<AbstractPiece[][]>();
-			ArrayList<AbstractPiece> blackPieces = getBlackPieces(gamestate);
-			for(AbstractPiece p : blackPieces) {
-				ArrayList<Position> validPositions = validMoves(p, isDebug, gamestate, moveNo);
-				for(Position vp : validPositions) {
-					//generate gamestate for each one. Excluding moves where you capture enemy king
-					AbstractPiece[][] newGamestate = utils.safeCopyGamestate(gamestate);
-					if(!(vp.getXpos()==getKing("white", newGamestate).getXpos()&&vp.getYpos()==getKing("white", newGamestate).getYpos())) {
-						
-						AbstractPiece safeP = utils.safeCopyPiece(p);
-						newGamestate=utils.relocatePiece(safeP, newGamestate, vp.getXpos(), vp.getYpos()); //might cause some bugs
-						
-						
-						listOfGamestates.add(newGamestate);
-					}
-					
-				}
+
+		if (listOfGamestates == null) {
+			if(isDebug) { //if the code is working, it should never reach this line of the method
+				System.out.println("When trying to get possible gamestates null was returned. Something is very wrong");
 			}
-			return listOfGamestates;
+			return null;
 		}
-		if(isDebug) { //if the code is working, it should never reach this line of the method
-			System.out.println("When trying to get possible gamestates null was returned. Something is very wrong");
-		}
-		
-		return null;
+		return listOfGamestates;
+
 	}
 	
 	/**
@@ -448,8 +440,8 @@ public class ExtraChecksAndTools
 		//just to be safe, check for a check
 		if(isInCheck(color, isDebug, gamestate, moveNo)) {
 			isMated=true;
-			ArrayList<AbstractPiece[][]> nextMoveGamestates = possibleGamestatesAfterNextMove(color, isDebug, gamestate, moveNo);
-			for(AbstractPiece[][] g : nextMoveGamestates) {
+			HashMap<AbstractPiece[][], Integer> nextMoves = possibleGamestatesAfterNextMove(color, isDebug, gamestate, moveNo);
+			for(AbstractPiece[][] g : nextMoves.keySet()) {
 				if(!isInCheck(color, isDebug, g, moveNo)) {
 					isMated =  false;
 					//utils.printGameState(g);
@@ -497,7 +489,7 @@ public class ExtraChecksAndTools
 		// Check whether valid move exists
 		ArrayList<Position> allValidMoves = new ArrayList<Position>();
 		for (AbstractPiece piece : piecesToCheck) {
-			allValidMoves.addAll(validMoves(piece, isDebug, gamestate, moveNo));
+			allValidMoves.addAll(validMoves(piece, isDebug, gamestate, moveNo).keySet());
 		}
 
 		if (allValidMoves.isEmpty()) {

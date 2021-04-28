@@ -334,7 +334,14 @@ public class SBoard {
         if(selectedTile ==null){
             return;
         }
-        validMoves = ect.validMoves(game.getPiece(selectedTile.getPos()),false,game.getGamestate(),game.getTurnNo());
+        validMoves = new ArrayList<Position>(
+                    ect.validMoves(
+                            game.getPiece(selectedTile.getPos()),
+                            false,
+                            game.getGamestate(),
+                            game.getTurnNo()
+                    ).keySet()
+        );
         for(Tile tile: tiles){
             for(Position pos: validMoves){
                 if(tile.getPos().equals(pos)){

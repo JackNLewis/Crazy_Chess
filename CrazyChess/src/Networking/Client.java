@@ -98,7 +98,14 @@ public class Client implements Runnable{
         AbstractPiece piece = currrentGameState[pos.getXpos()][pos.getYpos()];
         System.out.println(piece.toString());
 
-        ArrayList<Position> validMoves = ect.validMoves(piece,false,currrentGameState,turnNo);
+        ArrayList<Position> validMoves = new ArrayList<Position>(
+                ect.validMoves(
+                        piece,
+                        false,
+                        currrentGameState,
+                        turnNo
+                ).keySet()
+        );
         return validMoves;
     }
 
