@@ -514,18 +514,12 @@ public class ExtraChecksAndTools
 		}
 
 		// Return true (draw) if there are no possible gamestate left
-		HashMap<AbstractPiece[][], Integer> nextMoves = possibleGamestatesAfterNextMove(currentTurn, isDebug, gamestate, moveNo, powerUps);
+		HashMap<AbstractPiece[][], Integer> nextMoves = possibleGamestatesAfterNextMove(utils.oppositeColor(currentTurn), isDebug, gamestate, moveNo, powerUps);
 		for (AbstractPiece[][] nextGamestate: nextMoves.keySet()) {
-			if(isInCheck(currentTurn, isDebug, gamestate, moveNo) || isInCheck(currentTurn, isDebug, nextGamestate, moveNo)) {
+			if(isInCheck(currentTurn, isDebug, nextGamestate, moveNo)) {
 				nextMoves.remove(gamestate);
 			}
 		}
-
-//		// Check whether valid move exists
-//		ArrayList<Position> allValidMoves = new ArrayList<Position>();
-//		for (AbstractPiece piece : piecesToCheck) {
-//			allValidMoves.addAll(validMoves(piece, isDebug, gamestate, moveNo).keySet());
-//		}
 
 		if (nextMoves.isEmpty()) {
 			return true;
