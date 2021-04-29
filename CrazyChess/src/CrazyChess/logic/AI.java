@@ -91,8 +91,8 @@ public class AI
 			for (int i=0; i<possg.size(); i++) {
 				// Create a new chess board details to account powerup usage
 				BoardDetails newBoard = new BoardDetails(possg.get(i));
-				newBoard.setPowerUps("white", board.getPowerUps("white"));
-				newBoard.setPowerUps("black", board.getPowerUps("black"));
+				newBoard.setPowerUps("white", new ArrayList<String>(board.getPowerUps("white")));
+				newBoard.setPowerUps("black", new ArrayList<String>(board.getPowerUps("black")));
 				int usedPowerup = possgWithPwr.get(newBoard.getGamestate());
 				if (usedPowerup > -1) {
 					newBoard.setUsedPowerup(usedPowerup);
@@ -117,8 +117,8 @@ public class AI
 			for (int i=0; i<possg.size(); i++) {
 				// Create a new chess board details to account powerup usage
 				BoardDetails newBoard = new BoardDetails(possg.get(i));
-				newBoard.setPowerUps("white", board.getPowerUps("white"));
-				newBoard.setPowerUps("black", board.getPowerUps("black"));
+				newBoard.setPowerUps("white", new ArrayList<String>(board.getPowerUps("white")));
+				newBoard.setPowerUps("black", new ArrayList<String>(board.getPowerUps("black")));
 				int usedPowerup = possgWithPwr.get(newBoard.getGamestate());
 				if (usedPowerup > -1) {
 					newBoard.setUsedPowerup(usedPowerup);
