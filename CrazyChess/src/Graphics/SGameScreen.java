@@ -117,5 +117,29 @@ public class SGameScreen {
     	return ruleChangeInfo;
     }
     
+    public boolean getRC1() {
+		return game.getRC1();
+	}
+	
+	public boolean getRC2() {
+		return game.getRC2();
+	}
+	
+	public boolean getRC3() {
+		return game.getRC3();
+	}
+	
+	public void setRC1(boolean rulechange1) {
+		game.setRC1(rulechange1);
+	}
+	
+	public void setRC2(boolean rulechange2) {
+		game.setRC2(rulechange2);
+	}
+	
+	public void setRC3(boolean rulechange3) {
+		game.setRC3(rulechange3);
+	}
+    
     public void selectPower(String powerUp){}
 }

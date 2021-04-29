@@ -8,6 +8,7 @@ import javafx.event.EventHandler;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
+import javafx.scene.control.CheckBox;
 import javafx.scene.control.Label;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
@@ -22,6 +23,14 @@ public class MenuScreen {
     private VBox buttons;
     private Scene scene;
     private Stage stage;
+    
+    private CheckBox cb1;
+    private CheckBox cb2;
+    private CheckBox cb3;
+    
+    private boolean isSelected1;
+    private boolean isSelected2;
+    private boolean isSelected3;
 
     public MenuScreen(Stage stage){
         buttons = new VBox();
@@ -48,7 +57,21 @@ public class MenuScreen {
         newButton.setOnMouseClicked(new EventHandler<MouseEvent>() {
             @Override
             public void handle(MouseEvent event) {
+            	//booleans for rule changes
+            	isSelected1 = cb1.isSelected();
+            	isSelected2 = cb2.isSelected();
+            	isSelected3 = cb3.isSelected();
+            	
                 SGameScreen sp = new SGameScreen(stage);
+                
+                //setting rule changes
+                sp.setRC1(isSelected1);
+                sp.setRC2(isSelected2);
+                sp.setRC3(isSelected3);
+                System.out.println("rulechange 1 selected " + isSelected1);
+                System.out.println("rulechange 2 selected " + isSelected2);
+                System.out.println("rulechange 3 selected " + isSelected3);
+                
                 stage.setScene(sp.getScene());
             }
         });
@@ -62,18 +85,41 @@ public class MenuScreen {
         VsAI.setOnMouseClicked(new EventHandler<MouseEvent>() {
             @Override
             public void handle(MouseEvent event) {
+            	isSelected1 = cb1.isSelected();
+            	isSelected2 = cb2.isSelected();
+            	isSelected3 = cb3.isSelected();
+            	
                 SGameScreen sp = new SGameScreen(stage);
+                
+                sp.setRC1(isSelected1);
+                sp.setRC2(isSelected2);
+                sp.setRC3(isSelected3);
+                System.out.println("rulechange 1 selected " + isSelected1);
+                System.out.println("rulechange 2 selected " + isSelected2);
+                System.out.println("rulechange 3 selected " + isSelected3);
+                
                 sp.getBoard().enableAI();
                 stage.setScene(sp.getScene());
             }
         });
+        
+        Label title = new Label("Which rule changes do you want to play with?");
+        
+        //checkboxes for rule changes
+        cb1 = new CheckBox("Bishop-Rook switch");
+        cb2 = new CheckBox("Pawns can go backwards");
+        cb3 = new CheckBox("Kings move like Queens");
 
-        root.getChildren().addAll(newButton,multiplayer,VsAI);
+        cb1.setSelected(true);
+        cb2.setSelected(true);
+        cb3.setSelected(true);
+        
+        root.getChildren().addAll(newButton,multiplayer,VsAI,title,cb1,cb2,cb3);
     }
 
     public void addMultiplayerButtons(Button button){
         button.setOnMouseClicked(new EventHandler<MouseEvent>() {
-            @Override
+			@Override
             public void handle(MouseEvent event) {
                 //Removes buttons currently on the scene
                 buttons.getChildren().clear();

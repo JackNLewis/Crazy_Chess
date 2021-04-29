@@ -34,6 +34,9 @@ public class MainLogic
 	protected boolean isDraw;		   //boolean to show if the game is draw
 	protected boolean isEndgame;       //boolean to show if the game is ended
 	
+	protected boolean rulechange1;     //boolean to show if rule change 1 was selected to play with
+	protected boolean rulechange2;     //boolean to show if rule change 1 was selected to play with
+	protected boolean rulechange3;     //boolean to show if rule change 1 was selected to play with
 	
 	//for bomb limit
 	protected int WBlt;
@@ -231,9 +234,15 @@ public class MainLogic
 			
 			gamestate=pwrUp.powerupSpawn(gamestate, turnNo, isDebug);
 			
-			ecat.updateRuleChange1();
-			ecat.updateRuleChange2();
-			ecat.updateRuleChange3();
+			if(rulechange1) {
+				ecat.updateRuleChange1();
+			}
+			if(rulechange2) {
+				ecat.updateRuleChange2();
+			}
+			if(rulechange3) {
+				ecat.updateRuleChange3();
+			}
 			
 			System.out.println("brswitch " + ecat.getBrs());
 
@@ -247,9 +256,15 @@ public class MainLogic
 			currentTurn = "White";
 			turnNo++;
 			
-			ecat.updateRuleChange1();
-			ecat.updateRuleChange2();
-			ecat.updateRuleChange3();
+			if(rulechange1) {
+				ecat.updateRuleChange1();
+			}
+			if(rulechange2) {
+				ecat.updateRuleChange2();
+			}
+			if(rulechange3) {
+				ecat.updateRuleChange3();
+			}
 			
 			System.out.println("brswitch " + ecat.getBrs());
 			
@@ -767,5 +782,29 @@ public class MainLogic
 	
 	public int getCounter() {
 		return ecat.getCounter();
+	}
+	
+	public boolean getRC1() {
+		return rulechange1;
+	}
+	
+	public boolean getRC2() {
+		return rulechange2;
+	}
+	
+	public boolean getRC3() {
+		return rulechange3;
+	}
+	
+	public void setRC1(boolean rulechange1) {
+		this.rulechange1 = rulechange1;
+	}
+	
+	public void setRC2(boolean rulechange2) {
+		this.rulechange2 = rulechange2;
+	}
+	
+	public void setRC3(boolean rulechange3) {
+		this.rulechange3 = rulechange3;
 	}
 }
