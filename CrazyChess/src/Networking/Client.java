@@ -104,7 +104,7 @@ public class Client implements Runnable{
                         false,
                         currrentGameState,
                         turnNo
-                ).keySet()
+                )
         );
         return validMoves;
     }

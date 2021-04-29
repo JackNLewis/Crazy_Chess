@@ -173,6 +173,16 @@ public class AI
 			}		
 			else {*/
 			//System.out.println("Sending to findnBestOutcome with max: "+preMax+" min: "+preMin);
+			// Check if there will be no possible gamestate
+			if (possg.isEmpty()) {
+				if (whoseTurn.equals("Black")) {
+					return preMin;
+				}
+				else {
+					return preMax;
+				}
+			}
+
 			int best = findBestOutcome(possg, whoseTurn, preMax, preMin);
 			return best;
 			//}
@@ -294,15 +304,6 @@ public class AI
 
 	//boards is the result of possiblenextgamestates method
 	public int findBestOutcome (ArrayList<AbstractPiece[][]> boards, String whoseTurn,int preMax,int preMin) {
-
-		if (boards.isEmpty()) {
-			if (whoseTurn.equals("Black")) {
-				return Integer.MIN_VALUE;
-			}
-			else {
-				return Integer.MAX_VALUE;
-			}
-		}
 
 		int currentBoardVal;
 

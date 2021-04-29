@@ -211,7 +211,7 @@ public class SBoard {
                             if(poweredMove){
                                 // SUCCESFFUL POWERED MOVE
                             	//play sound effects
-                            	playPwSound()
+                            	playPwSound();
                                 System.out.println("Successful powered up move");
                                 success = true;
                             }else{
@@ -341,7 +341,7 @@ public class SBoard {
                             false,
                             game.getGamestate(),
                             game.getTurnNo()
-                    ).keySet()
+                    )
         );
         for(Tile tile: tiles){
             for(Position pos: validMoves){

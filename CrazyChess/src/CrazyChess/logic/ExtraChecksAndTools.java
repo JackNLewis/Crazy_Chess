@@ -349,9 +349,9 @@ public class ExtraChecksAndTools
 	 * @param moveNo     current move number
 	 * @return         	 ArrayList of Positions a piece can go to
 	 */
-	
-	public HashMap<Position, Integer> validMoves(AbstractPiece p, boolean isDebug, AbstractPiece[][] gamestate, int moveNo){
-		HashMap<Position, Integer> movesList = new HashMap<Position, Integer>();
+
+	public ArrayList<Position> validMoves( AbstractPiece p, boolean isDebug, AbstractPiece[][] gamestate, int moveNo){
+		ArrayList<Position> movesList = new ArrayList<Position>();
 		for(int i=0; i<8; i++) {
 			for(int j=0; j<8; j++) {
 				AbstractPiece targetTile = utils.safeCopyPiece(gamestate[j][i]);
@@ -369,15 +369,15 @@ public class ExtraChecksAndTools
 
 								King enemyKing = getKing(oppColor, newGamestate);
 								if(enemyKing == null){
-//									System.out.println("Opp Color : " + oppColor);
-//									System.out.println("enemy king is null");
+									System.out.println("Opp Color : " + oppColor);
+									System.out.println("enemy king is null");
 									continue;
 								}
 
 								if(!targetTile.getPosition().equals(enemyKing.getPosition())) {
 									//checks if the new position isn't an enemy king (because you can't capture kings)
 									//If all checks pass, move is valid :)
-									movesList.put(new Position(j, i), -1);
+									movesList.add(new Position(j, i));
 								}
 							}
 						}
@@ -415,14 +415,13 @@ public class ExtraChecksAndTools
 		//System.out.println("Got the white pieces");
 		for(AbstractPiece p : piecesToCheck) {
 			// Regular game states
-			HashMap<Position, Integer> validPieceMoves = validMoves(p, isDebug, gamestate, moveNo);
-
-			for(Position vp : validPieceMoves.keySet()) {
+			ArrayList<Position> validPositions = validMoves(p, isDebug, gamestate, moveNo);
+			for(Position vp : validPositions) {
 				//generate gamestate for each one. Excluding moves where you capture enemy king
 				AbstractPiece[][] newGamestate = utils.safeCopyGamestate(gamestate);
 				if(!(vp.getXpos()==getKing(oppColor, newGamestate).getXpos() && vp.getYpos()==getKing(oppColor, newGamestate).getYpos())) {
 					newGamestate=utils.relocatePiece(p, newGamestate, vp.getXpos(), vp.getYpos()); //might cause some bugs
-					listOfGamestates.put(newGamestate, validPieceMoves.get(vp));
+					listOfGamestates.put(newGamestate, -1);
 				}
 			}
 
@@ -514,13 +513,21 @@ public class ExtraChecksAndTools
 			piecesToCheck = getWhitePieces(gamestate);
 		}
 
-		// Check whether valid move exists
-		ArrayList<Position> allValidMoves = new ArrayList<Position>();
-		for (AbstractPiece piece : piecesToCheck) {
-			allValidMoves.addAll(validMoves(piece, isDebug, gamestate, moveNo).keySet());
+		// Return true (draw) if there are no possible gamestate left
+		HashMap<AbstractPiece[][], Integer> nextMoves = possibleGamestatesAfterNextMove(currentTurn, isDebug, gamestate, moveNo, powerUps);
+		for (AbstractPiece[][] nextGamestate: nextMoves.keySet()) {
+			if(isInCheck(currentTurn, isDebug, gamestate, moveNo) || isInCheck(currentTurn, isDebug, nextGamestate, moveNo)) {
+				nextMoves.remove(gamestate);
+			}
 		}
 
-		if (allValidMoves.isEmpty()) {
+//		// Check whether valid move exists
+//		ArrayList<Position> allValidMoves = new ArrayList<Position>();
+//		for (AbstractPiece piece : piecesToCheck) {
+//			allValidMoves.addAll(validMoves(piece, isDebug, gamestate, moveNo).keySet());
+//		}
+
+		if (nextMoves.isEmpty()) {
 			return true;
 		}
 		return false;

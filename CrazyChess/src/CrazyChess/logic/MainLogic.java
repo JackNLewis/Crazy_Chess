@@ -373,7 +373,7 @@ public class MainLogic
 //		}
 		
 		//Checks the move validity
-		ArrayList<Position> moveList = new ArrayList<Position>(ecat.validMoves(p, isDebug, gamestate, turnNo).keySet());
+		ArrayList<Position> moveList = new ArrayList<Position>(ecat.validMoves(p, isDebug, gamestate, turnNo));
 		if(moveList.isEmpty()) {
 			if(isDebug)
 				System.out.println("Piece has no valid moves");
