@@ -2,7 +2,6 @@ package CrazyChess.logic;
 import java.util.ArrayList;
 import java.util.HashMap;
 
-import CrazyChess.logic.powerups.PowerupMain;
 import CrazyChess.pieces.*;
 
 public class AI
@@ -10,7 +9,6 @@ public class AI
 	private MainLogic chess;
 	private Utilities utils = new Utilities();
 	private ExtraChecksAndTools ect = new ExtraChecksAndTools();
-	private PowerupMain pwrUp = new PowerupMain();
 	public void AI () {
 		//null constructor
 	}
