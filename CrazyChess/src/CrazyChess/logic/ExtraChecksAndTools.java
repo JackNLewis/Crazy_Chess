@@ -350,7 +350,7 @@ public class ExtraChecksAndTools
 	 * @return         	 ArrayList of Positions a piece can go to
 	 */
 	
-	public HashMap<Position, Integer> validMoves(AbstractPiece p, boolean isDebug, AbstractPiece[][] gamestate, int moveNo, ArrayList<String> powerUps){
+	public HashMap<Position, Integer> validMoves(AbstractPiece p, boolean isDebug, AbstractPiece[][] gamestate, int moveNo){
 		HashMap<Position, Integer> movesList = new HashMap<Position, Integer>();
 		for(int i=0; i<8; i++) {
 			for(int j=0; j<8; j++) {
@@ -369,8 +369,8 @@ public class ExtraChecksAndTools
 
 								King enemyKing = getKing(oppColor, newGamestate);
 								if(enemyKing == null){
-									System.out.println("Opp Color : " + oppColor);
-									System.out.println("enemy king is null");
+//									System.out.println("Opp Color : " + oppColor);
+//									System.out.println("enemy king is null");
 									continue;
 								}
 
@@ -415,7 +415,7 @@ public class ExtraChecksAndTools
 		//System.out.println("Got the white pieces");
 		for(AbstractPiece p : piecesToCheck) {
 			// Regular game states
-			HashMap<Position, Integer> validPieceMoves = validMoves(p, isDebug, gamestate, moveNo, powerUps);
+			HashMap<Position, Integer> validPieceMoves = validMoves(p, isDebug, gamestate, moveNo);
 
 			for(Position vp : validPieceMoves.keySet()) {
 				//generate gamestate for each one. Excluding moves where you capture enemy king
@@ -517,7 +517,7 @@ public class ExtraChecksAndTools
 		// Check whether valid move exists
 		ArrayList<Position> allValidMoves = new ArrayList<Position>();
 		for (AbstractPiece piece : piecesToCheck) {
-			allValidMoves.addAll(validMoves(piece, isDebug, gamestate, moveNo, powerUps).keySet());
+			allValidMoves.addAll(validMoves(piece, isDebug, gamestate, moveNo).keySet());
 		}
 
 		if (allValidMoves.isEmpty()) {

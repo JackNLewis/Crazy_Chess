@@ -103,8 +103,7 @@ public class Client implements Runnable{
                         piece,
                         false,
                         currrentGameState,
-                        turnNo,
-                        new ArrayList<String>()
+                        turnNo
                 ).keySet()
         );
         return validMoves;

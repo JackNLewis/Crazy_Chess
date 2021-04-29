@@ -339,8 +339,7 @@ public class SBoard {
                             game.getPiece(selectedTile.getPos()),
                             false,
                             game.getGamestate(),
-                            game.getTurnNo(),
-                            game.getPowerUps(game.getTurn())
+                            game.getTurnNo()
                     ).keySet()
         );
         for(Tile tile: tiles){
