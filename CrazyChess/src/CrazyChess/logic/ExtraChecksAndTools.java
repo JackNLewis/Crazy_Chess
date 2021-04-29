@@ -515,9 +515,9 @@ public class ExtraChecksAndTools
 	 */
 	
 	public void updateRuleChange1() {
-		if (!bvc.getBrs() && !bvc.getPS())
+		if (!bvc.getBrs() && !bvc.getPS() && !bvc.getKS())
 		{
-			if (r.nextInt(2) == 0) //will modify this for the final game to happen less often
+			if (r.nextInt(20) == 0) //will modify this for the final game to happen less often
 			{
 				bvc.setBrs();
 				counter = 2 + r.nextInt((6)/2) * 2; //random, between 2 and 8 turns
@@ -549,9 +549,9 @@ public class ExtraChecksAndTools
 	 */
 	
 	public void updateRuleChange2() {
-		if (!bvc.getBrs() && !bvc.getPS())
+		if (!bvc.getBrs() && !bvc.getPS() && !bvc.getKS())
 		{
-			if (r.nextInt(2) == 0) //will modify this for the final game to happen less often
+			if (r.nextInt(20) == 0) //will modify this for the final game to happen less often
 			{
 				bvc.setPS();
 				counter = 2 + r.nextInt((6)/2) * 2; //random, between 2 and 8 turns
@@ -578,12 +578,46 @@ public class ExtraChecksAndTools
 		}
 	}
 	
+	public void updateRuleChange3() {
+		if (!bvc.getBrs() && !bvc.getPS() && !bvc.getKS())
+		{
+			if (r.nextInt(2) == 0) //will modify this for the final game to happen less often
+			{
+				bvc.setKS();
+				counter = 2; //this rule change is very powerful so it shouldn't last longer than 2 turns
+				System.out.println("Kings can move like Queens. Remaining turns: " + counter);
+			}
+		}
+		else if (bvc.getKS())
+		{
+			if (counter == 1)
+			{
+				bvc.endKS();
+				counter = -1;
+				System.out.println("King rule change switched off.");
+			}
+			else
+			{
+				counter--;
+				if(counter == 1) {
+					System.out.println("Kings can move like Queens. Last turn!");
+				} else {
+					System.out.println("Kings can move like Queens. Remaining turns: " + counter);
+				}
+			}
+		}
+	}
+	
 	public boolean getBrs() {
 		return bvc.getBrs();
 	}
 	
 	public boolean getPS() {
 		return bvc.getPS();
+	}
+	
+	public boolean getKS() {
+		return bvc.getKS();
 	}
 	
 	public int getCounter() {

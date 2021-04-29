@@ -557,6 +557,13 @@ public class SBoard {
 				SGameScreen.getRCinfo().setText("Pawns can go backwards! Turns left: " + game.getCounter());
 			}
         }
+        else if (game.getKS()){
+        	if(game.getCounter() == 1) {
+        		SGameScreen.getRCinfo().setText("Kings can move like Queens! Last turn.");
+			} else {
+				SGameScreen.getRCinfo().setText("Kings can move like Queens! Turns left: " + game.getCounter());
+			}
+        }
         else{
         	SGameScreen.getRCinfo().setText("");
         }

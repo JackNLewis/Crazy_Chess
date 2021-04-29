@@ -19,6 +19,7 @@ public class BasicValidityChecker
 	Utilities utils = new Utilities();
 	private boolean brswitch;
 	private boolean pawnswitch;
+	private boolean kingswitch;
 //	private int counter;
 	
 	/**
@@ -44,6 +45,8 @@ public class BasicValidityChecker
 //				System.out.println("This pawn move is not valid (basicValidityChecker)");
 //			}
 			return validityCheckPawn((Pawn)p, xRel, yRel, isDebug, gamestate, moveNo);}
+		else if(p instanceof King && kingswitch)
+			return validityCheckKingAsQueen((King)p, xRel, yRel, isDebug, gamestate);
 		else if(p instanceof King)
 			return validityCheckKing((King)p, xRel, yRel, isDebug, gamestate);
 		else if(p instanceof Queen)
@@ -620,6 +623,38 @@ public class BasicValidityChecker
 		return false;
 	}
 	
+	/**
+	 * Checks if King's move is legal if rulechange3 is active. Checks all legal tiles that
+	 * the queen can move to and then checks if the candidate position is among them.
+	 * @param p           the piece to be checked
+	 * @param xRel        the relative x movement from the piece
+	 * @param yRel        the relative y movement from the piece
+	 * @param isDebug     is debug mode activated
+	 * @param gamestate   the current game state
+	 * @return            true if move is okay
+	 */
+	
+	public boolean validityCheckKingAsQueen(King p, int xRel, int yRel, boolean isDebug, AbstractPiece[][] gamestate){
+		AbstractPiece newPos = utils.getTargetPiece(p,xRel,yRel, isDebug, gamestate);
+		if(diagonalCheck(p.getXpos()-1, p.getYpos()+1, "upleft", p, newPos.getPosition(), isDebug, gamestate).equals(newPos.getPosition()))
+			return true;
+		if(diagonalCheck(p.getXpos()+1, p.getYpos()-1, "downright", p, newPos.getPosition(), isDebug, gamestate).equals(newPos.getPosition()))
+			return true;
+		if(diagonalCheck(p.getXpos()-1, p.getYpos()-1, "downleft", p, newPos.getPosition(), isDebug, gamestate).equals(newPos.getPosition()))
+			return true;
+		if(diagonalCheck(p.getXpos()+1, p.getYpos()+1, "upright", p, newPos.getPosition(), isDebug, gamestate).equals(newPos.getPosition()))
+			return true;
+		if(columnAndRowCheck(p.getXpos(), p.getYpos()+1, "up", p, newPos.getPosition(), isDebug, gamestate).equals(newPos.getPosition()))
+			return true;
+		if(columnAndRowCheck(p.getXpos(), p.getYpos()-1, "down", p, newPos.getPosition(), isDebug, gamestate).equals(newPos.getPosition()))
+			return true;
+		if(columnAndRowCheck(p.getXpos()-1, p.getYpos(), "left", p, newPos.getPosition(), isDebug, gamestate).equals(newPos.getPosition()))
+			return true;
+		if(columnAndRowCheck(p.getXpos()+1, p.getYpos(), "right", p, newPos.getPosition(), isDebug, gamestate).equals(newPos.getPosition()))
+			return true;
+		return false;
+	}
+	
 	public boolean getBrs()
 	{
 		return brswitch;
@@ -648,6 +683,21 @@ public class BasicValidityChecker
 	public void endPS()
 	{
 		pawnswitch = false;
+	}
+	
+	public boolean getKS()
+	{
+		return kingswitch;
+	}
+	
+	public void setKS()
+	{
+		kingswitch = true;
+	}
+	
+	public void endKS()
+	{
+		kingswitch = false;
 	}
 }
 

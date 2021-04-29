@@ -233,6 +233,7 @@ public class MainLogic
 			
 			ecat.updateRuleChange1();
 			ecat.updateRuleChange2();
+			ecat.updateRuleChange3();
 			
 			System.out.println("brswitch " + ecat.getBrs());
 
@@ -248,6 +249,7 @@ public class MainLogic
 			
 			ecat.updateRuleChange1();
 			ecat.updateRuleChange2();
+			ecat.updateRuleChange3();
 			
 			System.out.println("brswitch " + ecat.getBrs());
 			
@@ -695,6 +697,10 @@ public class MainLogic
 	
 	public boolean getPS() {
 		return ecat.getPS();
+	}
+	
+	public boolean getKS() {
+		return ecat.getKS();
 	}
 	
 	public boolean getDrawAsked(){
