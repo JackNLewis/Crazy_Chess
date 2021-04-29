@@ -544,8 +544,20 @@ public class SBoard {
     public void updateRuleChangeInfo(){
    // 	System.out.println("qqqqqqqqqq");
         if(game.getBrs()){
-            SGameScreen.getRCinfo().setText("Bishop-Rook rule change active! Turns left: " + game.getCounter());
-        }else{
+        	if(game.getCounter() == 1) {
+        		SGameScreen.getRCinfo().setText("Bishops & Rooks are switched! Last turn.");
+			} else {
+				SGameScreen.getRCinfo().setText("Bishops & Rooks are switched! Turns left: " + game.getCounter());
+			}
+        }
+        else if (game.getPS()){
+        	if(game.getCounter() == 1) {
+        		SGameScreen.getRCinfo().setText("Pawns can go backwards! Last turn.");
+			} else {
+				SGameScreen.getRCinfo().setText("Pawns can go backwards! Turns left: " + game.getCounter());
+			}
+        }
+        else{
         	SGameScreen.getRCinfo().setText("");
         }
     }

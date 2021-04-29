@@ -232,6 +232,8 @@ public class MainLogic
 			gamestate=pwrUp.powerupSpawn(gamestate, turnNo, isDebug);
 			
 			ecat.updateRuleChange1();
+			ecat.updateRuleChange2();
+			
 			System.out.println("brswitch " + ecat.getBrs());
 
 			
@@ -245,6 +247,8 @@ public class MainLogic
 			turnNo++;
 			
 			ecat.updateRuleChange1();
+			ecat.updateRuleChange2();
+			
 			System.out.println("brswitch " + ecat.getBrs());
 			
 			gamestate=pwrUp.powerupSpawn(gamestate, turnNo, isDebug);
@@ -686,8 +690,11 @@ public class MainLogic
 	}
 	
 	public boolean getBrs() {
-	//	return bvc.getBrs();
 		return ecat.getBrs();
+	}
+	
+	public boolean getPS() {
+		return ecat.getPS();
 	}
 	
 	public boolean getDrawAsked(){

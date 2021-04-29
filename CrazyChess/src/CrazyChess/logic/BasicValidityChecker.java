@@ -18,6 +18,7 @@ public class BasicValidityChecker
 {
 	Utilities utils = new Utilities();
 	private boolean brswitch;
+	private boolean pawnswitch;
 //	private int counter;
 	
 	/**
@@ -49,13 +50,13 @@ public class BasicValidityChecker
 			return validityCheckQueen((Queen)p, xRel, yRel, isDebug, gamestate);
 		else if(p instanceof Knight)
 			return validityCheckKnight((Knight)p, xRel, yRel, isDebug, gamestate);
-		if(brswitch) {
+		if(brswitch) { //if rulechange1 is active
 			if(p instanceof Rook)
 				return validityCheckRooktoBishop((Rook)p, xRel, yRel, isDebug, gamestate);
 			else if(p instanceof Bishop)
 				return validityCheckBishoptoRook((Bishop)p, xRel, yRel, isDebug, gamestate);
 		}
-		else if(!brswitch) {
+		else if(!brswitch) { //regular rules
 			if(p instanceof Rook)
 				return validityCheckRook((Rook)p, xRel, yRel, isDebug, gamestate);
 			else if(p instanceof Bishop)
@@ -265,11 +266,17 @@ public class BasicValidityChecker
 	public boolean validityCheckPawn(Pawn p, int xRel, int yRel, boolean isDebug, AbstractPiece[][] gamestate, int turnNo){
 		if(p.getColor().equalsIgnoreCase("black")){
 			//basic movement
-			if(xRel == 0 && yRel == -1 && !(utils.getTargetPiece(p,xRel,yRel,isDebug,gamestate).getColor().equalsIgnoreCase("white")||
-											utils.getTargetPiece(p,xRel,yRel,isDebug,gamestate).getColor().equalsIgnoreCase("powerup")))
-				return true;
+			if(pawnswitch) { //if rulechange2 is active
+				if(xRel == 0 && (yRel == -1 || yRel == 1) && !(utils.getTargetPiece(p,xRel,yRel,isDebug,gamestate).getColor().equalsIgnoreCase("white")||
+						utils.getTargetPiece(p,xRel,yRel,isDebug,gamestate).getColor().equalsIgnoreCase("powerup")))
+					return true;
+			} else { //regular rules
+				if(xRel == 0 && yRel == -1 && !(utils.getTargetPiece(p,xRel,yRel,isDebug,gamestate).getColor().equalsIgnoreCase("white")||
+						utils.getTargetPiece(p,xRel,yRel,isDebug,gamestate).getColor().equalsIgnoreCase("powerup")))
+					return true;
+			}
 			//first turn jump
-			else if(xRel == 0 && yRel == -2 && p.getYpos() == 6&&utils.getPiece(p.getXpos()+xRel, p.getYpos()+yRel, isDebug, gamestate).getColor().equalsIgnoreCase("blank")){
+			if(xRel == 0 && yRel == -2 && p.getYpos() == 6 && utils.getPiece(p.getXpos()+xRel, p.getYpos()+yRel, isDebug, gamestate).getColor().equalsIgnoreCase("blank")){
 				p.setDoublejump(turnNo);
 				return true;
 			}
@@ -308,14 +315,25 @@ public class BasicValidityChecker
 		}
 		else if(p.getColor().equalsIgnoreCase("white")){
 			//basic advance
-			if(xRel == 0 && yRel == 1 && !(utils.getTargetPiece(p,xRel,yRel,isDebug,gamestate).getColor().equalsIgnoreCase("black")||
-										   utils.getTargetPiece(p,xRel,yRel,isDebug,gamestate).getColor().equalsIgnoreCase("powerup")))
-				return true;
+			if(pawnswitch) { //if rulechange2 is active
+				if(xRel == 0 && (yRel == -1 || yRel == 1) && !(utils.getTargetPiece(p,xRel,yRel,isDebug,gamestate).getColor().equalsIgnoreCase("black")||
+						utils.getTargetPiece(p,xRel,yRel,isDebug,gamestate).getColor().equalsIgnoreCase("powerup")))
+					return true;
+			} else { //regular rules
+				if(xRel == 0 && yRel == 1 && !(utils.getTargetPiece(p,xRel,yRel,isDebug,gamestate).getColor().equalsIgnoreCase("black")||
+						utils.getTargetPiece(p,xRel,yRel,isDebug,gamestate).getColor().equalsIgnoreCase("powerup")))
+					return true;
+			}
+			
 			//first turn jump
-			else if(xRel == 0 && yRel == 2 && p.getYpos() == 1){
+			if(xRel == 0 && yRel == 2 && p.getYpos() == 1 && utils.getPiece(p.getXpos()+xRel, p.getYpos()+yRel, isDebug, gamestate).getColor().equalsIgnoreCase("blank")){
 				p.setDoublejump(turnNo);
 				return true;
 			}
+			/*if(xRel == 0 && yRel == 2 && p.getYpos() == 1){
+				p.setDoublejump(turnNo);
+				return true;
+			}*/
 			//Checks En passant
 			//Checks if on correct rank
 			else if(p.getYpos()==4) {
@@ -617,5 +635,19 @@ public class BasicValidityChecker
 		brswitch = false;
 	}
 	
+	public boolean getPS()
+	{
+		return pawnswitch;
+	}
+	
+	public void setPS()
+	{
+		pawnswitch = true;
+	}
+	
+	public void endPS()
+	{
+		pawnswitch = false;
+	}
 }
 

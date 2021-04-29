@@ -27,7 +27,8 @@ public class ExtraChecksAndTools
 {
 	BasicValidityChecker bvc = new BasicValidityChecker();
 	Utilities utils = new Utilities();
-	int counter = -1;
+	private int counter = -1;
+	private Random r = new Random();
 	
 	/**
 	 * Function that returns and ArrayList of pieces from
@@ -514,19 +515,18 @@ public class ExtraChecksAndTools
 	 */
 	
 	public void updateRuleChange1() {
-		if (!bvc.getBrs())
+		if (!bvc.getBrs() && !bvc.getPS())
 		{
-			Random r = new Random();
 			if (r.nextInt(2) == 0) //will modify this for the final game to happen less often
 			{
 				bvc.setBrs();
-				System.out.println("Bishop-Rook switch rule change active. Remaining turns: 6");
-				counter = 6;
+				counter = 2 + r.nextInt((6)/2) * 2; //random, between 2 and 8 turns
+				System.out.println("Bishop-Rook switch rule change active. Remaining turns: " + counter);
 			}
 		}
-		else
+		else if (bvc.getBrs())
 		{
-			if (counter == 0)
+			if (counter == 1)
 			{
 				bvc.endBrs();
 				counter = -1;
@@ -535,13 +535,55 @@ public class ExtraChecksAndTools
 			else
 			{
 				counter--;
-				System.out.println("Bishop-Rook switch rule change active. Remaining turns: " + counter);
+				if(counter == 1) {
+					System.out.println("Bishop-Rook switch rule change active. Last turn!");
+				} else {
+					System.out.println("Bishop-Rook switch rule change active. Remaining turns: " + counter);
+				}
+			}
+		}
+	}
+	
+	/**
+	 * A method that randomly triggers rule change 2 (pawns can go backwards)
+	 */
+	
+	public void updateRuleChange2() {
+		if (!bvc.getBrs() && !bvc.getPS())
+		{
+			if (r.nextInt(2) == 0) //will modify this for the final game to happen less often
+			{
+				bvc.setPS();
+				counter = 2 + r.nextInt((6)/2) * 2; //random, between 2 and 8 turns
+				System.out.println("Pawns can go backwards. Remaining turns: " + counter);
+			}
+		}
+		else if (bvc.getPS())
+		{
+			if (counter == 1)
+			{
+				bvc.endPS();
+				counter = -1;
+				System.out.println("Pawn rule change switched off.");
+			}
+			else
+			{
+				counter--;
+				if(counter == 1) {
+					System.out.println("Pawns can go backwards. Last turn!");
+				} else {
+					System.out.println("Pawns can go backwards. Remaining turns: " + counter);
+				}
 			}
 		}
 	}
 	
 	public boolean getBrs() {
 		return bvc.getBrs();
+	}
+	
+	public boolean getPS() {
+		return bvc.getPS();
 	}
 	
 	public int getCounter() {
