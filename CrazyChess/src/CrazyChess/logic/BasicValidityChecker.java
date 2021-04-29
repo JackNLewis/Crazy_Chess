@@ -279,7 +279,8 @@ public class BasicValidityChecker
 					return true;
 			}
 			//first turn jump
-			if(xRel == 0 && yRel == -2 && p.getYpos() == 6 && utils.getPiece(p.getXpos()+xRel, p.getYpos()+yRel, isDebug, gamestate).getColor().equalsIgnoreCase("blank")){
+			if(xRel == 0 && yRel == -2 && p.getYpos() == 6 && utils.getPiece(p.getXpos()+xRel, p.getYpos()+yRel, isDebug, gamestate).getColor().equalsIgnoreCase("blank")
+					&& utils.getPiece(p.getXpos()+xRel, p.getYpos()-1, isDebug, gamestate).getColor().equalsIgnoreCase("blank")){
 				p.setDoublejump(turnNo);
 				return true;
 			}
@@ -329,7 +330,8 @@ public class BasicValidityChecker
 			}
 			
 			//first turn jump
-			if(xRel == 0 && yRel == 2 && p.getYpos() == 1 && utils.getPiece(p.getXpos()+xRel, p.getYpos()+yRel, isDebug, gamestate).getColor().equalsIgnoreCase("blank")){
+			if(xRel == 0 && yRel == 2 && p.getYpos() == 1 && utils.getPiece(p.getXpos()+xRel, p.getYpos()+yRel, isDebug, gamestate).getColor().equalsIgnoreCase("blank")
+					&& utils.getPiece(p.getXpos()+xRel, p.getYpos()+1, isDebug, gamestate).getColor().equalsIgnoreCase("blank")){
 				p.setDoublejump(turnNo);
 				return true;
 			}
