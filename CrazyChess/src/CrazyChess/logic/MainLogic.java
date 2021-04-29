@@ -373,7 +373,7 @@ public class MainLogic
 //		}
 		
 		//Checks the move validity
-		ArrayList<Position> moveList = new ArrayList<Position>(ecat.validMoves(p, isDebug, gamestate, turnNo));
+		ArrayList<Position> moveList = ecat.validMoves(p, isDebug, gamestate, turnNo);
 		if(moveList.isEmpty()) {
 			if(isDebug)
 				System.out.println("Piece has no valid moves");
@@ -563,7 +563,7 @@ public class MainLogic
 					}
 					isWhiteMated = true;
 					isEndgame = true;
-				}else if(isWhiteChecked) System.out.println(ecat.validMoves(ecat.getKing("white", newGamestate), isDebug, newGamestate, turnNo));
+				}else if(isWhiteChecked) System.out.println(ecat.validMoves(ecat.getKing("white", newGamestate), isDebug, newGamestate, turnNo).size());
 			}
 
 			// Check if the new gamestate will be a draw

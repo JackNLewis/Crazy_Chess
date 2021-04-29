@@ -278,7 +278,7 @@ public class PowerupMain
 
 	/**
 	 * Modify a gamestate by using a given powerup
-	 * @param pwrUpStr		  name of the powerup
+	 * @param pwrUpStr        name of the powerup
 	 * @param gamestate       gamestate to be modified
 	 * @param currentTurn	  whose turn to move
 	 * @param target1         position of the first piece to be used in the powerup
