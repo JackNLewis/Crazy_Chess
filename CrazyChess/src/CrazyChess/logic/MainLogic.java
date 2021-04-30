@@ -30,9 +30,16 @@ public class MainLogic
 	protected boolean isWhiteChecked;  //boolean to show if the white player is under check
 	protected boolean isWhiteMated;    //boolean to show if the white player is mated
 
+	protected boolean isDrawAsked;		//boolean to show if a draw was asked
 	protected boolean isDraw;		   //boolean to show if the game is draw
 	protected boolean isEndgame;       //boolean to show if the game is ended
 	
+
+	protected boolean rulechange1;     //boolean to show if rule change 1 was selected to play with
+	protected boolean rulechange2;     //boolean to show if rule change 1 was selected to play with
+	protected boolean rulechange3;     //boolean to show if rule change 1 was selected to play with
+	
+	//for bomb limit
 	protected int WBlt;
 	protected int BBlt;
 	protected int WB;
@@ -42,10 +49,12 @@ public class MainLogic
 	ArrayList<String> blackPowerUps = new ArrayList<String>();  //ArrayList tp store black's powerups
 	
 	Utilities utils = new Utilities();
-	BasicValidityChecker bvc = new BasicValidityChecker();
-	ExtraChecksAndTools ecat = new ExtraChecksAndTools();
+//	BasicValidityChecker bvc = new BasicValidityChecker();
+	private ExtraChecksAndTools ecat = new ExtraChecksAndTools(); //todo getter setter
 	PowerupMain pwrUp = new PowerupMain();
 	Castle cstl = new Castle();
+//	BishopRookSwitch brs = new BishopRookSwitch();
+
 	HazardAssigner hazards = new HazardAssigner();
 	/**
 	 * Constructor for the MainLogic class.
@@ -243,6 +252,18 @@ public class MainLogic
 			
 			gamestate=pwrUp.powerupSpawn(gamestate, turnNo, isDebug);
 			
+			if(rulechange1) {
+				ecat.updateRuleChange1();
+			}
+			if(rulechange2) {
+				ecat.updateRuleChange2();
+			}
+			if(rulechange3) {
+				ecat.updateRuleChange3();
+			}
+			
+			System.out.println("brswitch " + ecat.getBrs());
+
 			
 			if(isDebug)
 				if(isDebug) {
@@ -252,6 +273,19 @@ public class MainLogic
 		else{
 			currentTurn = "White";
 			turnNo++;
+			
+			if(rulechange1) {
+				ecat.updateRuleChange1();
+			}
+			if(rulechange2) {
+				ecat.updateRuleChange2();
+			}
+			if(rulechange3) {
+				ecat.updateRuleChange3();
+			}
+			
+			System.out.println("brswitch " + ecat.getBrs());
+			
 			gamestate=pwrUp.powerupSpawn(gamestate, turnNo, isDebug);
 			
 			if(isDebug) {
@@ -264,6 +298,31 @@ public class MainLogic
 		gamestate= hazards.assignHazard(gamestate);
 		//=======================================STAGE HAZARDS================================================//
 
+	}
+	
+	/**
+	 * Switches the turn to the opposite of what it currently is, but does not increase the number of turns.
+	 * Used for the "ask for draw" button.
+	 * If for some reason the turn is neither Black nor White
+	 * by default the method sets it to white
+	 */
+	public void switchTurn(){
+		if(currentTurn.equalsIgnoreCase("White")){
+			currentTurn = "Black";
+			gamestate=pwrUp.powerupSpawn(gamestate, turnNo, isDebug);
+			if(isDebug)
+				if(isDebug) {
+					System.out.println("It is now Black's turn.");
+					System.out.println("Black's powerups: "+blackPowerUps.toString());}
+		}
+		else{
+			currentTurn = "White";
+			gamestate=pwrUp.powerupSpawn(gamestate, turnNo, isDebug);
+			
+			if(isDebug) {
+				System.out.println("It is now White's turn.");
+				System.out.println("White's powerups: "+whitePowerUps.toString());}
+		}
 	}
 	
 	/**
@@ -324,6 +383,10 @@ public class MainLogic
 	
 
 	protected boolean move(AbstractPiece p, int xRel, int yRel){
+		if(isDrawAsked || isDraw){
+			return false;
+		}
+		
 		if(p.getXpos() > 7 || p.getXpos() < 0 || p.getYpos() > 7 || p.getYpos() < 0 || p == null){ //Basic check to see if p is on board
 			if(isDebug)
 				System.out.println("Invalid piece position.");
@@ -674,6 +737,38 @@ public class MainLogic
 			return whitePowerUps;
 		}
 	}
+	
+	public boolean getBrs() {
+		return ecat.getBrs();
+	}
+	
+	public boolean getPS() {
+		return ecat.getPS();
+	}
+	
+	public boolean getKS() {
+		return ecat.getKS();
+	}
+	
+	public boolean getDrawAsked(){
+		return isDrawAsked;
+	}
+	
+	public void setDrawAsked(){
+		isDrawAsked = true;
+	}
+	
+	public boolean getDraw(){
+		return isDraw;
+	}
+	
+	public void setDraw(){
+		isDraw = true;
+	}
+	
+	public void refuseDraw(){
+		isDrawAsked = false;
+	}
 
 	public void setCheck(String player,boolean check){
 		if(player.equalsIgnoreCase("white")){
@@ -711,5 +806,37 @@ public class MainLogic
 	
 	public int getBBlt() {
 		return BBlt;
+	}
+	
+	public ExtraChecksAndTools getEcat() {
+		return ecat;
+	}
+	
+	public int getCounter() {
+		return ecat.getCounter();
+	}
+	
+	public boolean getRC1() {
+		return rulechange1;
+	}
+	
+	public boolean getRC2() {
+		return rulechange2;
+	}
+	
+	public boolean getRC3() {
+		return rulechange3;
+	}
+	
+	public void setRC1(boolean rulechange1) {
+		this.rulechange1 = rulechange1;
+	}
+	
+	public void setRC2(boolean rulechange2) {
+		this.rulechange2 = rulechange2;
+	}
+	
+	public void setRC3(boolean rulechange3) {
+		this.rulechange3 = rulechange3;
 	}
 }
