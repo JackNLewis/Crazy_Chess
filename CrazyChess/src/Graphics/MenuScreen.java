@@ -47,7 +47,6 @@ public class MenuScreen {
         scene.getStylesheets().add("/Graphics/css/menu.css");
         this.stage = stage;
 
-
         //Add Banner Image
         ImageView img = new ImageView();
         img.setImage(new Image("/resources/menu_text.png"));
