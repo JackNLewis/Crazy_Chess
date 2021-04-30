@@ -3,6 +3,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 
 import CrazyChess.pieces.*;
+import java.util.*;
 
 public class AI
 {
@@ -35,21 +36,35 @@ public class AI
 		//System.out.println("best move is:");
 		//utils.printGameState(bestMove);
 		return bestMove;
-		/*AbstractPiece[][] bestBoard = findBestOutcome(possg,chess.getTurn());
-		System.out.println("Best board is:");
-		utils.printGameState(bestBoard);
+	}
+	
+	public AbstractPiece[][] AI (MainLogic chess, String difficulty) {
+		BoardDetails currentBoard = new BoardDetails(
+				chess.getGamestate(),
+				chess.getPowerUps("white"),
+				chess.getPowerUps("black")
+		);
 
-		System.out.println("Current board val is "+evaluateBoard(chess.getGamestate()));
+		int max_depth;
+		if (difficulty.contentEquals("easy")) {
+			max_depth = 2;
+		}
+		else if(difficulty.contentEquals("medium")) {
+			max_depth = 3;
+		}
+		else {
+			max_depth = 4;
+		}
 
-		System.out.println("chess.getTurn is "+chess.getTurn());
-		int blackMove = findWorstOutcome(possg,"Black");
-		System.out.println("black worst board is: "+blackMove);
+		BoardDetails bestMoveDetails = minimax(currentBoard,max_depth, chess.getTurn());
+		AbstractPiece[][] bestMove = bestMoveDetails.getGamestate();
 
-		int whiteMove = findWorstOutcome(possg,"White");
-		System.out.println("white worst board is: "+whiteMove);
+		int usedPowerupIndex = bestMoveDetails.getUsedPowerup();
+		if (usedPowerupIndex > -1) {
+			chess.getPowerUps(chess.getTurn()).remove(usedPowerupIndex);
+		}
 
-		return bestBoard;*/
-
+		return bestMove;
 	}
 
 	//the board entering this is not the chess gamestate, there is one function managing this one. If that doesn't happen
@@ -64,6 +79,7 @@ public class AI
 				board.getPowerUps(whoseAI)
 		);
 		ArrayList<AbstractPiece[][]> possg = new ArrayList<>(possgWithPwr.keySet());
+		Collections.shuffle(possg);
 		//need to pass whoseTurn to next function and it will be whoever is not AI's turn so whoseTurn is decided below
 		String whoseTurn;
 		if (whoseAI.equals("Black")) {
@@ -163,7 +179,8 @@ public class AI
 				board.getPowerUps(whoseTurn)
 		);
 		ArrayList<AbstractPiece[][]> possg = new ArrayList<>(possgWithPwr.keySet());
-		if(curr_depth == max_depth-1) {
+		Collections.shuffle(possg);
+		if(curr_depth==max_depth-1) {
 			//-1 because we use possg so we look one more move ahead
 			/*if (whoseAI.contentEquals(whoseTurn)) {
 				int worst=findWorstOutcome(possg,whoseAI,preMax,preMin);
@@ -200,13 +217,10 @@ public class AI
 			else {
 				whoseTurnNext="Black";
 			}
-			//if black is AI, this if statement is likely redundant, remove if there's time
-			//if (whoseAI.equals("Black")) {
-			//and its white's turn, we will choose the worst (min) outcome as black needs to consider the worst outcome as AI
 			if (whoseTurn.equals("White")) {
 				worst = Integer.MIN_VALUE;
-				//the higher the worse
-				for (int i=0; i < possg.size(); i++) {
+				//the higher the worse (for black)
+				for (int i=0;i<possg.size();i++) {
 					// Create a new chess board details to account powerup usage
 					BoardDetails newBoard = new BoardDetails(possg.get(i));
 					newBoard.setPowerUps("white", new ArrayList<String>(board.getPowerUps("white")));
