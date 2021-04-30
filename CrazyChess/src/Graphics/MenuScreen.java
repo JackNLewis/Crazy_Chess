@@ -82,18 +82,12 @@ public class MenuScreen {
 //							game.printGameState();
 							
 			                SGameScreen sp = new SGameScreen(game, stage);
-							System.out.println("new screen created");
 			                stage.setScene(sp.getScene());
 							System.out.println("Loaded successfully");
 							
 						} catch (Exception exc) {
 							System.out.println("Couldn't load: " + exc.getMessage());
 						}
-//						SGameScreen sp = new SGameScreen(stage);
-//						MainLogic game = null;
-//						SGameScreen sp = new SGameScreen(game, stage);
-//						System.out.println("new screen created");
-//		                stage.setScene(sp.getScene());
 					}
             	});
             	

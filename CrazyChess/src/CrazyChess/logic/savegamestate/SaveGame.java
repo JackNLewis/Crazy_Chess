@@ -43,10 +43,12 @@ public class SaveGame implements ChessIO {
 //	MainLogic board = new MainLogic();
 //	AbstractPiece[][] gs = new AbstractPiece[8][8];
 	public AbstractPiece p;
-	public HazardPiece hazardPiece;
+	public AbstractPiece originalp;
+	public AbstractPiece HPiece;
+//	public HazardPiece hazardPiece;
 	public Hazard hazardTile;
-	AbstractPiece color;
-	HazardAssigner assignH = new HazardAssigner();
+//	AbstractPiece color;
+	HazardAssigner assignH;
 	Utilities utils = new Utilities();
 	ExtraChecksAndTools ecat = new ExtraChecksAndTools();
     
@@ -60,15 +62,21 @@ public class SaveGame implements ChessIO {
 
 	@Override
 	public byte[] save(MainLogic board, AbstractPiece[][] gamestate) {
-//		AbstractPiece[][] gamestate;
-//		ArrayList<AbstractPiece> pieces = ecat.gamestateToPieceArrayList(gamestate);
-//		AbstractPiece[][] finalgs = assignH.assignHazard(gamestate);
-//		assignH.Hazard
-		
+
 		ArrayList<AbstractPiece> blackPieces = ecat.getBlackPieces(gamestate);
 		ArrayList<AbstractPiece> whitePieces = ecat.getWhitePieces(gamestate);
 		ArrayList<AbstractPiece> blankPieces = ecat.getBlankArrayList(gamestate);
 		ArrayList<AbstractPiece> hazardPieces = ecat.getHazardPieces(gamestate);
+		
+//		ArrayList<AbstractPiece> blackPieces = ecat.getBlackPieces(gamestate);
+//		System.out.println("blackPieces: " + blackPieces);
+//		ArrayList<AbstractPiece> whitePieces = ecat.getWhitePieces(gamestate);
+//		System.out.println("whitePieces: " + whitePieces);
+//		ArrayList<AbstractPiece> blankPieces = ecat.getBlankArrayList(gamestate);
+//		System.out.println("blankPieces: " + blankPieces);
+//		ArrayList<AbstractPiece> hazardPieces = ecat.getHazardPieces(gamestate);
+		//how to save assignHazard function???
+//		assignH.despawn(gamestate);
 		
 
 		ByteArrayOutputStream baos = new ByteArrayOutputStream();
@@ -82,15 +90,16 @@ public class SaveGame implements ChessIO {
 			writer.writeStartElement("Board");
 			writer.writeAttribute("CurrentTurn", board.getTurn() + "");
 			writer.writeAttribute("TurnNo", String.valueOf(board.getTurnNo()));
-			writer.writeAttribute("HazardAssigned", assignH + "");
-//			writer.writeAttribute("StageHazard", gamestate.);
-//			writeHazardPieces(hazardPieces, writer);
-			writePieces(blackPieces, writer);
-			writePieces(whitePieces, writer);
+			if(!blackPieces.isEmpty()) {
+				writePieces(blackPieces, writer);
+			}
+			if(!whitePieces.isEmpty()) {
+				writePieces(whitePieces, writer);
+			}
 			writePieces(blankPieces, writer);
-			writeHazardPieces(hazardPieces, writer);
-			
-
+			if(!hazardPieces.isEmpty()) {
+				writePieces(hazardPieces, writer);
+			}
 			writer.writeEndElement();
 		} catch (XMLStreamException ex) {
 			ex.printStackTrace();
@@ -108,33 +117,70 @@ public class SaveGame implements ChessIO {
 	}
 
 	private void writePieces(ArrayList<AbstractPiece> pieces, XMLStreamWriter writer) throws XMLStreamException {
-		writer.writeStartElement(pieces.get(0).getColor());
+		switch (pieces.get(0).getClass().getSimpleName()) {
+		case "HazardPiece":
+			writer.writeStartElement("Hazard");
+			break;
+		default:
+			writer.writeStartElement(pieces.get(0).getColor());
+		}
+
 		for (AbstractPiece piece : pieces) {
 			writer.writeEmptyElement("Piece");
-			writer.writeAttribute("Type", piece.getClass().getSimpleName());
-			writer.writeAttribute("Colour", piece.getColor());
-			writer.writeAttribute("XCoordinate", String.valueOf(piece.getXpos()));
-			writer.writeAttribute("YCoordinate", String.valueOf(piece.getYpos()));
-//			writer.writeAttribute("Position", piece.getPosition() + "");
-			writer.writeAttribute("Powerup", piece.getPoweruptype() + "");
+			switch(piece.getClass().getSimpleName()) {
+			case "HazardPiece":
+				writer.writeAttribute("Type", piece.getClass().getSimpleName());
+			    writer.writeAttribute("Colour", piece.getColor());
+			    writer.writeAttribute("XCoordinate", String.valueOf(piece.getXpos()));
+			    writer.writeAttribute("YCoordinate", String.valueOf(piece.getYpos()));
+			    writer.writeAttribute("Powerup", piece.getPoweruptype() + "");
+				writer.writeAttribute("HazardType", ((HazardPiece) piece).getHazard() + "");
+				writer.writeAttribute("OriginalPiece", ((HazardPiece) piece).getOriginalPiece().getClass().getSimpleName() +"");
+				break;
+			case "Pawn":
+				writer.writeAttribute("Type", piece.getClass().getSimpleName());
+			    writer.writeAttribute("Colour", piece.getColor());
+			    writer.writeAttribute("XCoordinate", String.valueOf(piece.getXpos()));
+			    writer.writeAttribute("YCoordinate", String.valueOf(piece.getYpos()));
+			    writer.writeAttribute("Powerup", piece.getPoweruptype() + "");
+				writer.writeAttribute("Doublejump", ((Pawn) piece).getDoublejump() + "");
+				writer.writeAttribute("enPassant", ((Pawn) piece).getEnPassant() + "");
+				break;
+			case "King":
+				writer.writeAttribute("Type", piece.getClass().getSimpleName());
+			    writer.writeAttribute("Colour", piece.getColor());
+			    writer.writeAttribute("XCoordinate", String.valueOf(piece.getXpos()));
+			    writer.writeAttribute("YCoordinate", String.valueOf(piece.getYpos()));
+			    writer.writeAttribute("Powerup", piece.getPoweruptype() + "");
+				writer.writeAttribute("isChecked", ((King) piece).getIsChecked() + "");
+				writer.writeAttribute("wasMovedKing", ((King) piece).getWasMoved() + "");
+				break;
+			case "Rook":
+				writer.writeAttribute("Type", piece.getClass().getSimpleName());
+			    writer.writeAttribute("Colour", piece.getColor());
+			    writer.writeAttribute("XCoordinate", String.valueOf(piece.getXpos()));
+			    writer.writeAttribute("YCoordinate", String.valueOf(piece.getYpos()));
+			    writer.writeAttribute("Powerup", piece.getPoweruptype() + "");
+			    writer.writeAttribute("wasMovedRook", ((Rook)piece).getWasMoved() + "");
+			    break;
+			default:
+			    writer.writeAttribute("Type", piece.getClass().getSimpleName());
+			    writer.writeAttribute("Colour", piece.getColor());
+			    writer.writeAttribute("XCoordinate", String.valueOf(piece.getXpos()));
+			    writer.writeAttribute("YCoordinate", String.valueOf(piece.getYpos()));
+			    writer.writeAttribute("Powerup", piece.getPoweruptype() + "");
+
+			}
+			
+			
+/////////////adding all attributes needed for hazardpiece
+//			writer.writeAttribute("HazardType", ((HazardPiece) piece).getHazard() + "");
 //			writer.writeAttribute("StageHazard", piece.equals(HazardPiece));
 		}
 		writer.writeEndElement();
 	}
 	
-	private void writeHazardPieces(ArrayList<AbstractPiece> pieces, XMLStreamWriter writer) throws XMLStreamException {
-		writer.writeStartElement("Hazard");
-		for (AbstractPiece piece : pieces) {
-			writer.writeEmptyElement("Piece");
-			writer.writeAttribute("Type", ((HazardPiece) piece).getOriginalPiece().getClass().getSimpleName() +"");
-			writer.writeAttribute("OriginalPiece", ((HazardPiece) piece).getOriginalPiece() +"");
-			writer.writeAttribute("XCoordinate", String.valueOf(piece.getXpos()));
-			writer.writeAttribute("YCoordinate", String.valueOf(piece.getYpos()));
-			writer.writeAttribute("Powerup", piece.getPoweruptype() + "");
-			writer.writeAttribute("HazardType", ((HazardPiece) piece).getHazard() + "");
-		}
-		writer.writeEndElement();
-	}
+	
 	public static byte[] loadDataFromFile(File file) {
 		try {
 			return Files.readAllBytes(Paths.get(file.toURI()));
@@ -143,7 +189,6 @@ public class SaveGame implements ChessIO {
 			return null;
 		}
 	}
-	
 	
 	public void load(byte[] data, MainLogic board, AbstractPiece[][] gamestate) {
 		// AbstractPiece p;
@@ -180,12 +225,12 @@ public class SaveGame implements ChessIO {
 						            System.out.println("DONE blanks");
 						            break;
 					   case "Board/Hazard/Piece":
-						            loadHazardPiece(reader, gamestate);
+//						            loadHazardPiece(reader, gamestate);
+						            loadPiece(reader, gamestate);
 						            System.out.println("DONE hazard pieces");
 						            break;
 					   default:
 						            System.out.println("Next");
-						            break;
 					}
 				    
 					break;
@@ -209,58 +254,22 @@ public class SaveGame implements ChessIO {
 		}
 		
 	}
-
+	
 	private AbstractPiece[][] loadPiece(XMLStreamReader reader, AbstractPiece[][] gamestate) throws XMLStreamException {
 		String type = reader.getAttributeValue("", "Type");
 		String color = reader.getAttributeValue("", "Colour");
-		int xcoord = Integer.parseInt(reader.getAttributeValue("", "XCoordinate"));
-		int ycoord = Integer.parseInt(reader.getAttributeValue("", "YCoordinate"));
 		String powerup = reader.getAttributeValue("", "Powerup");
-		AbstractPiece[][] gs = gamestate;
-
-		switch (type) {
-			case "Rook":
-				p = new Rook(color, xcoord, ycoord, powerup);
-				break;
-			case "Knight":
-				p = new Knight(color, xcoord, ycoord, powerup);
-				break;
-			case "Bishop":
-				p = new Bishop(color, xcoord, ycoord, powerup);
-				break;
-			case "Queen":
-				p = new Queen(color, xcoord, ycoord, powerup);
-				break;
-			case "King":
-				p = new King(color, xcoord, ycoord, powerup);
-				break;
-			case "Pawn":
-				p = new Pawn(color, xcoord, ycoord, powerup);
-				break;
-			case "BlankPiece":
-			    p = new BlankPiece(color, xcoord, ycoord, powerup);	
-			    break;
-			default:
-				throw new IllegalArgumentException("Unknown Piece: \"" + type + "\"");
-		}
-		System.out.println("written piece successfully: " + p);
-		
-		gs = utils.placePiece(p, false, gamestate);
-		System.out.println("place piece onto gamestate successfully");
-		return gs;
-
-	}
-	private AbstractPiece[][] loadHazardPiece(XMLStreamReader reader, AbstractPiece[][] gamestate) throws XMLStreamException {
-		String type = reader.getAttributeValue("", "Type");
-		String OriginalPiece = reader.getAttributeValue("", "OriginalPiece");
-		String HazardType = reader.getAttributeValue("", "HazardType");
-		String powerup = reader.getAttributeValue("", "Powerup");
-        
 		int xcoord = Integer.parseInt(reader.getAttributeValue("", "XCoordinate"));
 		int ycoord = Integer.parseInt(reader.getAttributeValue("", "YCoordinate"));
 		Position position = new Position(xcoord, ycoord);
+		//needed for hazard pieces
+		String OriginalPiece = reader.getAttributeValue("", "OriginalPiece");
+		String HazardType = reader.getAttributeValue("", "HazardType");
 		
-//		Hazard hazardTile;
+		Boolean KingCheck = Boolean.parseBoolean(reader.getAttributeValue("", "isChecked"));
+		Boolean KingMove = Boolean.parseBoolean(reader.getAttributeValue("", "wasMovedKing"));
+		Boolean RookMove = Boolean.parseBoolean(reader.getAttributeValue("", "wasMovedRook"));
+		
 		if(HazardType == "FROZEN") {
 			hazardTile = Hazard.FROZEN;
 		}
@@ -268,51 +277,81 @@ public class SaveGame implements ChessIO {
 			hazardTile = Hazard.BURN;
 		}
 		
-		String color = null;
-		if(OriginalPiece.startsWith("White")) {
-			color = "White";
-		}
-		else if(OriginalPiece.startsWith("Black")) {
-			color = "Black";
-		}
-		else if(OriginalPiece.startsWith("Blank")) {
-			color = "Blank";
+		if(type == "HazardPiece") {
+			switch(OriginalPiece) {
+			case "Rook":
+				originalp = new Rook(color, position, powerup);
+				((Rook) originalp).setWasMoved(RookMove);
+				break;
+			case "Knight":
+				originalp = new Knight(color, position, powerup);
+				break;
+			case "Bishop":
+				originalp = new Bishop(color, position, powerup);
+				break;
+			case "Queen":
+				originalp = new Queen(color, position, powerup);
+				break;
+			case "King":
+				originalp = new King(color, position, powerup);
+				((King) originalp).setIsChecked(KingCheck);
+				((King) originalp).setWasMoved(KingMove);
+				break;
+			case "Pawn":
+				originalp = new Pawn(color, position, powerup);
+				int PawnJump = Integer.parseInt(reader.getAttributeValue("", "Doublejump"));
+				((Pawn) originalp).setDoublejump(PawnJump);
+				Boolean Passant = Boolean.parseBoolean(reader.getAttributeValue("", "enPassant"));
+				((Pawn) originalp).setEnPassant(Passant);
+				break;
+			case "BlankPiece":
+				originalp = new BlankPiece(color, position, powerup);
+				break;
+			}
 		}
 		
-		AbstractPiece original;
+		//load all pieces
 		switch (type) {
 		case "Rook":
-			original = new Rook(color, position, powerup);
+			p = new Rook(color, position, powerup);
+			((Rook) p).setWasMoved(RookMove);
 			break;
 		case "Knight":
-			original = new Knight(color, position, powerup);
+			p = new Knight(color, position, powerup);
 			break;
 		case "Bishop":
-			original = new Bishop(color, position, powerup);
+			p = new Bishop(color, position, powerup);
 			break;
 		case "Queen":
-			original = new Queen(color, position, powerup);
+			p = new Queen(color, position, powerup);
 			break;
 		case "King":
-			original = new King(color, position, powerup);
+			p = new King(color, position, powerup);
+			((King) p).setIsChecked(KingCheck);
+			((King) p).setWasMoved(KingMove);
 			break;
 		case "Pawn":
-			original = new Pawn(color, position, powerup);
+			p = new Pawn(color, position, powerup);
+			int PawnJump = Integer.parseInt(reader.getAttributeValue("", "Doublejump"));
+			((Pawn) p).setDoublejump(PawnJump);
+			Boolean Passant = Boolean.parseBoolean(reader.getAttributeValue("", "enPassant"));
+			((Pawn) p).setEnPassant(Passant);
 			break;
 		case "BlankPiece":
-			original = new BlankPiece(color, position, powerup);
+			p = new BlankPiece(color, position, powerup);
+			break;
+		case "HazardPiece":
+			p = new HazardPiece(position, hazardTile, originalp);
 			break;
 		default:
 			throw new IllegalArgumentException("Unknown Piece: \"" + type + "\"");
-	    }
+		}
+		System.out.println("written piece successfully: " + p);
 
 		AbstractPiece[][] gs = gamestate;
-		hazardPiece  = new HazardPiece(position, hazardTile, original);
-		gs = utils.placePiece(hazardPiece, false, gamestate);
-//	    HazardAssigner assignH = new 
-		AbstractPiece[][] finalGameState = assignH.assignHazard(gs);
-		System.out.println("place HazardPiece onto gamestate successfully");
-		return finalGameState;
+		gs = utils.placePiece(p, false, gamestate);
+//		System.out.println("place all pieces onto gamestate successfully");
+		return gs;
 
 	}
 
