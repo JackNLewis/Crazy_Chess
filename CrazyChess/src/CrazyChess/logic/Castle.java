@@ -79,7 +79,7 @@ public class Castle
 							utils.getPiece(1,0,isDebug,gamestate).setColor("Blank");
 							utils.getPiece(2,0,isDebug,gamestate).setColor("Blank");
 							utils.getPiece(3,0,isDebug,gamestate).setColor("Blank");
-
+							p.setCanCastle(3);
 							return true;
 						}else{
 							//reset spaces to blank in case fail

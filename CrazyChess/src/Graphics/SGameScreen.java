@@ -1,7 +1,9 @@
 package Graphics;
 
-import java.io.File;
 
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
+import java.io.File;
 import CrazyChess.logic.MainLogic;
 import CrazyChess.logic.savegamestate.*;
 import javafx.event.EventHandler;
@@ -58,9 +60,9 @@ public class SGameScreen {
         this.stage = stage;
         root = new VBox();
 
-        scene = new Scene(root,920,620);
-
+        scene = new Scene(root, 1101,942);
         scene.getStylesheets().add("/Graphics/css/board.css");
+
         
       //Options menu
         Menu optionsMenu = new Menu("Options");
@@ -165,7 +167,9 @@ public class SGameScreen {
 
         boardContainer = new HBox();
         boardContainer.setSpacing(10);
-        boardContainer.getChildren().addAll(board.getBoard(), pwrUpMenu.getPowerUpMenu(), askForDraw.getAskForDraw());
+        //Removed draw button temporarily
+        //boardContainer.getChildren().addAll(board.getBoard(), pwrUpMenu.getPowerUpMenu(), askForDraw.getAskForDraw());
+		boardContainer.getChildren().addAll(board.getBoard(), pwrUpMenu.getPowerUpMenu());
         boardContainer.setAlignment(Pos.CENTER);
         root.getChildren().add(boardContainer);
 

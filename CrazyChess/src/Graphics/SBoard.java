@@ -81,7 +81,7 @@ public class SBoard {
     }
 
     public void initBoard(String player) {
-        int squareSize = 50;
+        int squareSize = 99;
         boardSize = 50*8;
         board = new GridPane();
         tiles = new ArrayList<Tile>();
@@ -112,8 +112,8 @@ public class SBoard {
                 }
             }
         }
-        board.setHgap(5);
-        board.setVgap(5);
+//        board.setHgap(1);
+//        board.setVgap(1);
         board.setMaxSize(boardSize,boardSize);
 
         addMoveListeners();
@@ -291,7 +291,7 @@ public class SBoard {
 //        		filename = "fire.png";
 //        	}
             if(hazardPiece.getHazard() == Hazard.FROZEN) {
-            	filename = "ice.jpg";
+            	filename = "ice.png";
             }
             else if(hazardPiece.getHazard() == Hazard.BURN){
             	filename = "fire.png";
@@ -331,9 +331,9 @@ public class SBoard {
     private void setDefaultColor(Tile tile){
         if ((tile.getPos().getXpos() % 2 == 1 && tile.getPos().getYpos() % 2 == 1)
                 || ((tile.getPos().getXpos() % 2 == 0) && (tile.getPos().getYpos() % 2 == 0))) {
-            tile.setbgColor(Color.web("#118AB2"));
+            tile.setbgColor(new Image("/resources/whiteTile.png"));
         } else {
-            tile.setbgColor(Color.web("#06D6A0"));
+            tile.setbgColor(new Image("/resources/blackTile.png"));
         }
     }
 
@@ -347,11 +347,11 @@ public class SBoard {
         for(Tile tile: tiles){
             for(Position pos: validMoves){
                 if(tile.getPos().equals(pos)){
-                    tile.setbgColor(Color.web("#FFD166"));
+                    tile.addImg(new ImageView(new Image("/resources/PossibleMove.png")));
                 }
             }
         }
-        selectedTile.setbgColor(Color.web("#EF476F"));
+        selectedTile.setbgColor(new Image("/resources/selectedTile.png"));
     }
 
     public void showPowerMoves(){
@@ -362,12 +362,12 @@ public class SBoard {
         for(Tile tile: tiles){
             for(Position pos: poweredMoves){
                 if(tile.getPos().equals(pos)){
-                    tile.setbgColor(Color.web("#FFD166"));
+                	tile.addImg(new ImageView(new Image("/resources/PossibleMove.png")));
                 }
             }
         }
         if(selectedTile!=null){
-            selectedTile.setbgColor(Color.web("#EF476F"));
+            selectedTile.setbgColor(new Image("/resources/selectedTile.png"));
         }
     }
 
@@ -380,7 +380,7 @@ public class SBoard {
         for(Tile tile: tiles){
             for(Position pos: poweredMoves){
                 if(tile.getPos().equals(pos)){
-                    tile.setbgColor(Color.web("#FFD166"));
+                    tile.addImg(new ImageView(new Image("/resources/PossibleMove.png")));
                 }
             }
         }
