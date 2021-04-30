@@ -38,7 +38,7 @@ public class SBoard {
 
     //Used for checking
     private MainLogic game;
-    private ExtraChecksAndTools ect;
+  //  private ExtraChecksAndTools ect;
     private Utilities util;
 
     //board logic
@@ -48,6 +48,8 @@ public class SBoard {
     private double boardSize;
     private Tile selectedTile;
 
+    private AskForDraw askForDraw;
+    
     //to do with power up
     private ArrayList<Position> validMoves;
     private PowerUpMenu powerUps;
@@ -69,8 +71,9 @@ public class SBoard {
         this.game = game;
         this.SGameScreen = SGameScreen;
         selected = false;
-        ect = new ExtraChecksAndTools();
+     //   ect = new ExtraChecksAndTools();
         util = new Utilities();
+        askForDraw = new AskForDraw(SGameScreen, game);
         powerUps = SGameScreen.getPwrUpMenu();
         powerMain = new PowerupMain();
         sound = new music();
@@ -165,6 +168,9 @@ public class SBoard {
 
                     //If tile not selected
                     if(!selected){
+                    	if(game.getDrawAsked() || game.getDraw()){
+                    		return;
+                    	}
                         //Make sure you only select tiles of your colour
                         if(selectedColor.equalsIgnoreCase(currentColor)){
                             selected = true;
@@ -175,7 +181,7 @@ public class SBoard {
                                     System.out.println("place bomb and change turn");
                                     boolean poweredMove = game.usePowerup(powerUps.getSelectedIndex(), tile.getPos(),null);
                                     if(poweredMove){
-                                        playSound();
+                                        playPwSound();
                                         System.out.println("Successful bomb place");
                                         success = true;
                                     }
@@ -190,8 +196,7 @@ public class SBoard {
                     }
                     //Tile is selected so execute a move
                     else{
-                    	
-                        if(tile.equals(selectedTile)){
+                        if(tile.equals(selectedTile) || game.getDrawAsked() || game.getDraw()){
                             //deselect current tile
                             renderGameState(game.getGamestate());
                             validMoves = null;
@@ -211,7 +216,7 @@ public class SBoard {
                             if(poweredMove){
                                 // SUCCESFFUL POWERED MOVE
                             	//play sound effects
-                            	playSound();
+                            	playPwSound();
                                 System.out.println("Successful powered up move");
                                 success = true;
                             }else{
@@ -228,6 +233,7 @@ public class SBoard {
                             if(normalMove){
                                 System.out.println("Successful move");
                                 updateGui();
+				playNormalSound();
                                 success = true;
                             }
                             //Normal move was unsuccessful
@@ -243,6 +249,7 @@ public class SBoard {
                         game.changeTurn();
                         //powerUps.showPowers(game.getTurn());
                         SGameScreen.updateMoveLabel(game.getTurn());
+                      /*  SGameScreen.*/updateRuleChangeInfo();
                         selectedTile = null;
                         validMoves = null;
                         selected = false;
@@ -318,6 +325,7 @@ public class SBoard {
         if(game.getMateStatus(oppColor)){
             SGameScreen.setInfoMessage(game.getTurn() + " wins!");
             System.out.println(oppColor + " is in check mate");
+            askForDraw.hide();
         }
     }
     private void setDefaultColor(Tile tile){
@@ -334,7 +342,8 @@ public class SBoard {
         if(selectedTile ==null){
             return;
         }
-        validMoves = ect.validMoves(game.getPiece(selectedTile.getPos()),false,game.getGamestate(),game.getTurnNo());
+      //  validMoves = ect.validMoves(game.getPiece(selectedTile.getPos()),false,game.getGamestate(),game.getTurnNo());
+        validMoves = game.getEcat().validMoves(game.getPiece(selectedTile.getPos()),false,game.getGamestate(),game.getTurnNo());
         for(Tile tile: tiles){
             for(Position pos: validMoves){
                 if(tile.getPos().equals(pos)){
@@ -380,24 +389,78 @@ public class SBoard {
         selected = false;
     }
 
-    private void playSound(){
+    //to play chessmove and Bomb sound
+    private void playNormalSound(){
+    	if(SGameScreen.isMusicOn()) {
+    		sound.turnOn();
+    	}
+    	else {
+    		sound.turnOff();
+    	}
+        if(game.getBB() == 1 || (game.getTurnNo() == game.getBBlt() + 4 &&!(game.getBBlt() == 0))) {
+        	if(SGameScreen.isMusicOn() && !SGameScreen.isbombOn()) {
+    			sound.turnOffbomb();
+    		}
+        	sound.Bomb();
+    		game.resetBBombsound();
+    	}
+    	else if(game.getWB() == 1|| (game.getTurnNo() == game.getWBlt() + 4 &&!(game.getWBlt() == 0))) {
+    		if(SGameScreen.isMusicOn() && !SGameScreen.isbombOn()) {
+    			sound.turnOffbomb();
+    		}
+    		sound.Bomb();
+    		game.resetWBombsound();
+    	}
+    	else {
+    		if(SGameScreen.isMusicOn() && !SGameScreen.ischessmoveOn()) {
+    			sound.turnOffChessmove();
+    		}
+    		sound.chessmove();
+    	}
+    }
+    
+    //to play powerups sound
+    private void playPwSound(){
         // SUCCESFFUL POWERED MOVE
         //play sound effects
-        if(powerUps.getSelectedStr().equalsIgnoreCase("teleport")) {
-            sound.Teleport();
-        }
-        if(powerUps.getSelectedStr().equalsIgnoreCase("minipromote")) {
-            sound.MiniPromote();
-        }
-        if(powerUps.getSelectedStr().equalsIgnoreCase("freecard")) {
-            sound.FreeCard();
-        }
-        if(powerUps.getSelectedStr().equalsIgnoreCase("bomb")) {
-            sound.Bomb();
-        }
-        if(powerUps.getSelectedStr().equalsIgnoreCase("dummypiece")) {
-            sound.DummyPiece();
-        }
+    	//check sound menu
+    	if(SGameScreen.isMusicOn()) {
+    		sound.turnOn();
+    	}
+    	else {
+    		sound.turnOff();
+    	}
+    	//play sound effects
+    	if(powerUps.getSelectedStr().equalsIgnoreCase("teleport")) {
+    		if(SGameScreen.isMusicOn() && !SGameScreen.isTeleportOn()) {
+    			sound.turnOffTeleport();
+    		}
+    		sound.Teleport();
+    	}
+    	if(powerUps.getSelectedStr().equalsIgnoreCase("minipromote")) {
+    		if(SGameScreen.isMusicOn() && !SGameScreen.isTeleportOn()) {
+    			sound.turnOffTeleport();
+    		}
+    		sound.MiniPromote();
+    	}
+    	if(powerUps.getSelectedStr().equalsIgnoreCase("freecard")) {
+    		if(SGameScreen.isMusicOn() && !SGameScreen.isFreeCardOn()) {
+    			sound.turnOffFreeCard();
+    		}
+    		sound.FreeCard();
+    	}
+    	if(powerUps.getSelectedStr().equalsIgnoreCase("bomb")) {
+    		if(SGameScreen.isMusicOn() && !SGameScreen.isSetbombOn()) {
+    			sound.turnOffSetBomb();
+    		}
+    		sound.SetBomb();
+    	}
+    	if(powerUps.getSelectedStr().equalsIgnoreCase("dummypiece")) {
+    		if(SGameScreen.isMusicOn() && !SGameScreen.isDummyPieceOn()) {
+    			sound.turnOffDummy();
+    		}
+    		sound.DummyPiece();
+    	}
         System.out.println("Successful powered up move");
         powerUps.setSelectedIndex(-1);
     }
@@ -531,5 +594,33 @@ public class SBoard {
             SGameScreen.setInfoMessage("AI Wins");
         }
         SGameScreen.updateMoveLabel(game.getTurn());
+    }
+    
+    public void updateRuleChangeInfo(){
+   // 	System.out.println("qqqqqqqqqq");
+        if(game.getBrs()){
+        	if(game.getCounter() == 1) {
+        		SGameScreen.getRCinfo().setText("Bishops & Rooks are switched! Last turn.");
+			} else {
+				SGameScreen.getRCinfo().setText("Bishops & Rooks are switched! Turns left: " + game.getCounter());
+			}
+        }
+        else if (game.getPS()){
+        	if(game.getCounter() == 1) {
+        		SGameScreen.getRCinfo().setText("Pawns can go backwards! Last turn.");
+			} else {
+				SGameScreen.getRCinfo().setText("Pawns can go backwards! Turns left: " + game.getCounter());
+			}
+        }
+        else if (game.getKS()){
+        	if(game.getCounter() == 1) {
+        		SGameScreen.getRCinfo().setText("Kings can move like Queens! Last turn.");
+			} else {
+				SGameScreen.getRCinfo().setText("Kings can move like Queens! Turns left: " + game.getCounter());
+			}
+        }
+        else{
+        	SGameScreen.getRCinfo().setText("");
+        }
     }
 }

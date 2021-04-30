@@ -1,6 +1,6 @@
 package CrazyChess.logic;
-import java.util.ArrayList;
 import CrazyChess.pieces.*;
+import java.util.*;
 
 public class AI
 {
@@ -14,29 +14,23 @@ public class AI
 	public AbstractPiece[][] AI (MainLogic chess) {
 		this.chess = chess;
 
-		//System.out.println("turn is "+chess.getTurn());
-		//ExtraChecksAndTools ect = new ExtraChecksAndTools();
-		//AbstractPiece[][] bestBoard = minimax(chess.getGamestate(),1,chess.getTurn());
-		//ArrayList <AbstractPiece[][]> possg = ect.possibleGamestatesAfterNextMove(chess.getTurn(), false, chess.getGamestate(), 0);
 		AbstractPiece[][] bestMove = minimax(chess.getGamestate(),3,chess.getTurn());
-		//System.out.println("best move is:");
-		//utils.printGameState(bestMove);
 		return bestMove;
-		/*AbstractPiece[][] bestBoard = findBestOutcome(possg,chess.getTurn());
-		System.out.println("Best board is:");
-		utils.printGameState(bestBoard);
-
-		System.out.println("Current board val is "+evaluateBoard(chess.getGamestate()));
-
-		System.out.println("chess.getTurn is "+chess.getTurn());
-		int blackMove = findWorstOutcome(possg,"Black");
-		System.out.println("black worst board is: "+blackMove);
-
-		int whiteMove = findWorstOutcome(possg,"White");
-		System.out.println("white worst board is: "+whiteMove);
-
-		return bestBoard;*/
-
+	}
+	
+	public AbstractPiece[][] AI (MainLogic chess, String difficulty) {
+		if (difficulty.contentEquals("easy")) {
+			AbstractPiece[][] bestMove = minimax(chess.getGamestate(),2,chess.getTurn());
+			return bestMove;
+		}
+		else if(difficulty.contentEquals("medium")) {
+			AbstractPiece[][] bestMove = minimax(chess.getGamestate(),3,chess.getTurn());
+			return bestMove;
+		}
+		else {
+			AbstractPiece[][] bestMove = minimax(chess.getGamestate(),4,chess.getTurn());
+			return bestMove;
+		}
 	}
 
 	//the board entering this is not the chess gamestate, there is one function managing this one. If that doesn't happen
@@ -44,7 +38,7 @@ public class AI
 		//don't need to know whoseTurn because its always AI's turn at the 0th board
 		//possg are all the possible immediate moves the AI can take in the current gamestate's turn
 		ArrayList <AbstractPiece[][]> possg = ect.possibleGamestatesAfterNextMove(whoseAI, false, board, 0);
-
+		Collections.shuffle(possg);
 		//need to pass whoseTurn to next function and it will be whoever is not AI's turn so whoseTurn is decided below
 		String whoseTurn;
 		if (whoseAI.equals("Black")) {
@@ -117,6 +111,7 @@ public class AI
 
 	public int explorePaths (AbstractPiece[][] board,int curr_depth, int max_depth, String whoseAI, String whoseTurn, int preMax, int preMin) {
 		ArrayList <AbstractPiece[][]> possg = ect.possibleGamestatesAfterNextMove(whoseTurn, false, board, 0);
+		Collections.shuffle(possg);
 		if(curr_depth==max_depth-1) {
 			//-1 because we use possg so we look one more move ahead
 			/*if (whoseAI.contentEquals(whoseTurn)) {
@@ -144,12 +139,9 @@ public class AI
 			else {
 				whoseTurnNext="Black";
 			}
-			//if black is AI, this if statement is likely redundant, remove if there's time
-			//if (whoseAI.equals("Black")) {
-			//and its white's turn, we will choose the worst (min) outcome as black needs to consider the worst outcome as AI
 			if (whoseTurn.equals("White")) {
 				worst = Integer.MIN_VALUE;
-				//the higher the worse
+				//the higher the worse (for black)
 				for (int i=0;i<possg.size();i++) {
 					//System.out.println("Sending with preMin of "+worst+" as white (to next black layer)");
 					temp = explorePaths(possg.get(i),(curr_depth+1),max_depth,whoseAI,whoseTurnNext,Integer.MAX_VALUE,worst);

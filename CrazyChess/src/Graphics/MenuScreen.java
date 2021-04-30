@@ -8,20 +8,37 @@ import javafx.event.EventHandler;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
+import javafx.scene.control.CheckBox;
 import javafx.scene.control.Label;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
-
+import java.io.File;
 import java.util.concurrent.Semaphore;
+import CrazyChess.logic.MainLogic;
+import CrazyChess.logic.savegamestate.*;
+import CrazyChess.pieces.AbstractPiece;
 
 public class MenuScreen {
 
     private VBox buttons;
     private Scene scene;
     private Stage stage;
+    
+
+//    MainLogic game = new MainLogic();
+//    private AbstractPiece[][] gamestate;
+
+    private CheckBox cb1;
+    private CheckBox cb2;
+    private CheckBox cb3;
+    
+    private boolean isSelected1;
+    private boolean isSelected2;
+    private boolean isSelected3;
+
 
     public MenuScreen(Stage stage){
         buttons = new VBox();
@@ -48,9 +65,99 @@ public class MenuScreen {
         newButton.setOnMouseClicked(new EventHandler<MouseEvent>() {
             @Override
             public void handle(MouseEvent event) {
-                SGameScreen sp = new SGameScreen(stage);
-                stage.setScene(sp.getScene());
-            }
+
+            	buttons.getChildren().clear();
+            	
+            	Button load = new Button("Load Game");
+            	load.setOnMouseClicked(new EventHandler<MouseEvent>() {
+					@Override
+					public void handle(MouseEvent event) {
+
+                        File file = new File("saved.xml");
+					    SaveGame loadState = new SaveGame();
+					   
+					    byte[] bytes = loadState.loadDataFromFile(file);
+//						System.out.println("converted to bytes successfully");
+					    MainLogic game = new MainLogic();
+					    
+						try {
+//							System.out.println("tried loading");
+//							loadState.load(bytes);
+//							MainLogic game = new MainLogic();
+							loadState.load(bytes, game, game.getGamestate());
+							game.setGamestate(game.getGamestate());
+							
+//							game.printGameState();
+							
+			                SGameScreen sp = new SGameScreen(game, stage);
+							System.out.println("new screen created");
+			                stage.setScene(sp.getScene());
+							System.out.println("Loaded successfully");
+
+
+                            //booleans for rule changes
+                            isSelected1 = cb1.isSelected();
+                            isSelected2 = cb2.isSelected();
+                            isSelected3 = cb3.isSelected();
+
+                            //SGameScreen sp = new SGameScreen(newgame,stage);
+
+                            //setting rule changes
+                            sp.setRC1(isSelected1);
+                            sp.setRC2(isSelected2);
+                            sp.setRC3(isSelected3);
+                            System.out.println("rulechange 1 selected " + isSelected1);
+                            System.out.println("rulechange 2 selected " + isSelected2);
+                            System.out.println("rulechange 3 selected " + isSelected3);
+
+//						sp.loadLogic(newgame);
+                            stage.setScene(sp.getScene());
+
+
+						} catch (Exception exc) {
+							System.out.println("Couldn't load: " + exc.getMessage());
+						}
+//						SGameScreen sp = new SGameScreen(stage);
+//						MainLogic game = null;
+//						SGameScreen sp = new SGameScreen(game, stage);
+//						System.out.println("new screen created");
+//		                stage.setScene(sp.getScene());
+					}
+            	});
+            	
+            	Button newGame = new Button("New Game");
+            	newGame.setOnMouseClicked(new EventHandler<MouseEvent>() {
+					@Override
+					public void handle(MouseEvent event) {
+						MainLogic newgame = new MainLogic();
+						newgame.resetBoard();
+
+                        //booleans for rule changes
+                        isSelected1 = cb1.isSelected();
+                        isSelected2 = cb2.isSelected();
+                        isSelected3 = cb3.isSelected();
+
+                        SGameScreen sp = new SGameScreen(newgame,stage);
+
+                        //setting rule changes
+                        sp.setRC1(isSelected1);
+                        sp.setRC2(isSelected2);
+                        sp.setRC3(isSelected3);
+                        System.out.println("rulechange 1 selected " + isSelected1);
+                        System.out.println("rulechange 2 selected " + isSelected2);
+                        System.out.println("rulechange 3 selected " + isSelected3);
+
+                        stage.setScene(sp.getScene());
+
+
+//						sp.loadLogic(newgame);
+		                stage.setScene(sp.getScene());
+					}
+            	});
+
+            	buttons.getChildren().addAll(load,newGame);
+
+            };
         });
 
         //Add Multiplayer Mode
@@ -62,18 +169,48 @@ public class MenuScreen {
         VsAI.setOnMouseClicked(new EventHandler<MouseEvent>() {
             @Override
             public void handle(MouseEvent event) {
-                SGameScreen sp = new SGameScreen(stage);
+
+            	MainLogic newgame = new MainLogic();
+            	newgame.resetBoard();
+                SGameScreen sp = new SGameScreen(newgame, stage);
+//                sp.loadLogic(newgame);
+
+            	isSelected1 = cb1.isSelected();
+            	isSelected2 = cb2.isSelected();
+            	isSelected3 = cb3.isSelected();
+            	
+                //SGameScreen sp = new SGameScreen(stage);
+                
+                sp.setRC1(isSelected1);
+                sp.setRC2(isSelected2);
+                sp.setRC3(isSelected3);
+                System.out.println("rulechange 1 selected " + isSelected1);
+                System.out.println("rulechange 2 selected " + isSelected2);
+                System.out.println("rulechange 3 selected " + isSelected3);
+                
+
                 sp.getBoard().enableAI();
                 stage.setScene(sp.getScene());
             }
         });
+        
+        Label title = new Label("Which rule changes do you want to play with?");
+        
+        //checkboxes for rule changes
+        cb1 = new CheckBox("Bishop-Rook switch");
+        cb2 = new CheckBox("Pawns can go backwards");
+        cb3 = new CheckBox("Kings move like Queens");
 
-        root.getChildren().addAll(newButton,multiplayer,VsAI);
+        cb1.setSelected(true);
+        cb2.setSelected(true);
+        cb3.setSelected(true);
+        
+        root.getChildren().addAll(newButton,multiplayer,VsAI,title,cb1,cb2,cb3);
     }
 
     public void addMultiplayerButtons(Button button){
         button.setOnMouseClicked(new EventHandler<MouseEvent>() {
-            @Override
+			@Override
             public void handle(MouseEvent event) {
                 //Removes buttons currently on the scene
                 buttons.getChildren().clear();
