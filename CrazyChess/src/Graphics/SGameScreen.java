@@ -1,5 +1,7 @@
 package Graphics;
 
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
 import CrazyChess.logic.MainLogic;
 import javafx.event.EventHandler;
 import javafx.geometry.Pos;
@@ -27,9 +29,8 @@ public class SGameScreen {
 
         this.stage = stage;
         root = new VBox();
-        scene = new Scene(root,720,600);
+        scene = new Scene(root, 1101,942);
         scene.getStylesheets().add("/Graphics/css/board.css");
-
         //Add top banner
         addBanner();
 
