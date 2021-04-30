@@ -167,7 +167,9 @@ public class SGameScreen {
 
         boardContainer = new HBox();
         boardContainer.setSpacing(10);
-        boardContainer.getChildren().addAll(board.getBoard(), pwrUpMenu.getPowerUpMenu(), askForDraw.getAskForDraw());
+        //Removed draw button temporarily
+        //boardContainer.getChildren().addAll(board.getBoard(), pwrUpMenu.getPowerUpMenu(), askForDraw.getAskForDraw());
+		boardContainer.getChildren().addAll(board.getBoard(), pwrUpMenu.getPowerUpMenu());
         boardContainer.setAlignment(Pos.CENTER);
         root.getChildren().add(boardContainer);
 
