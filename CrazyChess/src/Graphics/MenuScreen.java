@@ -161,31 +161,91 @@ public class MenuScreen {
         //Add vs AI
         Button VsAI = new Button("Player Vs AI");
         VsAI.setOnMouseClicked(new EventHandler<MouseEvent>() {
-            @Override
+        	@Override
             public void handle(MouseEvent event) {
 
-            	MainLogic newgame = new MainLogic();
-            	newgame.resetBoard();
-                SGameScreen sp = new SGameScreen(newgame, stage);
-//                sp.loadLogic(newgame);
-
-            	isSelected1 = cb1.isSelected();
-            	isSelected2 = cb2.isSelected();
-            	isSelected3 = cb3.isSelected();
+            	buttons.getChildren().clear();
             	
-                //SGameScreen sp = new SGameScreen(stage);
-                
-                sp.setRC1(isSelected1);
-                sp.setRC2(isSelected2);
-                sp.setRC3(isSelected3);
-                System.out.println("rulechange 1 selected " + isSelected1);
-                System.out.println("rulechange 2 selected " + isSelected2);
-                System.out.println("rulechange 3 selected " + isSelected3);
-                
+				Button easy = new Button("Easy");
+				easy.setOnMouseClicked(new EventHandler<MouseEvent>() {
+					@Override
+					public void handle(MouseEvent event) {
+						MainLogic newgame = new MainLogic();
+						newgame.resetBoard();
+						SGameScreen sp = new SGameScreen(newgame, stage);
 
-                sp.getBoard().enableAI();
-                stage.setScene(sp.getScene());
-            }
+						isSelected1 = cb1.isSelected();
+						isSelected2 = cb2.isSelected();
+						isSelected3 = cb3.isSelected();
+
+						sp.setRC1(isSelected1);
+						sp.setRC2(isSelected2);
+						sp.setRC3(isSelected3);
+						System.out.println("rulechange 1 selected " + isSelected1);
+						System.out.println("rulechange 2 selected " + isSelected2);
+						System.out.println("rulechange 3 selected " + isSelected3);
+
+						sp.getBoard().enableAI();
+						stage.setScene(sp.getScene());
+					}
+				});
+            	
+            	Button medium = new Button("Medium");
+            	medium.setOnMouseClicked(new EventHandler<MouseEvent>() {
+					@Override
+					public void handle(MouseEvent event) {
+						MainLogic newgame = new MainLogic();
+						newgame.resetBoard();
+
+                        //booleans for rule changes
+                        isSelected1 = cb1.isSelected();
+                        isSelected2 = cb2.isSelected();
+                        isSelected3 = cb3.isSelected();
+
+                        SGameScreen sp = new SGameScreen(newgame,stage);
+
+                        //setting rule changes
+                        sp.setRC1(isSelected1);
+                        sp.setRC2(isSelected2);
+                        sp.setRC3(isSelected3);
+                        System.out.println("rulechange 1 selected " + isSelected1);
+                        System.out.println("rulechange 2 selected " + isSelected2);
+                        System.out.println("rulechange 3 selected " + isSelected3);
+                        
+                        sp.getBoard().enableAI();
+                        stage.setScene(sp.getScene());
+					}
+            	});
+            	
+				Button hard = new Button("Hard");
+				hard.setOnMouseClicked(new EventHandler<MouseEvent>() {
+					@Override
+					public void handle(MouseEvent event) {
+						MainLogic newgame = new MainLogic();
+						newgame.resetBoard();
+
+						// booleans for rule changes
+						isSelected1 = cb1.isSelected();
+						isSelected2 = cb2.isSelected();
+						isSelected3 = cb3.isSelected();
+
+						SGameScreen sp = new SGameScreen(newgame, stage);
+
+						// setting rule changes
+						sp.setRC1(isSelected1);
+						sp.setRC2(isSelected2);
+						sp.setRC3(isSelected3);
+						System.out.println("rulechange 1 selected " + isSelected1);
+						System.out.println("rulechange 2 selected " + isSelected2);
+						System.out.println("rulechange 3 selected " + isSelected3);
+						
+						sp.getBoard().enableAI();
+						stage.setScene(sp.getScene());
+					}
+				});
+
+            	buttons.getChildren().addAll(easy, medium, hard);
+            };
         });
         
         Label title = new Label("Which rule changes do you want to play with?");
