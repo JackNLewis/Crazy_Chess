@@ -69,17 +69,11 @@ public class MenuScreen {
 					    SaveGame loadState = new SaveGame();
 					   
 					    byte[] bytes = loadState.loadDataFromFile(file);
-//						System.out.println("converted to bytes successfully");
 					    MainLogic game = new MainLogic();
 					    
 						try {
-//							System.out.println("tried loading");
-//							loadState.load(bytes);
-//							MainLogic game = new MainLogic();
 							loadState.load(bytes, game, game.getGamestate());
 							game.setGamestate(game.getGamestate());
-							
-//							game.printGameState();
 							
 			                SGameScreen sp = new SGameScreen(game, stage);
 			                stage.setScene(sp.getScene());
@@ -98,7 +92,6 @@ public class MenuScreen {
 						MainLogic newgame = new MainLogic();
 						newgame.resetBoard();
 						SGameScreen sp = new SGameScreen(newgame, stage);
-//						sp.loadLogic(newgame);
 		                stage.setScene(sp.getScene());
 					}
             	});

@@ -15,24 +15,33 @@ public class HazardAssigner {
     int untilHazard; //number of turns before next hazard
     int hazardDuration = 2; //number of turns hazards last for
     int hazardTurns = 0; //how many turns hazard has been active
-    boolean activeHazard;
+//    boolean activeHazard;
+    HazardPiece tile;
     Utilities utils;
     ExtraChecksAndTools ecat = new ExtraChecksAndTools();
 
     public HazardAssigner(){
         utils = new Utilities();
-        activeHazard = false;
-        untilHazard = hazardInterval;
+//        activeHazard = false;
+//        tile.setActiveHazard(false);
+////        untilHazard = hazardInterval;
+//        tile.setUntilHazard(hazardInterval);
     }
 
 
     public AbstractPiece[][] assignHazard(AbstractPiece[][] gameState){
         AbstractPiece[][] safeGameState = utils.safeCopyGamestate(gameState);
         // spawn a hazard
-        if(untilHazard == 0){
-            activeHazard = true;
-            hazardTurns = 0;
-            untilHazard = hazardInterval;
+//        if(untilHazard == 0){
+		tile.setActiveHazard(false);
+		tile.setUntilHazard(hazardInterval);
+
+		if (tile.getUntilHazard() == 0) {
+			// activeHazard = true;
+			tile.setActiveHazard(true);
+			hazardTurns = 0;
+			tile.setUntilHazard(hazardInterval); 
+//            = hazardInterval;
 
             //generate which hazard
             Random rand = new Random();
@@ -49,11 +58,12 @@ public class HazardAssigner {
             }
         }
         else{
-            if(activeHazard){
+            if(tile.getActiveHazard()){
                 if(hazardTurns == hazardDuration){//needs to despawn hazard
                     hazardTurns=0;
                     System.out.println("DESPAWN HAZARD");
-                    activeHazard= false;
+                    tile.setActiveHazard(false);
+//                    ctiveHazard= false;
                     return despawn(safeGameState);
                 }else{
                     hazardTurns++;
@@ -61,6 +71,7 @@ public class HazardAssigner {
             }else{
                 //no active hazard, no need to spawn hazard
                 untilHazard--;
+            	tile.setUntilHazard(untilHazard);
             }
         }
         return gameState;
@@ -76,9 +87,12 @@ public class HazardAssigner {
             while(pieces.get(index) instanceof King){
                 index = rand.nextInt(pieces.size());
             }
-            HazardPiece frozenTile = new HazardPiece(pieces.get(index).getPosition(), Hazard.FROZEN,pieces.get(index));
-            System.out.println("Freezing: " + frozenTile.getOriginalPiece());
-            gs = utils.placePiece(frozenTile,false,gameState);
+//            HazardPiece frozenTile = new HazardPiece(pieces.get(index).getPosition(), Hazard.FROZEN,pieces.get(index));
+            tile = new HazardPiece(pieces.get(index).getPosition(), Hazard.FROZEN,pieces.get(index));
+//            System.out.println("Freezing: " + frozenTile.getOriginalPiece());
+            System.out.println("Freezing: " + tile.getOriginalPiece());
+//            gs = utils.placePiece(frozenTile,false,gameState);
+            gs = utils.placePiece(tile, false, gameState);
         }
         return gs;
     }
@@ -92,10 +106,13 @@ public class HazardAssigner {
     	AbstractPiece[][] gs = gameState;
     	for(int i =0; i<getThreshhold(blankPieces.size()) ; i++) {
     		int index = rand.nextInt(blankPieces.size());
-    		HazardPiece burnTile = new HazardPiece(blankPieces.get(index).getPosition(), Hazard.BURN, blankPieces.get(index));
-    		System.out.println("Burning: " + burnTile.getOriginalPiece());
-            System.out.println(burnTile.getHazard().toString());
-    		gs = utils.placePiece(burnTile, false, gameState);
+//    		HazardPiece burnTile = new HazardPiece(blankPieces.get(index).getPosition(), Hazard.BURN, blankPieces.get(index));
+    		tile = new HazardPiece(blankPieces.get(index).getPosition(), Hazard.BURN, blankPieces.get(index));
+//    		System.out.println("Burning: " + burnTile.getOriginalPiece());
+    		System.out.println("Burning: " + tile.getOriginalPiece());
+//            System.out.println(burnTile.getHazard().toString());
+//    		gs = utils.placePiece(burnTile, false, gameState);
+    		gs = utils.placePiece(tile, false, gameState);
     	}
         utils.printGameState(gameState);
         return gs;
@@ -130,5 +147,22 @@ public class HazardAssigner {
             return 0;
         }
     }
-    
 }
+    
+//    public void setActiveHazard(boolean input) {
+//		activeHazard=input;
+//	}
+//
+//	public boolean getActiveHazard() {
+//		return activeHazard;
+//	}
+//	
+//    public void setUntilHazard(int input) {
+//		untilHazard=input;
+//	}
+//
+//	public int getUntilHazard() {
+//		return untilHazard;
+//	}
+//    
+//}

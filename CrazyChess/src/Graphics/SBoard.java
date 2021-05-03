@@ -274,17 +274,8 @@ public class SBoard {
             System.out.println("is hazard piece");
 //        	filename = "fire.png";
         	HazardPiece hazardPiece = (HazardPiece) p;
-//        	if(((HazardPiece) p) == frozenHazard) {
-//        		filename = "ice.png";
-//        	}
-//        	else if(((HazardPiece) p) == burnHazard) {
-//        		filename = "fire.png";
-//        	}
- 
-//        	else {
-//        		filename = "fire.png";
-//        	}
             if(hazardPiece.getHazard() == Hazard.FROZEN) {
+            	System.out.println("frozen");
             	filename = "ice.jpg";
             }
             else if(hazardPiece.getHazard() == Hazard.BURN){

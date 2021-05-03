@@ -67,16 +67,7 @@ public class SaveGame implements ChessIO {
 		ArrayList<AbstractPiece> whitePieces = ecat.getWhitePieces(gamestate);
 		ArrayList<AbstractPiece> blankPieces = ecat.getBlankArrayList(gamestate);
 		ArrayList<AbstractPiece> hazardPieces = ecat.getHazardPieces(gamestate);
-		
-//		ArrayList<AbstractPiece> blackPieces = ecat.getBlackPieces(gamestate);
-//		System.out.println("blackPieces: " + blackPieces);
-//		ArrayList<AbstractPiece> whitePieces = ecat.getWhitePieces(gamestate);
-//		System.out.println("whitePieces: " + whitePieces);
-//		ArrayList<AbstractPiece> blankPieces = ecat.getBlankArrayList(gamestate);
-//		System.out.println("blankPieces: " + blankPieces);
-//		ArrayList<AbstractPiece> hazardPieces = ecat.getHazardPieces(gamestate);
-		//how to save assignHazard function???
-//		assignH.despawn(gamestate);
+//		assignH.assignHazard(gamestate);
 		
 
 		ByteArrayOutputStream baos = new ByteArrayOutputStream();
@@ -99,6 +90,8 @@ public class SaveGame implements ChessIO {
 			writePieces(blankPieces, writer);
 			if(!hazardPieces.isEmpty()) {
 				writePieces(hazardPieces, writer);
+//				writer.writeAttribute("activeHazard", (assignH.getActiveHazard()) + "");
+//				System.out.println("active hazard: " + (assignH.getActiveHazard()));
 			}
 			writer.writeEndElement();
 		} catch (XMLStreamException ex) {
@@ -136,6 +129,9 @@ public class SaveGame implements ChessIO {
 			    writer.writeAttribute("Powerup", piece.getPoweruptype() + "");
 				writer.writeAttribute("HazardType", ((HazardPiece) piece).getHazard() + "");
 				writer.writeAttribute("OriginalPiece", ((HazardPiece) piece).getOriginalPiece().getClass().getSimpleName() +"");
+				writer.writeAttribute("getUntilHazard", assignH.getUntilHazard() + "");
+				writer.writeAttribute("getActiveHazard", assignH.getActiveHazard() + "");
+//				writer.writer.writeAttribute("activeHazard", ((HazardAssigner) piece).getActiveHazard() + "");
 				break;
 			case "Pawn":
 				writer.writeAttribute("Type", piece.getClass().getSimpleName());
@@ -269,13 +265,13 @@ public class SaveGame implements ChessIO {
 		Boolean KingCheck = Boolean.parseBoolean(reader.getAttributeValue("", "isChecked"));
 		Boolean KingMove = Boolean.parseBoolean(reader.getAttributeValue("", "wasMovedKing"));
 		Boolean RookMove = Boolean.parseBoolean(reader.getAttributeValue("", "wasMovedRook"));
-		
-		if(HazardType == "FROZEN") {
-			hazardTile = Hazard.FROZEN;
-		}
-		else if(HazardType == "BURN") {
-			hazardTile = Hazard.BURN;
-		}
+//		
+//		if(HazardType == "FROZEN") {
+//			hazardTile = Hazard.FROZEN;
+//		}
+//		else if(HazardType == "BURN") {
+//			hazardTile = Hazard.BURN;
+//		}
 		
 		if(type == "HazardPiece") {
 			switch(OriginalPiece) {
@@ -341,6 +337,13 @@ public class SaveGame implements ChessIO {
 			p = new BlankPiece(color, position, powerup);
 			break;
 		case "HazardPiece":
+//			Hazard hazardTile = null;
+			if(HazardType == "FROZEN") {
+				hazardTile = Hazard.FROZEN;
+			}
+			else if(HazardType == "BURN") {
+				hazardTile = Hazard.BURN;
+			}
 			p = new HazardPiece(position, hazardTile, originalp);
 			break;
 		default:
