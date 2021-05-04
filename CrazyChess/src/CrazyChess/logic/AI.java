@@ -9,29 +9,30 @@ public class AI
 {
 	private MainLogic chess;
 	private Utilities utils = new Utilities();
-	private ExtraChecksAndTools ect = new ExtraChecksAndTools();
+	private ExtraChecksAndTools ect;
 	public void AI () {
 		//null constructor
 	}
 
 	public AbstractPiece[][] AI (MainLogic chess) {
 		this.chess = chess;
+		this.ect = chess.getEcat();
 
 		//System.out.println("turn is "+chess.getTurn());
 		//ExtraChecksAndTools ect = new ExtraChecksAndTools();
 		//AbstractPiece[][] bestBoard = minimax(chess.getGamestate(),1,chess.getTurn());
 		//ArrayList <AbstractPiece[][]> possg = ect.possibleGamestatesAfterNextMove(chess.getTurn(), false, chess.getGamestate(), 0);
 		BoardDetails currentBoard = new BoardDetails(
-				chess.getGamestate(),
-				chess.getPowerUps("white"),
-				chess.getPowerUps("black")
+				this.chess.getGamestate(),
+				this.chess.getPowerUps("white"),
+				this.chess.getPowerUps("black")
 		);
 		BoardDetails bestMoveDetails = minimax(currentBoard,3, chess.getTurn());
 		AbstractPiece[][] bestMove = bestMoveDetails.getGamestate();
 
 		int usedPowerupIndex = bestMoveDetails.getUsedPowerup();
 		if (usedPowerupIndex > -1) {
-			chess.getPowerUps(chess.getTurn()).remove(usedPowerupIndex);
+			this.chess.getPowerUps(chess.getTurn()).remove(usedPowerupIndex);
 		}
 		//System.out.println("best move is:");
 		//utils.printGameState(bestMove);
@@ -39,10 +40,13 @@ public class AI
 	}
 	
 	public AbstractPiece[][] AI (MainLogic chess, String difficulty) {
+		this.chess = chess;
+		this.ect = chess.getEcat();
+
 		BoardDetails currentBoard = new BoardDetails(
-				chess.getGamestate(),
-				chess.getPowerUps("white"),
-				chess.getPowerUps("black")
+				this.chess.getGamestate(),
+				this.chess.getPowerUps("white"),
+				this.chess.getPowerUps("black")
 		);
 
 		int max_depth;
@@ -80,9 +84,9 @@ public class AI
 		);
 		ArrayList<AbstractPiece[][]> possg = new ArrayList<>(possgWithPwr.keySet());
 		Collections.shuffle(possg);
-//		for (AbstractPiece[][] pos: possg) {
-//			utils.printGameState(pos);
-//		}
+		for (AbstractPiece[][] pos: possg) {
+			utils.printGameState(pos);
+		}
 		//need to pass whoseTurn to next function and it will be whoever is not AI's turn so whoseTurn is decided below
 		String whoseTurn;
 		if (whoseAI.equals("Black")) {
