@@ -8,8 +8,8 @@ public class HazardPiece extends AbstractPiece {
     protected AbstractPiece originalPiece;
     protected Hazard hazard;
     
-    int untilHazard;
-    boolean activeHazard;
+//    int untilHazard;
+//    boolean activeHazard;
 
     public HazardPiece(Position position, Hazard type,AbstractPiece originalPiece) {
         super("Blank", position, "Normal");
@@ -29,21 +29,21 @@ public class HazardPiece extends AbstractPiece {
         return originalPiece;
     }
     
-    public void setActiveHazard(boolean input) {
-		activeHazard=input;
-	}
-
-	public boolean getActiveHazard() {
-		return activeHazard;
-	}
-	
-    public void setUntilHazard(int input) {
-		untilHazard=input;
-	}
-
-	public int getUntilHazard() {
-		return untilHazard;
-	}
+//    public void setActiveHazard(boolean input) {
+//		activeHazard=input;
+//	}
+//
+//	public boolean getActiveHazard() {
+//		return activeHazard;
+//	}
+//	
+//    public void setUntilHazard(int input) {
+//		untilHazard=input;
+//	}
+//
+//	public int getUntilHazard() {
+//		return untilHazard;
+//	}
     
 }
 

@@ -12,20 +12,29 @@ import java.util.Random;
 public class HazardAssigner {
 
     final int hazardInterval = 4; //number of go's between hazards spawning
-    int untilHazard; //number of turns before next hazard
+    public int untilHazard; //number of turns before next hazard
     int hazardDuration = 2; //number of turns hazards last for
     int hazardTurns = 0; //how many turns hazard has been active
-//    boolean activeHazard;
+
+    boolean activeHazard;
+    
     HazardPiece tile;
     Utilities utils;
     ExtraChecksAndTools ecat = new ExtraChecksAndTools();
 
     public HazardAssigner(){
         utils = new Utilities();
+        
 //        activeHazard = false;
 //        tile.setActiveHazard(false);
-////        untilHazard = hazardInterval;
 //        tile.setUntilHazard(hazardInterval);
+        setActiveHazard(false);
+        setUntilHazard(hazardInterval);
+        
+//        untilHazard = hazardInterval;
+//        activeHazard = false;
+////        untilHazard = hazardInterval;
+
     }
 
 
@@ -33,14 +42,15 @@ public class HazardAssigner {
         AbstractPiece[][] safeGameState = utils.safeCopyGamestate(gameState);
         // spawn a hazard
 //        if(untilHazard == 0){
-		tile.setActiveHazard(false);
-		tile.setUntilHazard(hazardInterval);
+//		tile.setActiveHazard(false);
+//		tile.setUntilHazard(hazardInterval);
 
-		if (tile.getUntilHazard() == 0) {
+		if (getUntilHazard() == 0) {
 			// activeHazard = true;
-			tile.setActiveHazard(true);
-			hazardTurns = 0;
-			tile.setUntilHazard(hazardInterval); 
+			setActiveHazard(true);
+//			hazardTurns = 0;
+			setHazardTurns(0);
+			setUntilHazard(hazardInterval); 
 //            = hazardInterval;
 
             //generate which hazard
@@ -58,11 +68,11 @@ public class HazardAssigner {
             }
         }
         else{
-            if(tile.getActiveHazard()){
+            if(getActiveHazard()){
                 if(hazardTurns == hazardDuration){//needs to despawn hazard
                     hazardTurns=0;
                     System.out.println("DESPAWN HAZARD");
-                    tile.setActiveHazard(false);
+                    setActiveHazard(false);
 //                    ctiveHazard= false;
                     return despawn(safeGameState);
                 }else{
@@ -71,7 +81,7 @@ public class HazardAssigner {
             }else{
                 //no active hazard, no need to spawn hazard
                 untilHazard--;
-            	tile.setUntilHazard(untilHazard);
+            	setUntilHazard(untilHazard);
             }
         }
         return gameState;
@@ -146,23 +156,32 @@ public class HazardAssigner {
         }else{
             return 0;
         }
-    }
+	}
+
+
+
+	public void setActiveHazard(boolean input) {
+		activeHazard = input;
+	}
+
+	public boolean getActiveHazard() {
+		return activeHazard;
+	}
+
+	public void setUntilHazard(int input) {
+		untilHazard = input;
+	}
+
+	public int getUntilHazard() {
+		return untilHazard;
+	}
+	
+	public int getHazardTurns() {
+		return hazardTurns;
+	}
+	
+	public void setHazardTurns(int input) {
+		hazardTurns = input;
+	}
+
 }
-    
-//    public void setActiveHazard(boolean input) {
-//		activeHazard=input;
-//	}
-//
-//	public boolean getActiveHazard() {
-//		return activeHazard;
-//	}
-//	
-//    public void setUntilHazard(int input) {
-//		untilHazard=input;
-//	}
-//
-//	public int getUntilHazard() {
-//		return untilHazard;
-//	}
-//    
-//}

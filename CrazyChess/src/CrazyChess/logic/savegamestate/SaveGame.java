@@ -48,7 +48,7 @@ public class SaveGame implements ChessIO {
 //	public HazardPiece hazardPiece;
 	public Hazard hazardTile;
 //	AbstractPiece color;
-	HazardAssigner assignH;
+	HazardAssigner assignH = new HazardAssigner();
 	Utilities utils = new Utilities();
 	ExtraChecksAndTools ecat = new ExtraChecksAndTools();
     
@@ -68,7 +68,9 @@ public class SaveGame implements ChessIO {
 		ArrayList<AbstractPiece> blankPieces = ecat.getBlankArrayList(gamestate);
 		ArrayList<AbstractPiece> hazardPieces = ecat.getHazardPieces(gamestate);
 //		assignH.assignHazard(gamestate);
-		
+//		assignH.getActiveHazard();
+//		assignH.getUntilHazard();
+//		
 
 		ByteArrayOutputStream baos = new ByteArrayOutputStream();
 		
@@ -90,6 +92,8 @@ public class SaveGame implements ChessIO {
 			writePieces(blankPieces, writer);
 			if(!hazardPieces.isEmpty()) {
 				writePieces(hazardPieces, writer);
+//				assignH.setActiveHazard(true);
+//				assignH.getHazardTurns();
 //				writer.writeAttribute("activeHazard", (assignH.getActiveHazard()) + "");
 //				System.out.println("active hazard: " + (assignH.getActiveHazard()));
 			}
@@ -129,8 +133,13 @@ public class SaveGame implements ChessIO {
 			    writer.writeAttribute("Powerup", piece.getPoweruptype() + "");
 				writer.writeAttribute("HazardType", ((HazardPiece) piece).getHazard() + "");
 				writer.writeAttribute("OriginalPiece", ((HazardPiece) piece).getOriginalPiece().getClass().getSimpleName() +"");
-				writer.writeAttribute("getUntilHazard", assignH.getUntilHazard() + "");
-				writer.writeAttribute("getActiveHazard", assignH.getActiveHazard() + "");
+				assignH.setActiveHazard(true);
+				writer.writeAttribute("activeHazard", assignH.getActiveHazard() + "");
+//				assignH.setUntilHazard(input);
+				assignH.untilHazard = 2;
+				writer.writeAttribute("untilHazard", assignH.getUntilHazard() + "");
+//				writer.writeAttribute("getUntilHazard", assignH.getUntilHazard() + "");
+//				writer.writeAttribute("getActiveHazard", assignH.getActiveHazard() + "");
 //				writer.writer.writeAttribute("activeHazard", ((HazardAssigner) piece).getActiveHazard() + "");
 				break;
 			case "Pawn":
