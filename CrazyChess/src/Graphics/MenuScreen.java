@@ -185,7 +185,7 @@ public class MenuScreen {
 						System.out.println("rulechange 2 selected " + isSelected2);
 						System.out.println("rulechange 3 selected " + isSelected3);
 
-						sp.getBoard().enableAI();
+						sp.getBoard().enableAI("easy");
 						stage.setScene(sp.getScene());
 					}
 				});
@@ -212,7 +212,7 @@ public class MenuScreen {
                         System.out.println("rulechange 2 selected " + isSelected2);
                         System.out.println("rulechange 3 selected " + isSelected3);
                         
-                        sp.getBoard().enableAI();
+                        sp.getBoard().enableAI("medium");
                         stage.setScene(sp.getScene());
 					}
             	});
@@ -239,7 +239,7 @@ public class MenuScreen {
 						System.out.println("rulechange 2 selected " + isSelected2);
 						System.out.println("rulechange 3 selected " + isSelected3);
 						
-						sp.getBoard().enableAI();
+						sp.getBoard().enableAI("hard");
 						stage.setScene(sp.getScene());
 					}
 				});

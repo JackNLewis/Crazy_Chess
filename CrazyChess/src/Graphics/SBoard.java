@@ -62,7 +62,7 @@ public class SBoard {
     private HBox Bpawnpormote;
     
     private boolean aiEnabled = false;
-    private AI ai;
+    private AI ai = new AI();
     
 //    private HazardPiece hazardPiece;
 
@@ -568,9 +568,17 @@ public class SBoard {
         return selected;
     }
 
-    public void enableAI(){
+    public void enableAI(String levels){
         this.aiEnabled = true;
-        ai = new AI();
+        if(levels == "easy") {
+        	ai.AI(game, "easy");
+        }
+        else if(levels == "medium") {
+        	ai.AI(game, "medium"); 
+        }
+        else {
+        	ai.AI(game, "hard");
+        }
     }
 
     private void aiMove(){

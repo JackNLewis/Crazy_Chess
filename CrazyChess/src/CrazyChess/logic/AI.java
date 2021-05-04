@@ -10,6 +10,7 @@ public class AI
 	private MainLogic chess;
 	private Utilities utils = new Utilities();
 	private ExtraChecksAndTools ect = new ExtraChecksAndTools();
+
 	public void AI () {
 		//null constructor
 	}
