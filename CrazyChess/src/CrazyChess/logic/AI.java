@@ -32,12 +32,20 @@ public class AI
 		BoardDetails bestMoveDetails = minimax(currentBoard,3, chess.getTurn());
 		AbstractPiece[][] bestMove = bestMoveDetails.getGamestate();
 
+		ArrayList<AbstractPiece> diffPieces = utils.getPiecesDiff(currentBoard.getGamestate(), bestMove);
+		if (!diffPieces.isEmpty()) {
+			for (AbstractPiece p: diffPieces) {
+				if (p.getColor().equalsIgnoreCase("powerup")) {
+					this.chess.getPowerUps(chess.getTurn()).add(ect.pwrUp.randomPowerup(false));
+					break;
+				}
+			}
+		}
+
 		int usedPowerupIndex = bestMoveDetails.getUsedPowerup();
 		if (usedPowerupIndex > -1) {
 			this.chess.getPowerUps(chess.getTurn()).remove(usedPowerupIndex);
 		}
-		System.out.println(chess.getPowerUps("white"));
-		System.out.println(chess.getPowerUps("black"));
 		//System.out.println("best move is:");
 		//utils.printGameState(bestMove);
 		return bestMove;
@@ -66,6 +74,16 @@ public class AI
 
 		BoardDetails bestMoveDetails = minimax(currentBoard,max_depth, chess.getTurn());
 		AbstractPiece[][] bestMove = bestMoveDetails.getGamestate();
+
+		ArrayList<AbstractPiece> diffPieces = utils.getPiecesDiff(currentBoard.getGamestate(), bestMove);
+		if (!diffPieces.isEmpty()) {
+			for (AbstractPiece p: diffPieces) {
+				if (p.getColor().equalsIgnoreCase("powerup")) {
+					this.chess.getPowerUps(chess.getTurn()).add(ect.pwrUp.randomPowerup(false));
+					break;
+				}
+			}
+		}
 
 		int usedPowerupIndex = bestMoveDetails.getUsedPowerup();
 		if (usedPowerupIndex > -1) {
