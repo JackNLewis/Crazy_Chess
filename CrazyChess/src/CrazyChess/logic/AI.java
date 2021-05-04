@@ -197,6 +197,12 @@ public class AI
 
 
 	public int explorePaths (BoardDetails board,int curr_depth, int max_depth, String whoseAI, String whoseTurn, int preMax, int preMin) {
+		ArrayList<String> powerupToCheck;
+		if (whoseTurn.equalsIgnoreCase("white")) {
+			powerupToCheck = new ArrayList<String>();
+		} else {
+			powerupToCheck = board.getPowerUps(whoseTurn);
+		}
 		HashMap<AbstractPiece[][], Integer> possgWithPwr = ect.possibleGamestatesAfterNextMove(
 				whoseTurn,
 				false,
@@ -204,6 +210,7 @@ public class AI
 				0,
 				board.getPowerUps(whoseTurn)
 		);
+
 		ArrayList<AbstractPiece[][]> possg = new ArrayList<>(possgWithPwr.keySet());
 		Collections.shuffle(possg);
 		if(curr_depth==max_depth-1) {
