@@ -80,6 +80,9 @@ public class AI
 		);
 		ArrayList<AbstractPiece[][]> possg = new ArrayList<>(possgWithPwr.keySet());
 		Collections.shuffle(possg);
+//		for (AbstractPiece[][] pos: possg) {
+//			utils.printGameState(pos);
+//		}
 		//need to pass whoseTurn to next function and it will be whoever is not AI's turn so whoseTurn is decided below
 		String whoseTurn;
 		if (whoseAI.equals("Black")) {
