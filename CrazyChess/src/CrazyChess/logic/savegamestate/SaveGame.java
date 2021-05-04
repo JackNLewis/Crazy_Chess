@@ -92,6 +92,7 @@ public class SaveGame implements ChessIO {
 			writePieces(blankPieces, writer);
 			if(!hazardPieces.isEmpty()) {
 				writePieces(hazardPieces, writer);
+				board.
 //				assignH.setActiveHazard(true);
 //				assignH.getHazardTurns();
 //				writer.writeAttribute("activeHazard", (assignH.getActiveHazard()) + "");
@@ -137,6 +138,7 @@ public class SaveGame implements ChessIO {
 				writer.writeAttribute("activeHazard", assignH.getActiveHazard() + "");
 //				assignH.setUntilHazard(input);
 				assignH.untilHazard = 2;
+				
 				writer.writeAttribute("untilHazard", assignH.getUntilHazard() + "");
 //				writer.writeAttribute("getUntilHazard", assignH.getUntilHazard() + "");
 //				writer.writeAttribute("getActiveHazard", assignH.getActiveHazard() + "");
