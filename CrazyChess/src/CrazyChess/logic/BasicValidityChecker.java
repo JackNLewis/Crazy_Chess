@@ -35,9 +35,9 @@ public class BasicValidityChecker
 	public boolean moveCheckAssigner(AbstractPiece p, int xRel, int yRel, boolean isDebug, AbstractPiece[][] gamestate, int moveNo){
 	//	brs.setBrswitch();
 	//	System.out.println("brswitch " + brswitch);
-		if(p instanceof BlankPiece){
+		if(p instanceof BlankPiece || p.getPoweruptype().equalsIgnoreCase("dummy")){
 			if(isDebug)
-				System.out.println("Blank spaces cannot be moved.");
+				System.out.println("Blank spaces or dummy pieces cannot be moved.");
 			return false;
 		}
 		else if(p instanceof Pawn) {

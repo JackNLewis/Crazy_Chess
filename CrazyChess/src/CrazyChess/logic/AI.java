@@ -5,6 +5,7 @@ import java.util.HashMap;
 import CrazyChess.logic.StageHazards.HazardPiece;
 import CrazyChess.pieces.*;
 import java.util.*;
+import java.util.stream.Collectors;
 
 public class AI
 {
@@ -198,17 +199,22 @@ public class AI
 
 	public int explorePaths (BoardDetails board,int curr_depth, int max_depth, String whoseAI, String whoseTurn, int preMax, int preMin) {
 		ArrayList<String> powerupToCheck;
-		if (whoseTurn.equalsIgnoreCase("white")) {
+		if (whoseTurn.equalsIgnoreCase(utils.oppositeColor(whoseAI))) {
 			powerupToCheck = new ArrayList<String>();
 		} else {
-			powerupToCheck = board.getPowerUps(whoseTurn);
+			powerupToCheck = board.getPowerUps(whoseTurn)
+					.stream()
+					.filter(s -> !s.equalsIgnoreCase("teleport"))
+					.filter(s -> !s.equalsIgnoreCase("dummypiece"))
+					.filter(s -> !s.equalsIgnoreCase("minipromote"))
+					.collect(Collectors.toCollection(ArrayList::new));
 		}
 		HashMap<AbstractPiece[][], Integer> possgWithPwr = ect.possibleGamestatesAfterNextMove(
 				whoseTurn,
 				false,
 				board.getGamestate(),
 				0,
-				board.getPowerUps(whoseTurn)
+				powerupToCheck
 		);
 
 		ArrayList<AbstractPiece[][]> possg = new ArrayList<>(possgWithPwr.keySet());
