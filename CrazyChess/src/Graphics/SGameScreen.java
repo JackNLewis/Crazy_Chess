@@ -96,7 +96,6 @@ public class SGameScreen {
         optionsMenu.getItems().add(new MenuItem("Exit"));
 	    
 	//all music menu
-        Menu Setting = new Menu("setting");
         
         Menu musicMenu = new Menu("Music");
         ToggleGroup tG = new ToggleGroup();
@@ -128,11 +127,9 @@ public class SGameScreen {
         moremenu.getItems().addAll(chessmove,Bomb,setBomb,MiniPromote,FreeCard,DummyPiece,Teleport);
         musicMenu.getItems().add(moremenu);
         
-        Setting.getItems().addAll(musicMenu);
-        
         //Main menu bar
         MenuBar menuBar = new MenuBar();
-        menuBar.getMenus().addAll(optionsMenu,Setting);
+        menuBar.getMenus().addAll(optionsMenu,musicMenu);
         
 		BorderPane menu = new BorderPane();
 		menu.setTop(menuBar);
