@@ -62,7 +62,7 @@ public class SBoard {
     private HBox Bpawnpormote;
     
     private boolean aiEnabled = false;
-    private AI ai;
+    private AI ai = new AI();
     
 //    private HazardPiece hazardPiece;
 
@@ -280,18 +280,10 @@ public class SBoard {
             System.out.println("is hazard piece");
 //        	filename = "fire.png";
         	HazardPiece hazardPiece = (HazardPiece) p;
-//        	if(((HazardPiece) p) == frozenHazard) {
-//        		filename = "ice.png";
-//        	}
-//        	else if(((HazardPiece) p) == burnHazard) {
-//        		filename = "fire.png";
-//        	}
- 
-//        	else {
-//        		filename = "fire.png";
-//        	}
             if(hazardPiece.getHazard() == Hazard.FROZEN) {
             	filename = "ice.png";
+            	System.out.println("frozen");
+
             }
             else if(hazardPiece.getHazard() == Hazard.BURN){
             	filename = "fire.png";
@@ -573,9 +565,17 @@ public class SBoard {
         return selected;
     }
 
-    public void enableAI(){
+    public void enableAI(String levels){
         this.aiEnabled = true;
-        ai = new AI();
+        if(levels == "easy") {
+        	ai.AI(game, "easy");
+        }
+        else if(levels == "medium") {
+        	ai.AI(game, "medium"); 
+        }
+        else {
+        	ai.AI(game, "hard");
+        }
     }
 
     private void aiMove(){
