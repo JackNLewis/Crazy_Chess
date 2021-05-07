@@ -1,8 +1,13 @@
 package CrazyChess.logic;
 
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Random;
+
+import CrazyChess.logic.StageHazards.Hazard;
+import CrazyChess.logic.StageHazards.HazardPiece;
+import CrazyChess.logic.powerups.PowerupMain;
 import CrazyChess.pieces.*;
-import com.sun.xml.internal.ws.api.model.wsdl.WSDLOutput;
 
 
 /**
@@ -23,6 +28,22 @@ public class ExtraChecksAndTools
 {
 	BasicValidityChecker bvc = new BasicValidityChecker();
 	Utilities utils = new Utilities();
+	PowerupMain pwrUp;
+
+	// Default constructor
+	public ExtraChecksAndTools() {
+		pwrUp = new PowerupMain();
+	}
+
+	// Constructor to prevent circular dependencies
+	public ExtraChecksAndTools(int createCode) {
+		if (createCode != 1) {
+			pwrUp = new PowerupMain();
+		}
+	}
+
+	private int counter = -1;
+	private Random r = new Random();
 	
 	/**
 	 * Function that returns and ArrayList of pieces from
@@ -332,13 +353,15 @@ public class ExtraChecksAndTools
 	 * @param moveNo     current move number
 	 * @return         	 ArrayList of Positions a piece can go to
 	 */
-	
+
 	public ArrayList<Position> validMoves( AbstractPiece p, boolean isDebug, AbstractPiece[][] gamestate, int moveNo){
-			
 		ArrayList<Position> movesList = new ArrayList<Position>();
 		for(int i=0; i<8; i++) {
 			for(int j=0; j<8; j++) {
 				AbstractPiece targetTile = utils.safeCopyPiece(gamestate[j][i]);
+				if(targetTile instanceof HazardPiece){
+					continue;
+				}
 				if(!(p.getXpos()==targetTile.getXpos()&&p.getYpos()==targetTile.getYpos())) {
 					if(bvc.moveCheckAssigner(p, targetTile.getXpos()-p.getXpos(), targetTile.getYpos()-p.getYpos(), isDebug, gamestate, moveNo)) {
 						if(!targetTile.getColor().equalsIgnoreCase(p.getColor())){ //checks if the candidate tile doesn't have a piece of the same color on it
@@ -352,6 +375,7 @@ public class ExtraChecksAndTools
 								if(enemyKing == null){
 									System.out.println("Opp Color : " + oppColor);
 									System.out.println("enemy king is null");
+									continue;
 								}
 
 								if(!targetTile.getPosition().equals(enemyKing.getPosition())) {
@@ -380,52 +404,55 @@ public class ExtraChecksAndTools
 	 * @return            ArrayList of possible game states after the turn is completed
 	 */
 	
-	public ArrayList<AbstractPiece[][]> possibleGamestatesAfterNextMove (String whoseTurn, boolean isDebug, AbstractPiece[][] gamestate, int moveNo){
+	public HashMap<AbstractPiece[][], Integer> possibleGamestatesAfterNextMove (String whoseTurn, boolean isDebug, AbstractPiece[][] gamestate, int moveNo, ArrayList<String> powerUps){
+		String oppColor = utils.oppositeColor(whoseTurn);
+		ArrayList<AbstractPiece> piecesToCheck = new ArrayList<AbstractPiece>();
 		if(whoseTurn.equalsIgnoreCase("white")) {
-			ArrayList<AbstractPiece[][]> listOfGamestates = new ArrayList<AbstractPiece[][]>();
-			//System.out.println("Getting white pieces");
-			ArrayList<AbstractPiece> whitePieces = getWhitePieces(gamestate);
-			//System.out.println("Got the white pieces");
-			for(AbstractPiece p : whitePieces) {
-				ArrayList<Position> validPositions = validMoves(p, isDebug, gamestate, moveNo);
-				for(Position vp : validPositions) {
-					//generate gamestate for each one. Excluding moves where you capture enemy king
-					AbstractPiece[][] newGamestate = utils.safeCopyGamestate(gamestate);
-					if(!(vp.getXpos()==getKing("black", newGamestate).getXpos()&&vp.getYpos()==getKing("black", newGamestate).getYpos())) {
-						newGamestate=utils.relocatePiece(p, newGamestate, vp.getXpos(), vp.getYpos()); //might cause some bugs
-						listOfGamestates.add(newGamestate);
-					}
-					
+			piecesToCheck = getWhitePieces(gamestate);
+		} else {
+			piecesToCheck = getBlackPieces(gamestate);
+		}
+
+		HashMap<AbstractPiece[][], Integer> listOfGamestates = new HashMap<AbstractPiece[][], Integer>();
+		//System.out.println("Getting white pieces");
+		ArrayList<AbstractPiece> whitePieces = getWhitePieces(gamestate);
+		//System.out.println("Got the white pieces");
+		for(AbstractPiece p : piecesToCheck) {
+			// Regular game states
+			ArrayList<Position> validPositions = validMoves(p, isDebug, gamestate, moveNo);
+			for(Position vp : validPositions) {
+				//generate gamestate for each one. Excluding moves where you capture enemy king
+				AbstractPiece[][] newGamestate = utils.safeCopyGamestate(gamestate);
+				if(!(vp.getXpos()==getKing(oppColor, newGamestate).getXpos() && vp.getYpos()==getKing(oppColor, newGamestate).getYpos())) {
+					newGamestate=utils.relocatePiece(p, newGamestate, vp.getXpos(), vp.getYpos()); //might cause some bugs
+					listOfGamestates.put(newGamestate, -1);
 				}
 			}
-			return listOfGamestates;
-		}
-		else if (whoseTurn.equalsIgnoreCase("black")) {
-			ArrayList<AbstractPiece[][]> listOfGamestates = new ArrayList<AbstractPiece[][]>();
-			ArrayList<AbstractPiece> blackPieces = getBlackPieces(gamestate);
-			for(AbstractPiece p : blackPieces) {
-				ArrayList<Position> validPositions = validMoves(p, isDebug, gamestate, moveNo);
-				for(Position vp : validPositions) {
-					//generate gamestate for each one. Excluding moves where you capture enemy king
-					AbstractPiece[][] newGamestate = utils.safeCopyGamestate(gamestate);
-					if(!(vp.getXpos()==getKing("white", newGamestate).getXpos()&&vp.getYpos()==getKing("white", newGamestate).getYpos())) {
-						
-						AbstractPiece safeP = utils.safeCopyPiece(p);
-						newGamestate=utils.relocatePiece(safeP, newGamestate, vp.getXpos(), vp.getYpos()); //might cause some bugs
-						
-						
-						listOfGamestates.add(newGamestate);
+
+			// Powerup game states
+			for (int i = 0; i < powerUps.size(); i++) {
+				String pwrUpStr = powerUps.get(i);
+				AbstractPiece[][] copiedGamestate = utils.safeCopyGamestate(gamestate);
+				ArrayList<Position> validPowerupMoves = pwrUp.validPowerupMoves(pwrUpStr, copiedGamestate, p.getPosition(), isDebug);
+				if (!validPowerupMoves.isEmpty()) {
+					for (Position finalPos: validPowerupMoves) {
+						AbstractPiece[][] modifiedGames = pwrUp.usePowerupGivenGamestate(pwrUpStr, copiedGamestate, p.getColor(), p.getPosition(), finalPos, isDebug);
+						if (modifiedGames != null) {
+							listOfGamestates.put(modifiedGames, i);
+						}
 					}
-					
 				}
 			}
-			return listOfGamestates;
 		}
-		if(isDebug) { //if the code is working, it should never reach this line of the method
-			System.out.println("When trying to get possible gamestates null was returned. Something is very wrong");
+
+		if (listOfGamestates == null) {
+			if(isDebug) { //if the code is working, it should never reach this line of the method
+				System.out.println("When trying to get possible gamestates null was returned. Something is very wrong");
+			}
+			return null;
 		}
-		
-		return null;
+		return listOfGamestates;
+
 	}
 	
 	/**
@@ -437,18 +464,18 @@ public class ExtraChecksAndTools
 	 * @param moveNo      current move number
 	 * @return            true if the player is in checkmate, false if they still have possible moves
 	 */
-	public boolean isInCheckmate(String color, boolean isDebug, AbstractPiece[][] gamestate, int moveNo){
+	public boolean isInCheckmate(String color, boolean isDebug, AbstractPiece[][] gamestate, int moveNo, ArrayList<String> powerUps){
 		
 		boolean isMated = false;
 		
 		//just to be safe, check for a check
 		if(isInCheck(color, isDebug, gamestate, moveNo)) {
 			isMated=true;
-			ArrayList<AbstractPiece[][]> nextMoveGamestates = possibleGamestatesAfterNextMove(color, isDebug, gamestate, moveNo);
-			for(AbstractPiece[][] g : nextMoveGamestates) {
+			HashMap<AbstractPiece[][], Integer> nextMoves = possibleGamestatesAfterNextMove(color, isDebug, gamestate, moveNo, powerUps);
+			for(AbstractPiece[][] g : nextMoves.keySet()) {
 				if(!isInCheck(color, isDebug, g, moveNo)) {
 					isMated =  false;
-					utils.printGameState(g);
+					//utils.printGameState(g);
 				}
 			}
 		}
@@ -464,7 +491,7 @@ public class ExtraChecksAndTools
 	 * @param moveNo      current move number
 	 * @return            true if the game state is in draw, false if it still has possible moves
 	 */
-	public boolean isInDraw(String currentTurn, boolean isDebug, AbstractPiece[][] gamestate, int moveNo){
+	public boolean isInDraw(String currentTurn, boolean isDebug, AbstractPiece[][] gamestate, int moveNo, ArrayList<String> powerUps){
 
 		ArrayList<AbstractPiece> piecesToCheck;
 		ArrayList<AbstractPiece> currentPieces = gamestateToPieceArrayList(gamestate);
@@ -490,16 +517,144 @@ public class ExtraChecksAndTools
 			piecesToCheck = getWhitePieces(gamestate);
 		}
 
-		// Check whether valid move exists
-		ArrayList<Position> allValidMoves = new ArrayList<Position>();
-		for (AbstractPiece piece : piecesToCheck) {
-			allValidMoves.addAll(validMoves(piece, isDebug, gamestate, moveNo));
+		// Return true (draw) if there are no possible gamestate left
+		HashMap<AbstractPiece[][], Integer> nextMoves = possibleGamestatesAfterNextMove(utils.oppositeColor(currentTurn), isDebug, gamestate, moveNo, powerUps);
+		for (AbstractPiece[][] nextGamestate: nextMoves.keySet()) {
+			if(isInCheck(currentTurn, isDebug, nextGamestate, moveNo)) {
+				nextMoves.remove(gamestate);
+			}
 		}
 
-		if (allValidMoves.isEmpty()) {
+		if (nextMoves.isEmpty()) {
 			return true;
 		}
 		return false;
 	}
-
+	
+	/**
+	 * A method that randomly triggers rule change 1 (bishop-rook switch)
+	 */
+	
+	public void updateRuleChange1() {
+		if (!bvc.getBrs() && !bvc.getPS() && !bvc.getKS())
+		{
+			if (r.nextInt(20) == 0) //will modify this for the final game to happen less often
+			{
+				bvc.setBrs();
+				counter = 2 + r.nextInt((6)/2) * 2; //random, between 2 and 8 turns
+				System.out.println("Bishop-Rook switch rule change active. Remaining turns: " + counter);
+			}
+		}
+		else if (bvc.getBrs())
+		{
+			if (counter == 1)
+			{
+				bvc.endBrs();
+				counter = -1;
+				System.out.println("Bishop-Rook switch rule change switched off.");
+			}
+			else
+			{
+				counter--;
+				if(counter == 1) {
+					System.out.println("Bishop-Rook switch rule change active. Last turn!");
+				} else {
+					System.out.println("Bishop-Rook switch rule change active. Remaining turns: " + counter);
+				}
+			}
+		}
+	}
+	
+	/**
+	 * A method that randomly triggers rule change 2 (pawns can go backwards)
+	 */
+	
+	public void updateRuleChange2() {
+		if (!bvc.getBrs() && !bvc.getPS() && !bvc.getKS())
+		{
+			if (r.nextInt(20) == 0) //will modify this for the final game to happen less often
+			{
+				bvc.setPS();
+				counter = 2 + r.nextInt((6)/2) * 2; //random, between 2 and 8 turns
+				System.out.println("Pawns can go backwards. Remaining turns: " + counter);
+			}
+		}
+		else if (bvc.getPS())
+		{
+			if (counter == 1)
+			{
+				bvc.endPS();
+				counter = -1;
+				System.out.println("Pawn rule change switched off.");
+			}
+			else
+			{
+				counter--;
+				if(counter == 1) {
+					System.out.println("Pawns can go backwards. Last turn!");
+				} else {
+					System.out.println("Pawns can go backwards. Remaining turns: " + counter);
+				}
+			}
+		}
+	}
+	
+	public void updateRuleChange3() {
+		if (!bvc.getBrs() && !bvc.getPS() && !bvc.getKS())
+		{
+			if (r.nextInt(2) == 0) //will modify this for the final game to happen less often
+			{
+				bvc.setKS();
+				counter = 2; //this rule change is very powerful so it shouldn't last longer than 2 turns
+				System.out.println("Kings can move like Queens. Remaining turns: " + counter);
+			}
+		}
+		else if (bvc.getKS())
+		{
+			if (counter == 1)
+			{
+				bvc.endKS();
+				counter = -1;
+				System.out.println("King rule change switched off.");
+			}
+			else
+			{
+				counter--;
+				if(counter == 1) {
+					System.out.println("Kings can move like Queens. Last turn!");
+				} else {
+					System.out.println("Kings can move like Queens. Remaining turns: " + counter);
+				}
+			}
+		}
+	}
+	
+	public boolean getBrs() {
+		return bvc.getBrs();
+	}
+	
+	public boolean getPS() {
+		return bvc.getPS();
+	}
+	
+	public boolean getKS() {
+		return bvc.getKS();
+	}
+	
+	public int getCounter() {
+		return counter;
+	}
+	/**
+	 * get the number of powerups piece on the board
+	 */
+	public int getPowerupNum(AbstractPiece[][] gamestate) {
+		ArrayList<AbstractPiece> Gs = gamestateToPieceArrayList(gamestate);
+		int num = 0;
+		for(AbstractPiece s : Gs) {
+			if (s instanceof Powerup) {
+				num = num + 1;
+			}
+		}
+		return num;
+	}
 }

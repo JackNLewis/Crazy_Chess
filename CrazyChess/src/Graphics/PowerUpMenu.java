@@ -52,7 +52,7 @@ public class PowerUpMenu {
 
             }
         });
-        Label title = new Label("Powers Ups");
+        Label title = new Label("Power Ups");
         title.getStyleClass().add("menu-text");
         container.getChildren().addAll(title,powerList);
     }

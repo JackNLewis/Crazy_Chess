@@ -1,12 +1,16 @@
 package CrazyChess.logic;
 import java.util.ArrayList;
+import java.util.HashMap;
+
 import CrazyChess.pieces.*;
+import java.util.*;
 
 public class AI
 {
 	private MainLogic chess;
 	private Utilities utils = new Utilities();
 	private ExtraChecksAndTools ect = new ExtraChecksAndTools();
+
 	public void AI () {
 		//null constructor
 	}
@@ -14,82 +18,69 @@ public class AI
 	public AbstractPiece[][] AI (MainLogic chess) {
 		this.chess = chess;
 
-		System.out.println("turn is "+chess.getTurn());
+		//System.out.println("turn is "+chess.getTurn());
 		//ExtraChecksAndTools ect = new ExtraChecksAndTools();
 		//AbstractPiece[][] bestBoard = minimax(chess.getGamestate(),1,chess.getTurn());
 		//ArrayList <AbstractPiece[][]> possg = ect.possibleGamestatesAfterNextMove(chess.getTurn(), false, chess.getGamestate(), 0);
-		AbstractPiece[][] bestMove = minimax(chess.getGamestate(),3,chess.getTurn());
-		System.out.println("best move is:");
-		utils.printGameState(bestMove);
+		BoardDetails currentBoard = new BoardDetails(
+				chess.getGamestate(),
+				chess.getPowerUps("white"),
+				chess.getPowerUps("black")
+		);
+		BoardDetails bestMoveDetails = minimax(currentBoard,3, chess.getTurn());
+		AbstractPiece[][] bestMove = bestMoveDetails.getGamestate();
+
+		int usedPowerupIndex = bestMoveDetails.getUsedPowerup();
+		if (usedPowerupIndex > -1) {
+			chess.getPowerUps(chess.getTurn()).remove(usedPowerupIndex);
+		}
+		//System.out.println("best move is:");
+		//utils.printGameState(bestMove);
 		return bestMove;
-		/*AbstractPiece[][] bestBoard = findBestOutcome(possg,chess.getTurn());
-		System.out.println("Best board is:");
-		utils.printGameState(bestBoard);
-
-		System.out.println("Current board val is "+evaluateBoard(chess.getGamestate()));
-
-		System.out.println("chess.getTurn is "+chess.getTurn());
-		int blackMove = findWorstOutcome(possg,"Black");
-		System.out.println("black worst board is: "+blackMove);
-
-		int whiteMove = findWorstOutcome(possg,"White");
-		System.out.println("white worst board is: "+whiteMove);
-
-		return bestBoard;*/
-
 	}
-	/*
-	//takes in the board, calc possgamestates and sends to decision tree and returns the best choice for a board
-	public AbstractPiece[][] minimax (AbstractPiece[][] board, int max_depth, String whosePlaying){
-		AbstractPiece[][] bestBoard = null;
-		ExtraChecksAndTools ect = new ExtraChecksAndTools();
+	
+	public AbstractPiece[][] AI (MainLogic chess, String difficulty) {
+		BoardDetails currentBoard = new BoardDetails(
+				chess.getGamestate(),
+				chess.getPowerUps("white"),
+				chess.getPowerUps("black")
+		);
 
-		ArrayList <AbstractPiece[][]> possg = ect.possibleGamestatesAfterNextMove(whosePlaying, false, board, 0);
-
-		//feed each possibility into decisionTree and choose the best-worst case scenario for whoever AI is
-		int temp;
-		if (whosePlaying.equals("Black")) {
-			int lowest = Integer.MAX_VALUE;
-			//for black the lower the better
-			for (int i=0;i<possg.size();i++) {
-				//parameters are each board in possg, "Black" is playing (will be swapped to white at the beginning of the decision tree function
-				temp = decisionTree(possg.get(i),whosePlaying,1,max_depth,whosePlaying);
-				//if lowest>temp then temp is a board with a better outcome so lowest=temp and bestBoard = possg.get(i)
-				if (lowest>temp) {
-					lowest = temp;
-					//sets the best board to the new best-worst case
-					bestBoard = possg.get(i);
-				}
-			}
+		int max_depth;
+		if (difficulty.contentEquals("easy")) {
+			max_depth = 2;
+		}
+		else if(difficulty.contentEquals("medium")) {
+			max_depth = 3;
 		}
 		else {
-			int highest = Integer.MIN_VALUE;
-			//higher the better for white
-			for (int i=0;i<possg.size();i++) {
-				//parameters are each board in possg, depth=1;max_depth=3,"White" is playing (will be swapped to white at the beginning of the decision tree function
-				temp = decisionTree(possg.get(i),whosePlaying,1,max_depth,whosePlaying);
-				//inverse of black statement (see if above)
-				if (highest<temp) {
-					highest = temp;
-					bestBoard = possg.get(i);
-				}
-			}
+			max_depth = 4;
 		}
 
-		if (bestBoard == null) {
-			System.out.println("ERROR- BESTBOARD = NULL, MINMAX NOT WORKING");
-		}
-		return bestBoard;
+		BoardDetails bestMoveDetails = minimax(currentBoard,max_depth, chess.getTurn());
+		AbstractPiece[][] bestMove = bestMoveDetails.getGamestate();
 
+		int usedPowerupIndex = bestMoveDetails.getUsedPowerup();
+		if (usedPowerupIndex > -1) {
+			chess.getPowerUps(chess.getTurn()).remove(usedPowerupIndex);
+		}
+
+		return bestMove;
 	}
-	 */
 
 	//the board entering this is not the chess gamestate, there is one function managing this one. If that doesn't happen
-	public AbstractPiece[][] minimax (AbstractPiece[][] board, int max_depth, String whoseAI){
+	public BoardDetails minimax (BoardDetails board, int max_depth, String whoseAI){
 		//don't need to know whoseTurn because its always AI's turn at the 0th board
 		//possg are all the possible immediate moves the AI can take in the current gamestate's turn
-		ArrayList <AbstractPiece[][]> possg = ect.possibleGamestatesAfterNextMove(whoseAI, false, board, 0);
-
+		HashMap<AbstractPiece[][], Integer> possgWithPwr = ect.possibleGamestatesAfterNextMove(
+				whoseAI,
+				false,
+				board.getGamestate(),
+				0,
+				board.getPowerUps(whoseAI)
+		);
+		ArrayList<AbstractPiece[][]> possg = new ArrayList<>(possgWithPwr.keySet());
+		Collections.shuffle(possg);
 		//need to pass whoseTurn to next function and it will be whoever is not AI's turn so whoseTurn is decided below
 		String whoseTurn;
 		if (whoseAI.equals("Black")) {
@@ -100,26 +91,36 @@ public class AI
 		}
 
 		//we pass each of these into the explore paths function and choose the one with the best worst-case outcome
-		AbstractPiece[][] bestMove = null;
+		BoardDetails bestMove = null;
 		//bestMove will store the board containing the least risky move
 		int bestValue;
 		//will store the value of bestMove
 		int temp;
 
-		System.out.println("in minimax:");
+		//System.out.println("in minimax:");
 		if (whoseAI.equals("Black")) {
 			//in black's case the lower the value the better
 			bestValue = Integer.MAX_VALUE;
 			//sets bestval to max value so it will be set to the first returning value from the explorePaths function
-			System.out.println("Bestval is init as: "+bestValue);
-			for (int i=0;i<possg.size();i++) {
-				temp = explorePaths(possg.get(i),1,max_depth,whoseAI,whoseTurn);
+			//System.out.println("Bestval is init as: "+bestValue);
+			for (int i=0; i<possg.size(); i++) {
+				// Create a new chess board details to account powerup usage
+				BoardDetails newBoard = new BoardDetails(possg.get(i));
+				newBoard.setPowerUps("white", new ArrayList<String>(board.getPowerUps("white")));
+				newBoard.setPowerUps("black", new ArrayList<String>(board.getPowerUps("black")));
+				int usedPowerup = possgWithPwr.get(newBoard.getGamestate());
+				if (usedPowerup > -1) {
+					newBoard.setUsedPowerup(usedPowerup);
+					newBoard.getPowerUps(whoseAI).remove(usedPowerup);
+				}
+
+				temp = explorePaths(newBoard,1,max_depth,whoseAI,whoseTurn,Integer.MAX_VALUE,Integer.MIN_VALUE);
 				//if temp (this move) has a lower risk for black then set bestMove and bestValue to temp and the current board
-				if (temp<bestValue) {
-					bestValue=temp;
-					bestMove=possg.get(i);
-					System.out.println("New best value of "+bestValue+" for board: ");
-					utils.printGameState(bestMove);
+				if (temp < bestValue) {
+					bestValue = temp;
+					bestMove = newBoard;
+					//System.out.println("New best value of "+bestValue+" for board: ");
+					utils.printGameState(bestMove.getGamestate());
 				}
 			}
 		}
@@ -127,145 +128,229 @@ public class AI
 			//in white's case its the same except the higher the value the better
 			bestValue = Integer.MIN_VALUE;
 			//sets bestval to min value so it will be set to the first returning value from the explorePaths function
-			System.out.println("Bestval is init as: "+bestValue);
-			for (int i=0;i<possg.size();i++) {
-				temp = explorePaths(possg.get(i),1,max_depth,whoseAI,whoseTurn);
+			//System.out.println("Bestval is init as: "+bestValue);
+			for (int i=0; i<possg.size(); i++) {
+				// Create a new chess board details to account powerup usage
+				BoardDetails newBoard = new BoardDetails(possg.get(i));
+				newBoard.setPowerUps("white", new ArrayList<String>(board.getPowerUps("white")));
+				newBoard.setPowerUps("black", new ArrayList<String>(board.getPowerUps("black")));
+				int usedPowerup = possgWithPwr.get(newBoard.getGamestate());
+				if (usedPowerup > -1) {
+					newBoard.setUsedPowerup(usedPowerup);
+					newBoard.getPowerUps(whoseAI).remove(usedPowerup);
+				}
+
+				temp = explorePaths(newBoard,1,max_depth,whoseAI,whoseTurn,Integer.MAX_VALUE,Integer.MIN_VALUE);
 				//if temp (this move) has a lower risk for black then set bestMove and bestValue to temp and the current board
-				if (temp>bestValue) {
-					bestValue=temp;
-					bestMove=possg.get(i);
-					System.out.println("New best value of "+bestValue+" for board: ");
-					utils.printGameState(bestMove);
+				if (temp > bestValue) {
+					bestValue = temp;
+					bestMove = newBoard;
+					//System.out.println("New best value of "+bestValue+" for board: ");
+					utils.printGameState(bestMove.getGamestate());
 				}
 			}
 		}
-		System.out.println("final best value of "+bestValue+" for board: ");
-		utils.printGameState(bestMove);
+		//System.out.println("final best value of "+bestValue+" for board: ");
+		utils.printGameState(bestMove.getGamestate());
 		return bestMove;
 	}
 
-	public int explorePaths (AbstractPiece[][] board,int curr_depth, int max_depth, String whoseAI, String whoseTurn) {
-		ArrayList <AbstractPiece[][]> possg = ect.possibleGamestatesAfterNextMove(whoseTurn, false, board, 0);
+	/*
+	 * pre alpha beta notes for rules
+	 *  IF NOT LAST LAYER (not findworst/best outcome functions
+	 *   when maxing (white):
+	 *    STORE highest from current solutions, PASS (max) value on to recursing explorePaths OR find(worst/best)outcome - pass MIN_VAL if no highest val yet
+	 *     IN NEXT LAYER (with passed on max val)
+	 *     if there is a lower solution than found (the passed on value (on another branch)
+	 *      STOP, return MIN_VAL (or other value worse than current best)
+	 *     else
+	 *      RETURN new best value
+	 *   for min (black) do same for min
+	 *  ELSE (bottom layer) 
+	 *   do similar to the above but for findworst/bestoutcome?
+	 */
+
+
+	public int explorePaths (BoardDetails board,int curr_depth, int max_depth, String whoseAI, String whoseTurn, int preMax, int preMin) {
+		HashMap<AbstractPiece[][], Integer> possgWithPwr = ect.possibleGamestatesAfterNextMove(
+				whoseTurn,
+				false,
+				board.getGamestate(),
+				0,
+				board.getPowerUps(whoseTurn)
+		);
+		ArrayList<AbstractPiece[][]> possg = new ArrayList<>(possgWithPwr.keySet());
+		Collections.shuffle(possg);
 		if(curr_depth==max_depth-1) {
-			//-1 because we use possg so we look one more move ahead, MEANS ONLY LOOK MORE THAN 1 MOVE IN THE FUTURE
-			int worst=findWorstOutcome(possg,whoseAI);
-			//just return the worst outcome from the leaf node using findworstoutcome
-			return worst;			
+			//-1 because we use possg so we look one more move ahead
+			/*if (whoseAI.contentEquals(whoseTurn)) {
+				int worst=findWorstOutcome(possg,whoseAI,preMax,preMin);
+				return worst;
+			}		
+			else {*/
+			//System.out.println("Sending to findnBestOutcome with max: "+preMax+" min: "+preMin);
+			// Check if there will be no possible gamestate
+			if (possg.isEmpty()) {
+				if (whoseTurn.equals("Black")) {
+					return preMin;
+				}
+				else {
+					return preMax;
+				}
+			}
+
+			int best = findBestOutcome(possg, whoseTurn, preMax, preMin);
+			return best;
+			//}
+
 		}
 		else {
 			//once again possg contains all the possible moves of the the current player's turn
 			int temp;
-			int worst;
-			
-			//change the turn for the next recursion of explorePaths
+			int worst, best;
+			String whoseTurnNext;
+
+			//sets whoseTurnNext for the next recursion of explorePaths, need this for the turns to be swapped properly in recursion
+			//cannot change whoseTurn because it's used to decide whether to min or max
 			if(whoseTurn.equals("Black")) {
-				whoseTurn="White";
+				whoseTurnNext="White";
 			}
 			else {
-				whoseTurn="Black";
+				whoseTurnNext="Black";
 			}
-			
-			if (whoseAI.equals("Black")) {
+			if (whoseTurn.equals("White")) {
 				worst = Integer.MIN_VALUE;
-				//the higher the worse
+				//the higher the worse (for black)
 				for (int i=0;i<possg.size();i++) {
-					temp = explorePaths(possg.get(i),(curr_depth+1),max_depth,whoseAI,whoseTurn);
+					// Create a new chess board details to account powerup usage
+					BoardDetails newBoard = new BoardDetails(possg.get(i));
+					newBoard.setPowerUps("white", new ArrayList<String>(board.getPowerUps("white")));
+					newBoard.setPowerUps("black", new ArrayList<String>(board.getPowerUps("black")));
+					int usedPowerup = possgWithPwr.get(newBoard.getGamestate());
+					if (usedPowerup > -1) {
+						newBoard.getPowerUps(whoseTurn).remove(usedPowerup);
+					}
+
+					//System.out.println("Sending with preMin of "+worst+" as white (to next black layer)");
+					temp = explorePaths(newBoard, (curr_depth+1),max_depth,whoseAI,whoseTurnNext,Integer.MAX_VALUE,worst);
+					//if the path explored is too big for black to choose it in the previous layer cancel (alpha beta pruning)
+					if(temp>preMax) {
+						//System.out.println("\nStopping early as "+temp+" > "+preMax+" on White's turn\n");
+						return temp; 
+						//temp will suffice as it's too large to be chosen and will be ignored via the if statement
+					}
+
 					if(temp>worst) {
 						//worst becomes the worst outcome of all possg branches
 						worst=temp;
 					}
 				}
 				//return worst up the tree
+				//System.out.println("\nSearched the whole branch (no alpha beta)\n");
 				return worst;
 			}
-			else {//for white
-				worst = Integer.MAX_VALUE;
-				//lower the worse for white
+			//but if it's black's turn we choose the best (max) outcome as black controls the outcome
+			else {
+				best = Integer.MAX_VALUE;
+				//lower the better for black so start at highest
 				for (int i=0;i<possg.size();i++) {
-					temp = explorePaths(possg.get(i),(curr_depth+1),max_depth,whoseAI,whoseTurn);
-					if (temp<worst) {
-						//same for worst as above except higher the worse
-						worst = temp;
+					// Create a new chess board details to account powerup usage
+					BoardDetails newBoard = new BoardDetails(possg.get(i));
+					newBoard.setPowerUps("white", new ArrayList<String>(board.getPowerUps("white")));
+					newBoard.setPowerUps("black", new ArrayList<String>(board.getPowerUps("black")));
+					int usedPowerup = possgWithPwr.get(newBoard.getGamestate());
+					if (usedPowerup > -1) {
+						newBoard.getPowerUps(whoseTurn).remove(usedPowerup);
+					}
+
+					//System.out.println("Sending with preMax of "+best+" as black (to next white layer)");
+					temp = explorePaths(newBoard,(curr_depth+1),max_depth,whoseAI,whoseTurnNext,best,Integer.MIN_VALUE);
+
+					if(temp<preMin) {
+						//if too small for earlier white optimal layer to choose this branch stop searching and return
+						//System.out.println("\nStopping early as "+temp+" < "+preMin+" on Black's turn\n");
+						return temp;
+					}
+
+					if (temp<best) {
+						//the lower the possibility the better the outcome, so max as black will choose lower
+						best=temp;
 					}
 				}
-				//same again
-				return worst;
+				//System.out.println("\nNo pruning, whole tree searched\n");
+				return best;
 			}
+			/*}
+			//if white is AI
+			else {
+				//if white is AI it must assume black will choose the worst (lowest) outcome -- the min part of minmax
+				if (whoseTurn.equals("Black")) {
+					worst = Integer.MAX_VALUE;
+					//lower the worse for white
+					for (int i=0;i<possg.size();i++) {
+						temp = explorePaths(possg.get(i),(curr_depth+1),max_depth,whoseAI,whoseTurnNext);
+						if (temp<worst) {
+							//same for worst as above except higher the worse
+							worst = temp;
+						}
+					}
+					return worst;
+				}
+				else {
+					//if white is the AI chooses best/highest outcome (max)
+					best = Integer.MIN_VALUE;
+					//higher the better for white
+					for (int i=0;i<possg.size();i++) {
+						temp = explorePaths(possg.get(i),(curr_depth+1),max_depth,whoseAI,whoseTurnNext);
+						if (temp>best) {
+							//stores highest outcome
+							best=temp;
+						}
+					}
+					return best;
+				}
+
+			}
+			 */
 		}
 	}
 
 	//boards is the result of possiblenextgamestates method
-	public int findWorstOutcome (ArrayList <AbstractPiece[][]> boards, String whoseAI) {
+	public int findBestOutcome (ArrayList<AbstractPiece[][]> boards, String whoseTurn,int preMax,int preMin) {
 
 		int currentBoardVal;
 
-		//highest (if ai is black) and lowest are set to the first board of boards' value 
 		int highest = evaluateBoard(boards.get(0));
 		int lowest = highest;
-		//System.out.println("initial val of high and low is: "+lowest);
-		//System.out.print("all boardvals:");
-		for (int i=1;i<boards.size();i++) {
-			currentBoardVal=evaluateBoard(boards.get(i));
-			//System.out.print(currentBoardVal+",");
-			//if the value for this board is higher that means black is in a worse position so worst = currentBoardVal
+
+		for (int i=1; i < boards.size(); i++) {
+			currentBoardVal = evaluateBoard(boards.get(i));
+			//check if it violates preMin or preMax (if the layer before won't accept this branch's findbestoutcome stop searching now
+			if (currentBoardVal>preMax||currentBoardVal<preMin) {
+				//System.out.println("Pruned out in findBestOutcome to values: current="+currentBoardVal+" preMax="+preMax+" preMin:"+preMin);
+				return currentBoardVal;
+			}
+			//System.out.println("shouldnt show up after pruned out statment");
+			//statement above didnt show up after pruning so pruning definitely works in this layer
 			if (currentBoardVal<lowest) {
-				//System.out.println("new lowest is: "+lowest);
 				lowest = currentBoardVal;
 			}
 			else if (currentBoardVal>highest) {
-				//System.out.println("new highest is: "+highest);
 				highest = currentBoardVal;
 			}
 		}
-
-		//if the AI is black the worst case scenario is the highest (most positive and therefore white) value
-		if (whoseAI.equals("Black")) {
-			//System.out.println("black's worst (in findworst) is "+highest);
-			return highest;
-		}
-		//vice versa
-		else {
+		//System.out.println("No pruning performed in findBestOutcome on "+whoseTurn+"'s turn");
+		if (whoseTurn.equals("Black")) {
 			return lowest;
 		}
-
-		//not sure i need the commented code but keeping it out of pure fear and distrust to my own coding --ammaar ;)
-
-		/*
-		if (whoseTurn=="Black") {
-			//System.out.println("blacks turn, all poss boards and vals:");
-			//black is negative (more negative is good for black) white is positive
-			for (int i=1;i<boards.size();i++) {
-				currentBoardVal=evaluateBoard(boards.get(i));
-
-
-				//utils.printGameState(boards.get(i));
-				//System.out.println("bval for above is: "+currentBoardVal);
-
-
-				//if the value for this board is higher that means black is in a worse position so worst = currentBoardVal
-				if (currentBoardVal>   worst) {
-					//System.out.println("new worst board for black is: ");
-					//utils.printGameState(boards.get(i));
-					worst = currentBoardVal;
-				}
-			}
-		}
 		else {
-			//vice versa for white
-			//System.out.println("whites turn");
-			for (int i=1;i<boards.size();i++) {
-				currentBoardVal=evaluateBoard(boards.get(i));
-				if (currentBoardVal<worst) {
-					worst = currentBoardVal;
-				}
-			}
+			return highest;
 		}
-
-		return worst;	
-		 */
 	}
 
-	public AbstractPiece[][] findBestOutcome (ArrayList <AbstractPiece[][]> boards, String whoseTurn) {
+	//not a necessary function, unless we expand to have easier difficulty ai
+	/*	
+public int findBestOutcome (ArrayList <AbstractPiece[][]> boards, String whoseTurn) {
 		//if already at leaf nodes of decision tree (end of recursive calls)
 		//if(depth==max_depth) {
 		int currentBoardVal;
@@ -307,7 +392,7 @@ public class AI
 			}
 		}
 
-		return bestBoard;
+		return best;
 		//}
 		//else {
 		//its not max depth yet
@@ -316,6 +401,7 @@ public class AI
 
 		//}
 	}
+	 */
 
 	/*
 	 * Piece values (positive for white, negative for black)
@@ -388,6 +474,16 @@ public class AI
 				return 3;
 			}
 		}
+		else if (piece instanceof Powerup){
+			if (piece.getColor()=="Black") {
+				//System.out.println("black knight");
+				return -2;
+			}
+			else {
+				//System.out.println("white knight");
+				return 2;
+			}
+		}
 		System.out.println("valuePiece function very broken to reach here");
 		return 999;
 	}
@@ -408,6 +504,51 @@ public class AI
 
 		//System.out.println("current value is "+value);
 		return value;
+	}
+
+	class BoardDetails {
+		AbstractPiece[][] gamestate;
+		ArrayList<String> whitePowerUps;
+		ArrayList<String> blackPowerUps;
+		int usedPowerup = -1;
+
+		public BoardDetails(AbstractPiece[][] gamestate) {
+			this.gamestate = gamestate;
+		}
+
+		public BoardDetails(AbstractPiece[][] gamestate, ArrayList<String> whitePowerUps, ArrayList<String> blackPowerUps) {
+			this.gamestate = gamestate;
+			this.whitePowerUps = whitePowerUps;
+			this.blackPowerUps = blackPowerUps;
+		}
+
+		public AbstractPiece[][] getGamestate() {
+			return this.gamestate;
+		}
+
+		public ArrayList<String> getPowerUps(String player){
+			if(player.equalsIgnoreCase("black")){
+				return blackPowerUps;
+			}else{
+				return whitePowerUps;
+			}
+		}
+
+		public void setPowerUps(String player, ArrayList<String> powerups){
+			if(player.equalsIgnoreCase("black")){
+				this.blackPowerUps = powerups;
+			}else{
+				this.whitePowerUps = powerups;
+			}
+		}
+
+		public int getUsedPowerup() {
+			return this.usedPowerup;
+		}
+
+		public void setUsedPowerup(int powerupIndex) {
+			this.usedPowerup = powerupIndex;
+		}
 	}
 
 }

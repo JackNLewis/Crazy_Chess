@@ -21,6 +21,7 @@ public abstract class AbstractPiece implements Serializable
 	protected Position position;
 	protected String Pwtype;
 	
+	
 	/**
 	 * Constructor by coordinates
 	 *
@@ -53,6 +54,14 @@ public abstract class AbstractPiece implements Serializable
 	 */
 	public String getColor(){
 		return color;
+	}
+	/**
+	 * Sets color (only used in checking for castling)
+	 *
+	 * 
+	 */
+	public void setColor(String col){
+		color = col;
 	}
 
 	/**
@@ -139,4 +148,9 @@ public abstract class AbstractPiece implements Serializable
 	public String getPoweruptype(){
 		return Pwtype;
 	}
+
+
+	
+	
+	
 }

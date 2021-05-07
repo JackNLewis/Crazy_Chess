@@ -2,7 +2,8 @@ package CrazyChess.logic;
 
 import java.util.ArrayList;
 
-
+import CrazyChess.logic.StageHazards.Hazard;
+import CrazyChess.logic.StageHazards.HazardAssigner;
 import CrazyChess.logic.powerups.PowerupMain;
 import CrazyChess.pieces.*;
 
@@ -29,9 +30,16 @@ public class MainLogic
 	protected boolean isWhiteChecked;  //boolean to show if the white player is under check
 	protected boolean isWhiteMated;    //boolean to show if the white player is mated
 
+	protected boolean isDrawAsked;		//boolean to show if a draw was asked
 	protected boolean isDraw;		   //boolean to show if the game is draw
 	protected boolean isEndgame;       //boolean to show if the game is ended
 	
+
+	protected boolean rulechange1;     //boolean to show if rule change 1 was selected to play with
+	protected boolean rulechange2;     //boolean to show if rule change 1 was selected to play with
+	protected boolean rulechange3;     //boolean to show if rule change 1 was selected to play with
+	
+	//for bomb limit
 	protected int WBlt;
 	protected int BBlt;
 	protected int WB;
@@ -41,9 +49,13 @@ public class MainLogic
 	ArrayList<String> blackPowerUps = new ArrayList<String>();  //ArrayList tp store black's powerups
 	
 	Utilities utils = new Utilities();
-	BasicValidityChecker bvc = new BasicValidityChecker();
-	ExtraChecksAndTools ecat = new ExtraChecksAndTools();
+//	BasicValidityChecker bvc = new BasicValidityChecker();
+	private ExtraChecksAndTools ecat = new ExtraChecksAndTools(); //todo getter setter
 	PowerupMain pwrUp = new PowerupMain();
+	Castle cstl = new Castle();
+//	BishopRookSwitch brs = new BishopRookSwitch();
+
+	HazardAssigner hazards = new HazardAssigner();
 	/**
 	 * Constructor for the MainLogic class.
 	 * Initiates the gamestate as an empty board.
@@ -126,6 +138,13 @@ public class MainLogic
 	public String getTurn(){
 		return currentTurn;
 	}
+//	??????????????????
+	public void setCurrentTurnColor(String currentTurn) {
+		this.currentTurn = currentTurn;
+	}
+	public void setCurrentTurn(int currentTurn) {
+		this.turnNo = currentTurn;
+	}
 	
 	/**
 	 * Returns the current game state
@@ -155,7 +174,7 @@ public class MainLogic
 				isWhiteChecked = false;
 			}
 		}
-		if(ecat.isInCheckmate(oppColor,false,newGamestate,turnNo+1)){
+		if(ecat.isInCheckmate(oppColor,false,newGamestate,turnNo+1, getPowerUps(currentTurn))){
 			if(oppColor.equalsIgnoreCase("black")){
 				isBlackMated = true;
 			}else{
@@ -163,7 +182,7 @@ public class MainLogic
 			}
 			isEndgame = true;
 		}
-		if (ecat.isInDraw(currentTurn, isDebug, newGamestate, turnNo+1) && !isEndgame) {
+		if (ecat.isInDraw(currentTurn, isDebug, newGamestate, turnNo+1, getPowerUps(currentTurn)) && !isEndgame) {
 			if (isDebug) {
 				System.out.println("The game resulted in a draw");
 			}
@@ -233,6 +252,18 @@ public class MainLogic
 			
 			gamestate=pwrUp.powerupSpawn(gamestate, turnNo, isDebug);
 			
+			if(rulechange1) {
+				ecat.updateRuleChange1();
+			}
+			if(rulechange2) {
+				ecat.updateRuleChange2();
+			}
+			if(rulechange3) {
+				ecat.updateRuleChange3();
+			}
+			
+			System.out.println("brswitch " + ecat.getBrs());
+
 			
 			if(isDebug)
 				if(isDebug) {
@@ -242,6 +273,50 @@ public class MainLogic
 		else{
 			currentTurn = "White";
 			turnNo++;
+			
+			if(rulechange1) {
+				ecat.updateRuleChange1();
+			}
+			if(rulechange2) {
+				ecat.updateRuleChange2();
+			}
+			if(rulechange3) {
+				ecat.updateRuleChange3();
+			}
+			
+			System.out.println("brswitch " + ecat.getBrs());
+			
+			gamestate=pwrUp.powerupSpawn(gamestate, turnNo, isDebug);
+			
+			if(isDebug) {
+				System.out.println("It is now White's turn.");
+				System.out.println("White's powerups: "+whitePowerUps.toString());}
+		}
+
+		//=======================================STAGE HAZARDS================================================//
+		//GAMESTATE = NEW GAMESTATE
+		gamestate= hazards.assignHazard(gamestate);
+		//=======================================STAGE HAZARDS================================================//
+
+	}
+	
+	/**
+	 * Switches the turn to the opposite of what it currently is, but does not increase the number of turns.
+	 * Used for the "ask for draw" button.
+	 * If for some reason the turn is neither Black nor White
+	 * by default the method sets it to white
+	 */
+	public void switchTurn(){
+		if(currentTurn.equalsIgnoreCase("White")){
+			currentTurn = "Black";
+			gamestate=pwrUp.powerupSpawn(gamestate, turnNo, isDebug);
+			if(isDebug)
+				if(isDebug) {
+					System.out.println("It is now Black's turn.");
+					System.out.println("Black's powerups: "+blackPowerUps.toString());}
+		}
+		else{
+			currentTurn = "White";
 			gamestate=pwrUp.powerupSpawn(gamestate, turnNo, isDebug);
 			
 			if(isDebug) {
@@ -308,6 +383,10 @@ public class MainLogic
 	
 
 	protected boolean move(AbstractPiece p, int xRel, int yRel){
+		if(isDrawAsked || isDraw){
+			return false;
+		}
+		
 		if(p.getXpos() > 7 || p.getXpos() < 0 || p.getYpos() > 7 || p.getYpos() < 0 || p == null){ //Basic check to see if p is on board
 			if(isDebug)
 				System.out.println("Invalid piece position.");
@@ -323,16 +402,13 @@ public class MainLogic
 				System.out.println("You cannot move a Dummy piece.");
 			return false;
 		}
-		
-		
-		
-		
+		//TODO ADD CHECK FOR HAZARD PIECE
 //		System.out.println("Turn number: "+turnNo+". Available moves for "+currentTurn+": "+ecat.possibleGamestatesAfterNextMove(currentTurn, isDebug, gamestate, turnNo).size());
 //		for(AbstractPiece[][] gs: ecat.possibleGamestatesAfterNextMove(currentTurn, isDebug, gamestate, turnNo)) {
 //			utils.printGameState(gs);
 //		}
 		
-		
+
 		
 		
 		//Save old position (to place a blank later)
@@ -371,6 +447,9 @@ public class MainLogic
 			if(newPiece.getPosition().equals(pos)) {
 				isValid=true;
 			}
+		}
+		if(isValid == false && p instanceof King) {
+			isValid = cstl.castleCheck((King)p, xRel, yRel, isDebug, gamestate, turnNo);
 		}
 		
 //
@@ -434,10 +513,18 @@ public class MainLogic
 		//gamestate=utils.placePiece(new BlankPiece("Blank",oldPos.getXpos(), oldPos.getYpos()), isDebug, gamestate);
 		
 		//Constructing new possible gamestate
-		if(isValid) {
+		//First checks if it can castle
+		if(isValid){
+			if(p instanceof King && ((King)p).getCanCastle() != 0)
+				cstl.castle((King)p, xRel, yRel, isDebug, gamestate, turnNo);
 			AbstractPiece[][] newGamestate = utils.safeCopyGamestate(gamestate);
-			AbstractPiece copiedPiece = utils.getPiece(p.getPosition(), isDebug, newGamestate);
+			AbstractPiece copiedPiece = utils.safeCopyPiece(p);
 			copiedPiece.setPosition(newPiece.getXpos(), newPiece.getYpos());
+			if(copiedPiece instanceof King)
+				((King)copiedPiece).setWasMoved(true);
+			if(copiedPiece instanceof Rook) {
+				((Rook)copiedPiece).setWasMoved(true);
+			}
 			
 			
 			if(newPiece.getPoweruptype().equalsIgnoreCase("bomb")) {
@@ -476,8 +563,6 @@ public class MainLogic
 		
 		
 		
-		
-		
 		//if king was under check, it checks if the king escaped check in the new gamestate
 //				if(isWhiteChecked&&currentTurn.equalsIgnoreCase("white")) {
 //					if(ecat.isInCheck(currentTurn, isDebug, newGamestate, turnNo+1)) {
@@ -503,7 +588,7 @@ public class MainLogic
 		
 			//Check if the player is not under check
 			if(currentTurn.equalsIgnoreCase("white")) {
-				utils.printGameState(newGamestate);
+				//utils.printGameState(newGamestate);
 				if(ecat.isInCheck("black", isDebug, newGamestate, turnNo+1)) {
 					if(isDebug) {
 						System.out.println("Black king is now checked!");
@@ -526,16 +611,16 @@ public class MainLogic
 
 			//checks if the new gamestate will be a checkmate for the oponent
 			if(currentTurn.equalsIgnoreCase("white")) {
-				if(ecat.isInCheckmate("black", isDebug, newGamestate, turnNo+1)) {
+				if(ecat.isInCheckmate("black", isDebug, newGamestate, turnNo+1, getPowerUps(currentTurn))) {
 					if(isDebug) {
 						System.out.println("White checkmated black");
 					}
 					isBlackMated = true;
 					isEndgame = true;
-				}else if(isBlackChecked) System.out.println(ecat.validMoves(ecat.getKing("black", newGamestate), isDebug, newGamestate, turnNo).size());
+				}else if(isBlackChecked) System.out.println(ecat.validMoves(ecat.getKing("black", newGamestate), isDebug, newGamestate, turnNo));
 			}
 			if(currentTurn.equalsIgnoreCase("black")) {
-				if(ecat.isInCheckmate("white", isDebug, newGamestate, turnNo+1)) {
+				if(ecat.isInCheckmate("white", isDebug, newGamestate, turnNo+1, getPowerUps(currentTurn))) {
 					if(isDebug) {
 						System.out.println("Black checkmated white");
 					}
@@ -546,7 +631,7 @@ public class MainLogic
 
 			// Check if the new gamestate will be a draw
 
-			if (ecat.isInDraw(currentTurn, isDebug, newGamestate, turnNo+1) && !isEndgame) {
+			if (ecat.isInDraw(currentTurn, isDebug, newGamestate, turnNo+1, getPowerUps(currentTurn)) && !isEndgame) {
 				if (isDebug) {
 					System.out.println("The game resulted in a draw");
 				}
@@ -554,18 +639,15 @@ public class MainLogic
 				isEndgame = true;
 			}
 
-
-			gamestate = newGamestate;
-			
 			
 			if(newPiece instanceof Powerup) {
 				if(currentTurn.equalsIgnoreCase("white")) whitePowerUps.add(pwrUp.randomPowerup(isDebug));
 				if(currentTurn.equalsIgnoreCase("black")) blackPowerUps.add(pwrUp.randomPowerup(isDebug));
 				        
 			}
-			
-			
-			
+
+
+			gamestate = newGamestate;
 			return true;
 		}
 		return false;
@@ -655,6 +737,38 @@ public class MainLogic
 			return whitePowerUps;
 		}
 	}
+	
+	public boolean getBrs() {
+		return ecat.getBrs();
+	}
+	
+	public boolean getPS() {
+		return ecat.getPS();
+	}
+	
+	public boolean getKS() {
+		return ecat.getKS();
+	}
+	
+	public boolean getDrawAsked(){
+		return isDrawAsked;
+	}
+	
+	public void setDrawAsked(){
+		isDrawAsked = true;
+	}
+	
+	public boolean getDraw(){
+		return isDraw;
+	}
+	
+	public void setDraw(){
+		isDraw = true;
+	}
+	
+	public void refuseDraw(){
+		isDrawAsked = false;
+	}
 
 	public void setCheck(String player,boolean check){
 		if(player.equalsIgnoreCase("white")){
@@ -692,5 +806,37 @@ public class MainLogic
 	
 	public int getBBlt() {
 		return BBlt;
+	}
+	
+	public ExtraChecksAndTools getEcat() {
+		return ecat;
+	}
+	
+	public int getCounter() {
+		return ecat.getCounter();
+	}
+	
+	public boolean getRC1() {
+		return rulechange1;
+	}
+	
+	public boolean getRC2() {
+		return rulechange2;
+	}
+	
+	public boolean getRC3() {
+		return rulechange3;
+	}
+	
+	public void setRC1(boolean rulechange1) {
+		this.rulechange1 = rulechange1;
+	}
+	
+	public void setRC2(boolean rulechange2) {
+		this.rulechange2 = rulechange2;
+	}
+	
+	public void setRC3(boolean rulechange3) {
+		this.rulechange3 = rulechange3;
 	}
 }

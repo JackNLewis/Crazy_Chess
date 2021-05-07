@@ -15,6 +15,7 @@ public class Pawn extends AbstractPiece
 {
 	private int turnDoublejumped = 0; //Turn pawn made his first move and it was a double jump
 									  //Left as 0 if pawn is not moved or its first move was a single jump
+	private boolean canEnPassant = false; //If the pawn can do an enPassant move
 	
 	/**
 	 * Constructor by coordinates
@@ -52,4 +53,21 @@ public class Pawn extends AbstractPiece
 	public int getDoublejump() {
 		return turnDoublejumped;
 	}
+	
+	/**
+	 * Setter for canEnPassant
+	 * @param bool   if the pawn can enPassant
+	 */
+	
+	public void setEnPassant(boolean bool) {
+		canEnPassant = bool;
+	}
+	/**
+	 * Getter for canEnPassant
+	 * @param bool   if the pawn can enPassant
+	 */
+	public boolean getEnPassant() {
+		return canEnPassant;
+	}
+
 }

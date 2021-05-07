@@ -7,12 +7,16 @@ import javafx.scene.image.ImageView;
 import javafx.scene.layout.StackPane;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
+import javafx.scene.image.Image;
+import javafx.scene.paint.ImagePattern;
+
+import java.util.ArrayList;
 
 public class Tile {
 
     private StackPane sp;
     private Rectangle background;
-    private ImageView pieceImg;
+    private ArrayList<ImageView> imgs;
     private Position pos;
     private int tileSize;
 
@@ -22,9 +26,9 @@ public class Tile {
         this.tileSize = tileSize;
         sp = new StackPane();
         background = new Rectangle(tileSize,tileSize);
-        background.setArcHeight(10);
-        background.setArcWidth(10);
-
+//        background.setArcHeight(10);
+//        background.setArcWidth(10);
+        imgs = new ArrayList<>();
         sp.getChildren().add(background);
     }
 
@@ -33,10 +37,15 @@ public class Tile {
      *
      */
     public void addImg(ImageView img){
-        this.pieceImg = img;
-        img.setFitWidth(tileSize-5);
-        img.setFitHeight(tileSize-5);
-        sp.getChildren().add(pieceImg);
+        imgs.add(img);
+        if(img.getImage().getWidth() == 96) {
+        	img.setFitWidth(tileSize-3);
+            img.setFitHeight(tileSize-3);
+        }else {
+        	img.setFitWidth(tileSize);
+            img.setFitHeight(tileSize);
+        }
+        sp.getChildren().add(img);
     }
 
     /**
@@ -44,8 +53,8 @@ public class Tile {
      *
      */
     public void removeImg(){
-        if(pieceImg!=null){
-            sp.getChildren().remove(pieceImg);
+        for(ImageView img: imgs){
+            sp.getChildren().remove(img);
         }
     }
 
@@ -53,8 +62,8 @@ public class Tile {
      * Sets the color of the tile background
      *
      */
-    public void setbgColor(Color color){
-        background.setFill(color);
+    public void setbgColor(Image img){
+        background.setFill(new ImagePattern(img));
     }
 
     /**

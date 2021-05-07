@@ -12,3 +12,8 @@ CrazyChess/bin/
 
 ### MacOS ###
 .DS_Store
+**/.DS_STORE
+
+# Compiled code
+
+CrazyChess/out/

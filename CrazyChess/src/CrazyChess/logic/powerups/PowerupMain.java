@@ -10,7 +10,8 @@ import java.util.concurrent.ThreadLocalRandom;
 public class PowerupMain
 {
 	Utilities utils = new Utilities();
-	ExtraChecksAndTools ecat = new ExtraChecksAndTools();
+	ExtraChecksAndTools ecat = new ExtraChecksAndTools(1);
+
 	/**
 	 * Uses the desired   powerup and returns an altered gamestate
 	 * @param powerup     powerup to be used
@@ -71,6 +72,7 @@ public class PowerupMain
 			}
 		}
 		
+		if(ecat.getPowerupNum(copiedGamestate) < 2) {
 		if(turnNo%5==0) {
 			int randomX = ThreadLocalRandom.current().nextInt(0,7+1); //+1 because the method is exclusive
 			int randomY = ThreadLocalRandom.current().nextInt(0,7+1);
@@ -85,6 +87,7 @@ public class PowerupMain
 			Powerup pw = new Powerup(randomX, randomY,"Normal");
 			copiedGamestate=utils.placePiece(pw, isDebug, copiedGamestate);
 				}
+		}
 		if(piecePw != null) {
 			copiedGamestate=utils.placePiece(piecePw, isDebug, copiedGamestate);
 		}
@@ -193,44 +196,44 @@ public class PowerupMain
 	 * @param turn
 	 * @return
 	 */
-	public ArrayList<Position> initialPowerupMoves(String powerup, AbstractPiece[][] gamestate,String turn){
-		ArrayList<Position> moves= new ArrayList<>();
-		//Get the initial piee a teleport can be used on
-		if(powerup.equalsIgnoreCase("teleport")){
+	public ArrayList<Position> initialPowerupMoves(String powerup, AbstractPiece[][] gamestate,String turn) {
+		ArrayList<Position> moves = new ArrayList<>();
+		//Get the initial piece a teleport can be used on
+		if (powerup.equalsIgnoreCase("teleport")) {
 			//return all the non-king players
-			for(AbstractPiece[] arr: gamestate){
-				for(AbstractPiece piece: arr){
-					if(piece.getColor().equalsIgnoreCase(turn) && !(piece instanceof King)){
+			for (AbstractPiece[] arr : gamestate) {
+				for (AbstractPiece piece : arr) {
+					if (piece.getColor().equalsIgnoreCase(turn) && !(piece instanceof King)) {
 						moves.add(piece.getPosition());
 					}
 				}
 			}
 		}
 		//Return all pawns of same colour because only pawns can be promoted
-		else if(powerup.equalsIgnoreCase("minipromote")){
-			for(AbstractPiece[] arr: gamestate){
-				for(AbstractPiece piece: arr){
-					if(piece.getColor().equalsIgnoreCase(turn) && piece instanceof Pawn){
+		else if (powerup.equalsIgnoreCase("minipromote")) {
+			for (AbstractPiece[] arr : gamestate) {
+				for (AbstractPiece piece : arr) {
+					if (piece.getColor().equalsIgnoreCase(turn) && piece instanceof Pawn) {
 						moves.add(piece.getPosition());
 					}
 				}
 			}
 		}
 		//return everything but the king
-		else if(powerup.equalsIgnoreCase("bomb")){
-			for(AbstractPiece[] arr: gamestate){
-				for(AbstractPiece piece: arr){
-					if(piece.getColor().equalsIgnoreCase(turn) && piece instanceof Pawn){
+		else if (powerup.equalsIgnoreCase("bomb")) {
+			for (AbstractPiece[] arr : gamestate) {
+				for (AbstractPiece piece : arr) {
+					if (piece.getColor().equalsIgnoreCase(turn) && piece instanceof Pawn) {
 						moves.add(piece.getPosition());
 					}
 				}
 			}
 		}
 		//return the king
-		else if(powerup.equalsIgnoreCase("freecard")){
-			for(AbstractPiece[] arr: gamestate){
-				for(AbstractPiece piece: arr){
-					if(piece.getColor().equalsIgnoreCase(turn) && piece instanceof King){
+		else if (powerup.equalsIgnoreCase("freecard")) {
+			for (AbstractPiece[] arr : gamestate) {
+				for (AbstractPiece piece : arr) {
+					if (piece.getColor().equalsIgnoreCase(turn) && piece instanceof King) {
 						moves.add(piece.getPosition());
 						return moves;
 					}
@@ -238,10 +241,10 @@ public class PowerupMain
 			}
 		}
 		//return all empty spaces on board
-		else if(powerup.equalsIgnoreCase("dummypiece")){
-			for(AbstractPiece[] arr: gamestate){
-				for(AbstractPiece piece: arr){
-					if(piece.getColor().equalsIgnoreCase(turn) && !(piece instanceof King)){
+		else if (powerup.equalsIgnoreCase("dummypiece")) {
+			for (AbstractPiece[] arr : gamestate) {
+				for (AbstractPiece piece : arr) {
+					if (piece.getColor().equalsIgnoreCase(turn) && !(piece instanceof King)) {
 						moves.add(piece.getPosition());
 					}
 				}
@@ -249,4 +252,48 @@ public class PowerupMain
 		}
 		return moves;
 	}
+
+	/**
+	 * Returns a gamestate after the explosion
+	 */
+	public AbstractPiece[][] doBomb(AbstractPiece[][] newGamestate,AbstractPiece newPiece,AbstractPiece copiedPiece,Utilities utils, boolean isDebug){
+		if(utils.isOnBoard(newPiece.getXpos() -1, newPiece.getYpos() -1)&&!((utils.getPiece(newPiece.getXpos() -1, newPiece.getYpos() -1, isDebug, newGamestate)) instanceof King))newGamestate=utils.placePiece(new BlankPiece("Blank", newPiece.getXpos() -1,newPiece.getYpos() -1,"Normal"), isDebug, newGamestate);
+        if(utils.isOnBoard(newPiece.getXpos() -1,newPiece.getYpos())&&!((utils.getPiece(newPiece.getXpos() -1, newPiece.getYpos() , isDebug, newGamestate)) instanceof King))newGamestate=utils.placePiece(new BlankPiece("Blank", newPiece.getXpos() -1,newPiece.getYpos(),"Normal"), isDebug, newGamestate);
+        if(utils.isOnBoard(newPiece.getXpos() , newPiece.getYpos() -1)&&!((utils.getPiece(newPiece.getXpos() , newPiece.getYpos() -1, isDebug, newGamestate)) instanceof King))newGamestate=utils.placePiece(new BlankPiece("Blank", newPiece.getXpos(),newPiece.getYpos() -1,"Normal"), isDebug, newGamestate);
+        if(utils.isOnBoard(newPiece.getXpos() +1, newPiece.getYpos() -1)&&!((utils.getPiece(newPiece.getXpos() +1, newPiece.getYpos() -1, isDebug, newGamestate)) instanceof King))newGamestate=utils.placePiece(new BlankPiece("Blank", newPiece.getXpos() +1,newPiece.getYpos() -1,"Normal"), isDebug, newGamestate);
+        if(utils.isOnBoard(newPiece.getXpos() -1, newPiece.getYpos() +1)&&!((utils.getPiece(newPiece.getXpos() -1, newPiece.getYpos() +1, isDebug, newGamestate)) instanceof King))newGamestate=utils.placePiece(new BlankPiece("Blank", newPiece.getXpos() -1,newPiece.getYpos() +1,"Normal"), isDebug, newGamestate);
+        if(utils.isOnBoard(newPiece.getXpos() +1, newPiece.getYpos() +1)&&!((utils.getPiece(newPiece.getXpos() +1, newPiece.getYpos() +1, isDebug, newGamestate)) instanceof King))newGamestate=utils.placePiece(new BlankPiece("Blank", newPiece.getXpos() +1,newPiece.getYpos() +1,"Normal"), isDebug, newGamestate);
+        if(utils.isOnBoard(newPiece.getXpos() +1, newPiece.getYpos() )&&!((utils.getPiece(newPiece.getXpos() +1, newPiece.getYpos() , isDebug, newGamestate)) instanceof King))newGamestate=utils.placePiece(new BlankPiece("Blank", newPiece.getXpos() +1,newPiece.getYpos(),"Normal"), isDebug, newGamestate);
+        if(utils.isOnBoard(newPiece.getXpos() , newPiece.getYpos() +1)&&!((utils.getPiece(newPiece.getXpos() , newPiece.getYpos() +1, isDebug, newGamestate)) instanceof King))newGamestate=utils.placePiece(new BlankPiece("Blank", newPiece.getXpos(),newPiece.getYpos() +1,"Normal"), isDebug, newGamestate);
+	    
+        if(!(copiedPiece instanceof King)) {
+        	if(utils.isOnBoard(newPiece.getXpos(), newPiece.getYpos())&&!((utils.getPiece(newPiece.getXpos() , newPiece.getYpos() , isDebug, newGamestate)) instanceof King))newGamestate=utils.placePiece(new BlankPiece("Blank", newPiece.getXpos(),newPiece.getYpos(),"Normal"), isDebug, newGamestate);
+        }
+        else if((copiedPiece instanceof King)) {
+        	if(utils.isOnBoard(newPiece.getXpos(), newPiece.getYpos())&&!((utils.getPiece(newPiece.getXpos() , newPiece.getYpos() , isDebug, newGamestate)) instanceof King))newGamestate=utils.placePiece(copiedPiece, isDebug, newGamestate);
+        }
+        
+	    
+	    return newGamestate;
+
+	}
+
+	/**
+	 * Modify a gamestate by using a given powerup
+	 * @param pwrUpStr        name of the powerup
+	 * @param gamestate       gamestate to be modified
+	 * @param currentTurn	  whose turn to move
+	 * @param target1         position of the first piece to be used in the powerup
+	 * @param target2         position of the second piece to be used in the powerup (can be NULL)
+	 * @param isDebug		  is debug mode active
+	 * @return                modified gamestate based on the powerup
+	 */
+	public AbstractPiece[][] usePowerupGivenGamestate(String pwrUpStr, AbstractPiece[][] gamestate, String currentTurn, Position target1, Position target2, boolean isDebug) {
+
+		AbstractPiece[][] copiedGamestate = utils.safeCopyGamestate(gamestate);
+		AbstractPiece[][] gamestateAfterPowerup = powerupAssigner(pwrUpStr.toLowerCase(), copiedGamestate, target1, target2, 0, currentTurn, isDebug);
+
+		return gamestateAfterPowerup;
+	}
+
 }
