@@ -74,20 +74,13 @@ public class MenuScreen {
 					    SaveGame loadState = new SaveGame();
 					   
 					    byte[] bytes = loadState.loadDataFromFile(file);
-//						System.out.println("converted to bytes successfully");
 					    MainLogic game = new MainLogic();
 					    
 						try {
-//							System.out.println("tried loading");
-//							loadState.load(bytes);
-//							MainLogic game = new MainLogic();
 							loadState.load(bytes, game, game.getGamestate());
 							game.setGamestate(game.getGamestate());
 							
-//							game.printGameState();
-							
 			                SGameScreen sp = new SGameScreen(game, stage);
-							System.out.println("new screen created");
 			                stage.setScene(sp.getScene());
 							System.out.println("Loaded successfully");
 
@@ -114,11 +107,6 @@ public class MenuScreen {
 						} catch (Exception exc) {
 							System.out.println("Couldn't load: " + exc.getMessage());
 						}
-//						SGameScreen sp = new SGameScreen(stage);
-//						MainLogic game = null;
-//						SGameScreen sp = new SGameScreen(game, stage);
-//						System.out.println("new screen created");
-//		                stage.setScene(sp.getScene());
 					}
             	});
             	
@@ -145,10 +133,6 @@ public class MenuScreen {
                         System.out.println("rulechange 3 selected " + isSelected3);
 
                         stage.setScene(sp.getScene());
-
-
-//						sp.loadLogic(newgame);
-		                stage.setScene(sp.getScene());
 					}
             	});
 

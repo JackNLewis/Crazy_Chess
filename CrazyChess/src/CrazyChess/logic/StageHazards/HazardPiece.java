@@ -25,4 +25,6 @@ public class HazardPiece extends AbstractPiece {
     public AbstractPiece getOriginalPiece() {
         return originalPiece;
     }
+    
 }
+
