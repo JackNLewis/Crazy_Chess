@@ -256,6 +256,9 @@ public class AI
 			else {
 				whoseTurnNext="Black";
 			}
+
+			long funcStartTime = System.currentTimeMillis();
+			long funcTimeout = 300;
 			if (whoseTurn.equals("White")) {
 				worst = Integer.MIN_VALUE;
 				//the higher the worse (for black)
@@ -281,6 +284,10 @@ public class AI
 					if(temp>worst) {
 						//worst becomes the worst outcome of all possg branches
 						worst=temp;
+					}
+
+					if ((System.currentTimeMillis() - funcStartTime) >= funcTimeout) {
+						break;
 					}
 				}
 				//return worst up the tree
@@ -313,6 +320,10 @@ public class AI
 					if (temp<best) {
 						//the lower the possibility the better the outcome, so max as black will choose lower
 						best=temp;
+					}
+
+					if ((System.currentTimeMillis() - funcStartTime) >= funcTimeout) {
+						break;
 					}
 				}
 				//System.out.println("\nNo pruning, whole tree searched\n");
