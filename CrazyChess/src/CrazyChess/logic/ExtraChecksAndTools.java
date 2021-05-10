@@ -650,4 +650,17 @@ public class ExtraChecksAndTools
 	public int getCounter() {
 		return counter;
 	}
+	/**
+	 * get the number of powerups piece on the board
+	 */
+	public int getPowerupNum(AbstractPiece[][] gamestate) {
+		ArrayList<AbstractPiece> Gs = gamestateToPieceArrayList(gamestate);
+		int num = 0;
+		for(AbstractPiece s : Gs) {
+			if (s instanceof Powerup) {
+				num = num + 1;
+			}
+		}
+		return num;
+	}
 }

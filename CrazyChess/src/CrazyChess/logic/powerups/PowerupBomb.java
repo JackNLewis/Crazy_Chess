@@ -8,6 +8,7 @@ import CrazyChess.logic.Position;
 import CrazyChess.logic.Utilities;
 import CrazyChess.pieces.AbstractPiece;
 import CrazyChess.pieces.King;
+import CrazyChess.pieces.Pawn;
 
 public class PowerupBomb {
 	Utilities utils = new Utilities();
@@ -46,13 +47,13 @@ public class PowerupBomb {
 			}
 		}
 		
-		if((piece1 instanceof King)) {
-			if (isDebug) System.out.println("Cant add Bomb on the King. Returning NULL");
+		if(!(piece1 instanceof Pawn)) {
+			if (isDebug) System.out.println("Can't add Bomb on a piece which is not pawn. Returning NULL");
 			return null;
 		}
 		
 		if((piece1.getColor().equalsIgnoreCase("blank"))) {
-			if (isDebug) System.out.println("Cant add Bomb on the blank. Returning NULL");
+			if (isDebug) System.out.println("Can't add Bomb on the blank. Returning NULL");
 			return null;
 		}
 		
