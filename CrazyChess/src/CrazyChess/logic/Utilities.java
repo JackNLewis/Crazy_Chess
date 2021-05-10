@@ -373,7 +373,7 @@ public class Utilities
 	 * Returns pieces that are different between two gamestates.
 	 * @param gamestateA           previous gamestate
 	 * @param gamestateB           next gamestate
-	 * return                      ArrayList of pieces with different position
+	 * @return                      ArrayList of pieces with different position
 	 */
 	public ArrayList<AbstractPiece> getPiecesDiff(AbstractPiece[][] gamestateA, AbstractPiece[][] gamestateB) {
 		ArrayList<AbstractPiece> diffPieces = new ArrayList<AbstractPiece>();
