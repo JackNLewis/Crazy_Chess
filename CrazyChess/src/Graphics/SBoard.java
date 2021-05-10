@@ -319,6 +319,11 @@ public class SBoard {
             System.out.println(oppColor + " is in check mate");
             askForDraw.hide();
         }
+        if(game.getDraw()){
+            SGameScreen.setInfoMessage("The game ended in a draw");
+            System.out.println("Is a draw");
+            askForDraw.hide();
+        }
     }
     private void setDefaultColor(Tile tile){
         if ((tile.getPos().getXpos() % 2 == 1 && tile.getPos().getYpos() % 2 == 1)
@@ -583,6 +588,7 @@ public class SBoard {
         ArrayList<String> powerUpList = game.getPowerUps(game.getTurn());
         powerUps.setPowerUps(powerUpList,game.getTurn());
         game.changeTurn();
+        updateRuleChangeInfo();
 
         if(game.getCheckStatus(game.getTurn())){
             System.out.println("Ai has checked you ");
@@ -592,6 +598,11 @@ public class SBoard {
         if(game.getMateStatus(game.getTurn())){
             System.out.println("AI has check mated you");
             SGameScreen.setInfoMessage("AI Wins");
+        }
+
+        if(game.getDraw()){
+            System.out.println("Is a draw");
+            SGameScreen.setInfoMessage("The game ended in a draw");
         }
         SGameScreen.updateMoveLabel(game.getTurn());
     }

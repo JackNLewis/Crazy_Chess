@@ -130,6 +130,7 @@ public class SGameScreen {
         //Main menu bar
         MenuBar menuBar = new MenuBar();
         menuBar.getMenus().addAll(optionsMenu,musicMenu);
+	menuBar.setStyle("-fx-background-color:gray");
         
 		BorderPane menu = new BorderPane();
 		menu.setTop(menuBar);

@@ -395,13 +395,13 @@ public class ExtraChecksAndTools
 	
 	/**
 	 * This function returns all possible game states after one turn
-	 * in the game state inputed
+	 * in the game state inputed with powerups
 	 * 
 	 * @param whoseTurn   string of a color of the player whose turn is currently happening
 	 * @param isDebug     is debug mode active
 	 * @param gamestate   starting game state
 	 * @param moveNo      current move number
-	 * @return            ArrayList of possible game states after the turn is completed
+	 * @return            ArrayList of possible game states after the turn is completed with powerup
 	 */
 	
 	public HashMap<AbstractPiece[][], Integer> possibleGamestatesAfterNextMove (String whoseTurn, boolean isDebug, AbstractPiece[][] gamestate, int moveNo, ArrayList<String> powerUps){
@@ -430,8 +430,14 @@ public class ExtraChecksAndTools
 			}
 
 			// Powerup game states
+			ArrayList<String> checkedPowerup = new ArrayList<String>();
 			for (int i = 0; i < powerUps.size(); i++) {
 				String pwrUpStr = powerUps.get(i);
+				if (checkedPowerup.contains(pwrUpStr)) {
+					continue;
+				} else {
+					checkedPowerup.add(pwrUpStr);
+				}
 				AbstractPiece[][] copiedGamestate = utils.safeCopyGamestate(gamestate);
 				ArrayList<Position> validPowerupMoves = pwrUp.validPowerupMoves(pwrUpStr, copiedGamestate, p.getPosition(), isDebug);
 				if (!validPowerupMoves.isEmpty()) {
