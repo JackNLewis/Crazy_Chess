@@ -23,6 +23,11 @@ public class ConstrainedMoves {
     }
 
     @Test
+    public void KingMoves_Castle() {
+
+    }
+
+    @Test
     public void KingCantCastle_IfOwnKingChecked() {
 
     }

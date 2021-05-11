@@ -115,9 +115,6 @@ public class BasicMoves {
 
     @Test
     public void KingMoves_OneStepAnyDirection() {
-        utils.placePiece(new BlankPiece("Blank",  0,0,"Normal"), true, gamestate);
-        utils.placePiece(new BlankPiece("Blank",  0,7,"Normal"), true, gamestate);
-
         King whiteKing = new King("White",  1,2,"Normal");
         utils.placePiece(whiteKing, true, gamestate);
 
