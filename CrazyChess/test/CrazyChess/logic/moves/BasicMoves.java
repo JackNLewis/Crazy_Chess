@@ -1,4 +1,4 @@
-package CrazyChess.logic.validmoves;
+package CrazyChess.logic.moves;
 
 import CrazyChess.logic.ExtraChecksAndTools;
 import CrazyChess.logic.Utilities;
@@ -90,7 +90,7 @@ public class BasicMoves {
     }
 
     @Test
-    public void RookMoves_ParallelAndHorizontal() {
+    public void RookMoves_VerticalAndHorizontal() {
         Rook whiteRook = new Rook("White", 5, 2,"Normal");
         utils.placePiece(whiteRook, true, gamestate);
 

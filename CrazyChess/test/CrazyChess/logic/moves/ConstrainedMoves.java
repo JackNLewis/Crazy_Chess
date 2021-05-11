@@ -1,4 +1,4 @@
-package CrazyChess.logic.validmoves;
+package CrazyChess.logic.moves;
 
 import CrazyChess.logic.MainLogic;
 import org.junit.Before;
@@ -7,7 +7,7 @@ import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
 
 @RunWith(JUnit4.class)
-public class Endgame {
+public class ConstrainedMoves {
 
     private MainLogic mainLogic;
 
@@ -18,22 +18,17 @@ public class Endgame {
     }
 
     @Test
-    public void WhiteKingCanBeCheckmated() {
+    public void PieceCantMoveOrCapture_IfOwnKingChecked() {
 
     }
 
     @Test
-    public void BlackKingCanBeCheckmated() {
+    public void KingCantCastle_IfOwnKingChecked() {
 
     }
 
     @Test
-    public void Draw_IfNoValidMoves() {
-
-    }
-
-    @Test
-    public void Draw_IfOnlyKingsLeftOnTheBoard() {
+    public void KingCantCastle_IfPathIsChecked() {
 
     }
 
