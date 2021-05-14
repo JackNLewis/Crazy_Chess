@@ -26,17 +26,7 @@ public class ConstrainedMovesTest {
 
     @Test
     public void PieceCantMoveOrCapture_IfOwnKingChecked() {
-        AbstractPiece[][] testGamestate = mainLogic.getGamestate();
-        for (int i = 1; i < 7; i++) {
-            if (i == 4) continue;
-            Position pos = new Position(i, 0);
-            AbstractPiece p = mainLogic.getPiece(pos);
-            utils.placePiece(new BlankPiece("Blank", i, 0,"Normal"), true, testGamestate);
-
-            pos = new Position(i, 7);
-            p = mainLogic.getPiece(pos);
-            utils.placePiece(new BlankPiece("Blank", i, 7,"Normal"), true, testGamestate);
-        }
+        AbstractPiece[][] testGamestate = setKingAndRook();
 
         AbstractPiece whiteRook = mainLogic.getPiece(new Position(0, 0));
         AbstractPiece blackRook = mainLogic.getPiece(new Position(0, 7));
@@ -50,38 +40,32 @@ public class ConstrainedMovesTest {
 
     @Test
     public void KingMoves_Castle() {
-        AbstractPiece[][] testGamestate = mainLogic.getGamestate();
-        for (int i = 1; i < 7; i++) {
-            if (i == 4) continue;
-            Position pos = new Position(i, 0);
-            AbstractPiece p = mainLogic.getPiece(pos);
-            utils.placePiece(new BlankPiece("Blank", i, 0,"Normal"), true, testGamestate);
-
-            pos = new Position(i, 7);
-            p = mainLogic.getPiece(pos);
-            utils.placePiece(new BlankPiece("Blank", i, 7,"Normal"), true, testGamestate);
-        }
+        setKingAndRook();
 
         AbstractPiece whiteKing = mainLogic.getPiece(new Position(4, 0));
         AbstractPiece blackKing = mainLogic.getPiece(new Position(4, 7));
 
-        assertTrue(mainLogic.moveTo(whiteKing, 3, 0));
-        assertTrue(mainLogic.moveTo(blackKing, 3, 7));
+        assertTrue(mainLogic.moveTo(whiteKing, 2, 0));
+        assertTrue(mainLogic.moveTo(blackKing, 2, 7));
+    }
+
+    @Test
+    public void KingCantCastle_IfOwnKingMoved() {
+        setKingAndRook();
+
+        King whiteKing = (King) mainLogic.getPiece(new Position(4, 0));
+        King blackKing = (King) mainLogic.getPiece(new Position(4, 7));
+
+        whiteKing.setWasMoved(true);
+        blackKing.setWasMoved(true);
+
+        assertFalse(mainLogic.moveTo(whiteKing, 2, 0));
+        assertFalse(mainLogic.moveTo(blackKing, 2, 7));
     }
 
     @Test
     public void KingCantCastle_IfOwnKingCheckedOrPathChecked() {
-        AbstractPiece[][] testGamestate = mainLogic.getGamestate();
-        for (int i = 1; i < 7; i++) {
-            if (i == 4) continue;
-            Position pos = new Position(i, 0);
-            AbstractPiece p = mainLogic.getPiece(pos);
-            utils.placePiece(new BlankPiece("Blank", i, 0,"Normal"), true, testGamestate);
-
-            pos = new Position(i, 7);
-            p = mainLogic.getPiece(pos);
-            utils.placePiece(new BlankPiece("Blank", i, 7,"Normal"), true, testGamestate);
-        }
+        AbstractPiece[][] testGamestate = setKingAndRook();
 
         AbstractPiece whiteKing = mainLogic.getPiece(new Position(4, 0));
         AbstractPiece blackKing = mainLogic.getPiece(new Position(4, 7));
@@ -89,8 +73,23 @@ public class ConstrainedMovesTest {
         utils.placePiece(new Queen("White", 3, 6,"Normal"), true, testGamestate);
         utils.placePiece(new Queen("Black", 3, 1,"Normal"), true, testGamestate);
 
-        assertFalse(mainLogic.moveTo(whiteKing, 3, 0));
-        assertFalse(mainLogic.moveTo(blackKing, 3, 7));
+        assertFalse(mainLogic.moveTo(whiteKing, 2, 0));
+        assertFalse(mainLogic.moveTo(blackKing, 2, 7));
+    }
+
+    public AbstractPiece[][] setKingAndRook() {
+        AbstractPiece[][] testGamestate = mainLogic.getGamestate();
+        for (int i = 1; i < 7; i++) {
+            if (i == 4) continue;
+            Position pos = new Position(i, 0);
+            AbstractPiece p = mainLogic.getPiece(pos);
+            utils.placePiece(new BlankPiece("Blank", i, 0,"Normal"), true, testGamestate);
+
+            pos = new Position(i, 7);
+            p = mainLogic.getPiece(pos);
+            utils.placePiece(new BlankPiece("Blank", i, 7,"Normal"), true, testGamestate);
+        }
+        return testGamestate;
     }
 
 }
