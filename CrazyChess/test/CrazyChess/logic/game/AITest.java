@@ -4,14 +4,12 @@ import CrazyChess.logic.AI;
 import CrazyChess.logic.ExtraChecksAndTools;
 import CrazyChess.logic.MainLogic;
 import CrazyChess.logic.Utilities;
-import CrazyChess.logic.savegamestate.SaveGame;
 import CrazyChess.pieces.*;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
 
-import java.io.File;
 import java.util.ArrayList;
 
 import static org.junit.Assert.assertTrue;
