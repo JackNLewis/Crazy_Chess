@@ -1,4 +1,4 @@
 package CrazyChess.logic.game;
 
-public class Powerup {
+public class PowerupTest {
 }

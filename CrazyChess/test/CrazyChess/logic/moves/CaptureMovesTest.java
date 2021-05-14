@@ -11,7 +11,7 @@ import org.junit.runners.JUnit4;
 import static org.junit.Assert.assertTrue;
 
 @RunWith(JUnit4.class)
-public class CaptureMoves {
+public class CaptureMovesTest {
 
     private MainLogic mainLogic;
     private Utilities utils = new Utilities();

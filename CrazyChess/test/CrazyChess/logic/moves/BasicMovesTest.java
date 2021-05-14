@@ -12,7 +12,7 @@ import org.junit.runners.JUnit4;
 import static org.junit.Assert.assertEquals;
 
 @RunWith(JUnit4.class)
-public class BasicMoves {
+public class BasicMovesTest {
 
     private AbstractPiece[][] gamestate;
     private Utilities utils = new Utilities();

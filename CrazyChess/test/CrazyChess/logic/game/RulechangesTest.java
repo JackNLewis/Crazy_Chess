@@ -1,4 +1,4 @@
 package CrazyChess.logic.game;
 
-public class Rulechanges {
+public class RulechangesTest {
 }
