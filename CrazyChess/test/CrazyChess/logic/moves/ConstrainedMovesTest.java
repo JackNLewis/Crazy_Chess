@@ -39,7 +39,7 @@ public class ConstrainedMovesTest {
     }
 
     @Test
-    public void KingMoves_Castle() {
+    public void KingMoves_CastleLeft() {
         setKingAndRook();
 
         AbstractPiece whiteKing = mainLogic.getPiece(new Position(4, 0));
@@ -47,6 +47,17 @@ public class ConstrainedMovesTest {
 
         assertTrue(mainLogic.moveTo(whiteKing, 2, 0));
         assertTrue(mainLogic.moveTo(blackKing, 2, 7));
+    }
+
+    @Test
+    public void KingMoves_CastleRight() {
+        setKingAndRook();
+
+        AbstractPiece whiteKing = mainLogic.getPiece(new Position(4, 0));
+        AbstractPiece blackKing = mainLogic.getPiece(new Position(4, 7));
+
+        assertTrue(mainLogic.moveTo(whiteKing, 6, 0));
+        assertTrue(mainLogic.moveTo(blackKing, 6, 7));
     }
 
     @Test
