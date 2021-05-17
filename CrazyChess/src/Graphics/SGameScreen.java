@@ -95,7 +95,12 @@ public class SGameScreen {
         optionsMenu.getItems().add(reset);
         
         optionsMenu.getItems().add(new SeparatorMenuItem());
-        optionsMenu.getItems().add(new MenuItem("Exit"));
+//        optionsMenu.getItems().add(new MenuItem("Exit"));
+        MenuItem exit = new MenuItem("Exit");
+        exit.setOnAction(e -> {
+        	System.exit(0);
+        });
+        optionsMenu.getItems().add(exit);
 	    
 	//all music menu
         
