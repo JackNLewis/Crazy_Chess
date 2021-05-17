@@ -87,10 +87,12 @@ public class SGameScreen {
         
         MenuItem reset = new MenuItem("Reset");
         reset.setOnAction(e -> {
-        	//game.resetBoard();
+        	MainLogic refresh = new MainLogic();
+			refresh.resetBoard();
+        	SGameScreen restart = new SGameScreen(refresh, stage);
+        	stage.setScene(restart.getScene());
         });
         optionsMenu.getItems().add(reset);
-//        optionsMenu.getItems().add(new MenuItem("Reset"));
         
         optionsMenu.getItems().add(new SeparatorMenuItem());
         optionsMenu.getItems().add(new MenuItem("Exit"));
@@ -130,7 +132,7 @@ public class SGameScreen {
         //Main menu bar
         MenuBar menuBar = new MenuBar();
         menuBar.getMenus().addAll(optionsMenu,musicMenu);
-	menuBar.setStyle("-fx-background-color:gray");
+	    menuBar.setStyle("-fx-background-color:gray");
         
 		BorderPane menu = new BorderPane();
 		menu.setTop(menuBar);
