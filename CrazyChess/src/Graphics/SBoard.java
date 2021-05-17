@@ -328,9 +328,9 @@ public class SBoard {
     private void setDefaultColor(Tile tile){
         if ((tile.getPos().getXpos() % 2 == 1 && tile.getPos().getYpos() % 2 == 1)
                 || ((tile.getPos().getXpos() % 2 == 0) && (tile.getPos().getYpos() % 2 == 0))) {
-            tile.setbgColor(new Image("/resources/whiteTile.png"));
-        } else {
             tile.setbgColor(new Image("/resources/blackTile.png"));
+        } else {
+            tile.setbgColor(new Image("/resources/whiteTile.png"));
         }
     }
 
