@@ -1,0 +1,38 @@
+.root {
+    -fx-background-color: #073B4C;
+    -fx-alignment: center;
+    -fx-spacing: 20;
+}
+
+.button
+ {
+    -fx-background-color: #EF476F;
+    -fx-text-fill: #073B4C;
+    -fx-font: 15px Rowdies;
+ }
+
+ .button:hover {
+    -fx-background-color: #FFD166;
+ }
+ 
+ .label {
+ 	-fx-text-fill: #EF476F;
+ }
+ 
+  .check-box {
+    -fx-text-fill: #EF476F;
+    -fx-font: 15px Rowdies;
+ }
+ 
+ .check-box:selected > .box {
+    -fx-background-color: #EF476F;
+}
+
+.check-box:selected > .box > .mark,
+.check-box:indeterminate  > .box > .mark {
+    -fx-background-color: #073B4C;
+}
+
+.check-box > .box {
+    -fx-background-color: #FFD166;
+}
