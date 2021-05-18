@@ -135,8 +135,16 @@ public class MenuScreen {
                         stage.setScene(sp.getScene());
 					}
             	});
+                Button back = new Button("Back");
+                back.setOnMouseClicked(new EventHandler<MouseEvent>() {
+                    @Override
+                    public void handle(MouseEvent event) {
+                        buttons.getChildren().clear();
+                        addButtons(root);
+                    }
+                });
 
-            	buttons.getChildren().addAll(load,newGame);
+            	buttons.getChildren().addAll(load,newGame,back);
 
             };
         });

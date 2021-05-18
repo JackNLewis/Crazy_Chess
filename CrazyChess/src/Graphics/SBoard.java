@@ -12,6 +12,7 @@ import CrazyChess.pieces.Pawn;
 import CrazyChess.pieces.Powerup;
 import CrazyChess.pieces.Queen;
 import CrazyChess.pieces.Rook;
+import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.scene.control.Button;
@@ -23,12 +24,10 @@ import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.RowConstraints;
 import javafx.scene.layout.StackPane;
-import javafx.scene.paint.Color;
-import Graphics.music;
 import java.util.ArrayList;
 
 /**
- * This class is for the actual game screen. It conects different components of the game screen such as board, power up menu.
+ * This class is for board and how the player interacts with it
  *
  */
 public class SBoard {
@@ -63,6 +62,7 @@ public class SBoard {
     
     private boolean aiEnabled = false;
     private AI ai = new AI();
+    private boolean aiTurn = false;
     
 //    private HazardPiece hazardPiece;
 
@@ -80,6 +80,11 @@ public class SBoard {
         
     }
 
+    /**
+     * This function initialises the board
+     *
+     * @param player - the starting player
+     */
     public void initBoard(String player) {
         int squareSize = 99;
         boardSize = 50*8;
@@ -119,6 +124,12 @@ public class SBoard {
         addMoveListeners();
     }
 
+
+    /**
+     * Renders the gamestate onto the board
+     *
+     * @param gamesState
+     */
     public void renderGameState(AbstractPiece[][] gamesState){
         for(Tile tile : tiles){
             int x = tile.getPos().getXpos();
@@ -137,15 +148,20 @@ public class SBoard {
         }
     }
 
+    /**
+     * Sets up the event handlers on the board
+     */
     public void addMoveListeners(){
         for(Tile tile: tiles){
             tile.getSP().setOnMouseClicked(new EventHandler<MouseEvent>() {
                 @Override
                 public void handle(MouseEvent event) {
+                    if(aiTurn){
+                        System.out.println("AI is Thinking");
+                        return;
+                    }
+
                     String currentColor = game.getTurn();
-//                    System.out.println("current turn " + currentColor);
-//                    System.out.println("current gamestate ");
-                    //util.printGameState(game.getGamestate());
                     String selectedColor = game.getPiece(tile.getPos()).getColor();
 
                     boolean success = false;
@@ -325,6 +341,7 @@ public class SBoard {
             askForDraw.hide();
         }
     }
+
     private void setDefaultColor(Tile tile){
         if ((tile.getPos().getXpos() % 2 == 1 && tile.getPos().getYpos() % 2 == 1)
                 || ((tile.getPos().getXpos() % 2 == 0) && (tile.getPos().getYpos() % 2 == 0))) {
@@ -557,6 +574,7 @@ public class SBoard {
     public HBox getWBox() {
     	return Wpawnpormote;
     }
+
     public HBox getBBox() {
     	return Bpawnpormote;
     }
@@ -579,32 +597,59 @@ public class SBoard {
     }
 
     private void aiMove(){
-        AbstractPiece[][] gs = this.ai.AI(game);
-        game.setGamestate(gs);
+        Thread thread = new Thread(){
+            public void run(){
+                aiTurn = true;
+                long startTime = System.currentTimeMillis();
+                AbstractPiece[][] gs = ai.AI(game);
+                long endTime = System.currentTimeMillis();
+                //So the ai takes at least 4 seconds to make it feel more realistic
+                if((endTime-startTime)<4000){
+                    System.out.println("Going to sleep");
+                    try {
+                        sleep(endTime-startTime);
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
+                }
+
+                game.setGamestate(gs);
+
+                ArrayList<String> powerUpList = game.getPowerUps(game.getTurn());
+                game.changeTurn();
 
 
-        String oppColor = (game.getTurn().equalsIgnoreCase("white")) ? "black" : "white";
+                Platform.runLater(new Runnable() {
+                    @Override
+                    public void run() {
+                        powerUps.setPowerUps(powerUpList,game.getTurn());
 
-        ArrayList<String> powerUpList = game.getPowerUps(game.getTurn());
-        powerUps.setPowerUps(powerUpList,game.getTurn());
-        game.changeTurn();
-        updateRuleChangeInfo();
-        renderGameState(game.getGamestate());
-        if(game.getCheckStatus(game.getTurn())){
-            System.out.println("Ai has checked you ");
-            SGameScreen.setInfoMessage("AI has Checked You");
-        }
+                        updateRuleChangeInfo();
+                        renderGameState(game.getGamestate());
 
-        if(game.getMateStatus(game.getTurn())){
-            System.out.println("AI has check mated you");
-            SGameScreen.setInfoMessage("AI Wins");
-        }
+                        if(game.getCheckStatus(game.getTurn())){
+                            System.out.println("Ai has checked you ");
+                            SGameScreen.setInfoMessage("AI has Checked You");
+                        }
 
-        if(game.getDraw()){
-            System.out.println("Is a draw");
-            SGameScreen.setInfoMessage("The game ended in a draw");
-        }
-        SGameScreen.updateMoveLabel(game.getTurn());
+                        if(game.getMateStatus(game.getTurn())){
+                            System.out.println("AI has check mated you");
+                            SGameScreen.setInfoMessage("AI Wins");
+                        }
+
+                        if(game.getDraw()){
+                            System.out.println("Is a draw");
+                            SGameScreen.setInfoMessage("The game ended in a draw");
+                        }
+                        SGameScreen.updateMoveLabel(game.getTurn());
+
+                        playNormalSound();
+                    }
+                });
+                aiTurn = false;
+            }
+        };
+        thread.start();
     }
     
     public void updateRuleChangeInfo(){

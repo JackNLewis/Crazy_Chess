@@ -23,6 +23,9 @@ import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 import javafx.stage.WindowEvent;
 
+/**
+ * It conects different components of the game screen such as board, power up menu.
+ */
 public class SGameScreen {
 
     private Scene scene;
@@ -55,7 +58,7 @@ public class SGameScreen {
     	else {
     		game = new MainLogic();
     	}
-//        game = new MainLogic();
+
 
         this.stage = stage;
         root = new VBox();
@@ -64,7 +67,7 @@ public class SGameScreen {
         scene.getStylesheets().add("/Graphics/css/board.css");
 
         
-      //Options menu
+        //Options menu
         Menu optionsMenu = new Menu("Options");
         
         //Menu items
@@ -72,7 +75,7 @@ public class SGameScreen {
         save.setOnAction(e -> {
         	File file = new File("saved.xml");
         	SaveGame saveState = new SaveGame();
-//        	System.out.println("gamestate before " + game);
+
         	byte[] bytes = saveState.save(game, game.getGamestate());
         	
         	try {
@@ -92,18 +95,17 @@ public class SGameScreen {
         	SGameScreen restart = new SGameScreen(refresh, stage);
         	stage.setScene(restart.getScene());
         });
+
         optionsMenu.getItems().add(reset);
         
         optionsMenu.getItems().add(new SeparatorMenuItem());
-//        optionsMenu.getItems().add(new MenuItem("Exit"));
         MenuItem exit = new MenuItem("Exit");
         exit.setOnAction(e -> {
         	System.exit(0);
         });
         optionsMenu.getItems().add(exit);
 	    
-	//all music menu
-        
+		//all music menu
         Menu musicMenu = new Menu("Music");
         ToggleGroup tG = new ToggleGroup();
         turnOnItem = new RadioMenuItem("TurnOn");
