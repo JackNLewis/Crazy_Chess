@@ -60,7 +60,7 @@ public class SGameScreen {
         this.stage = stage;
         root = new VBox();
 
-        scene = new Scene(root, 1101,942);
+        scene = new Scene(root, 800,680);
         scene.getStylesheets().add("/Graphics/css/board.css");
 
         

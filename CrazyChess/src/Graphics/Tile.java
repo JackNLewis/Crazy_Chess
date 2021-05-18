@@ -38,12 +38,12 @@ public class Tile {
      */
     public void addImg(ImageView img){
         imgs.add(img);
-        if(img.getImage().getWidth() == 96) {
-        	img.setFitWidth(tileSize-3);
-            img.setFitHeight(tileSize-3);
+        if(img.getImage().getWidth() == 64) {
+        	img.setFitWidth(tileSize-2);
+            img.setFitHeight(tileSize-2);
         }else {
-        	img.setFitWidth(tileSize);
-            img.setFitHeight(tileSize);
+        	img.setFitWidth(tileSize-1);
+            img.setFitHeight(tileSize-1);
         }
         sp.getChildren().add(img);
     }
