@@ -86,7 +86,7 @@ public class SBoard {
      * @param player - the starting player
      */
     public void initBoard(String player) {
-        int squareSize = 99;
+        int squareSize = 66;
         boardSize = 50*8;
         board = new GridPane();
         tiles = new ArrayList<Tile>();

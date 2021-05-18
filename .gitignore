@@ -3,7 +3,10 @@
 ### Intellij ###
 .idea/
 CrazyChess.iml
+CrazyChess/out/
 
+### Out ###
+CrazyChess/bin/
 
 # OS created files
 
@@ -14,3 +17,4 @@ CrazyChess.iml
 # Compiled code
 
 CrazyChess/out/
+CrazyChess/coverage/
