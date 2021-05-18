@@ -233,7 +233,7 @@ public class SBoard {
                             if(normalMove){
                                 System.out.println("Successful move");
                                 updateGui();
-				playNormalSound();
+				                playNormalSound();
                                 success = true;
                             }
                             //Normal move was unsuccessful
@@ -581,7 +581,7 @@ public class SBoard {
     private void aiMove(){
         AbstractPiece[][] gs = this.ai.AI(game);
         game.setGamestate(gs);
-        renderGameState(game.getGamestate());
+
 
         String oppColor = (game.getTurn().equalsIgnoreCase("white")) ? "black" : "white";
 
@@ -589,7 +589,7 @@ public class SBoard {
         powerUps.setPowerUps(powerUpList,game.getTurn());
         game.changeTurn();
         updateRuleChangeInfo();
-
+        renderGameState(game.getGamestate());
         if(game.getCheckStatus(game.getTurn())){
             System.out.println("Ai has checked you ");
             SGameScreen.setInfoMessage("AI has Checked You");

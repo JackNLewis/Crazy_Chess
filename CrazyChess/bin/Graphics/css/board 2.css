@@ -1,0 +1,60 @@
+@font-face {
+    src: url('PixelFont.ttf');
+}
+@font-face {
+    src: url('/resources/PrStart.ttf');
+}
+.root {
+    -fx-background-image: url("/resources/gameBackground.png");
+    -fx-padding:0 0 0 0;
+    -fx-alignment: center;
+}
+
+.banner {
+    -fx-background-image: url("/resources/banner.png");
+    -fx-padding: 5 0 10 0;
+}
+
+.banner-text {
+    -fx-text-fill: #edf1f5;
+    -fx-font-family: 'Press Start';
+    -fx-font-size: 45px ;
+}
+
+.info-message {
+    -fx-text-fill: #EF476F;
+    -fx-font-family: 'Super Mario Bros. 2';
+    -fx-font-size: 20px;
+    -fx-padding: 5 0 5 0;
+}
+
+.menu-text {
+    -fx-text-fill: #EF476F;
+    -fx-font-family: 'Super Mario Bros. 2';
+    -fx-font-size: 25px;
+}
+
+.menu-list{
+    -fx-padding: 10 0 20 0;
+    -fx-background-color: #073B4C;
+    -fx-background-radius: 20;
+    -fx-opacity: 0.85;
+}
+
+.menu-list .list-cell {
+    -fx-cell-size: 30;
+    -fx-padding: 0 5 0 5;
+    -fx-alignment: center;
+    -fx-text-fill: #EF476F;
+    -fx-font-family: 'Super Mario Bros. 2';
+    -fx-font-size: 20px;
+    -fx-background-color: #073B4C;
+    -fx-background-radius: 20;
+}
+.menu-list .list-cell:filled:hover {
+    -fx-text-fill: #FFD166;
+}
+
+.menu-list .list-cell:selected, .menu-list .list-cell:selected:hover {
+    -fx-text-fill: #06D6A0;
+}
