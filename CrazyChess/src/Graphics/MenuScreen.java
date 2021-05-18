@@ -48,7 +48,7 @@ public class MenuScreen {
         //Add Banner Image
         ImageView img = new ImageView();
         img.setImage(new Image("/resources/menu_text.png"));
-        img.setFitWidth(400);
+        img.setFitWidth(600);
         img.setPreserveRatio(true);
         buttons.getChildren().add(img);
         addButtons(buttons);
