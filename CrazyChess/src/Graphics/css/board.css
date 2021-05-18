@@ -6,7 +6,7 @@
 }
 .root {
     -fx-background-image: url("/resources/gameBackground.png");
-    -fx-padding:0 0 0 0;
+    -fx-padding:-10 0 0 0;
     -fx-alignment: center;
 }
 
@@ -57,3 +57,26 @@
 .menu-list .list-cell:selected, .menu-list .list-cell:selected:hover {
     -fx-text-fill: #06D6A0;
 }
+
+#menuBar {
+    -fx-background-color: rgba(7,59,76,0.85);
+    -fx-text-fill: white;
+}
+
+.menu .label{
+    -fx-text-fill: white;
+}
+
+.menu-item .label{
+    -fx-text-fill: white;
+}
+
+.menu-item:hovered {
+    -fx-background-color: red;
+}
+
+.context-menu {
+    -fx-background-color: rgba(7,59,76,0.85);
+}
+
+

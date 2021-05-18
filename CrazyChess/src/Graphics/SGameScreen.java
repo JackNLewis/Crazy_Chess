@@ -138,13 +138,13 @@ public class SGameScreen {
         //Main menu bar
         MenuBar menuBar = new MenuBar();
         menuBar.getMenus().addAll(optionsMenu,musicMenu);
-	    menuBar.setStyle("-fx-background-color:gray");
-        
-		BorderPane menu = new BorderPane();
-		menu.setTop(menuBar);
+	    //menuBar.setStyle("-fx-background-color:gray");
+        menuBar.setId("menuBar");
+		//BorderPane menu = new BorderPane();
+		//menu.setTop(menuBar);
 
 
-        ((VBox) scene.getRoot()).getChildren().addAll(menuBar);
+        ((VBox) scene.getRoot()).getChildren().add(0,menuBar);
 
         //Add top banner
         addBanner();
@@ -321,9 +321,7 @@ public class SGameScreen {
 		queenPromote.setImage(new Image("/resources/pieces/" + color + "queen.png"));
 		queenPromote.setOnMouseClicked(new EventHandler<MouseEvent>() {
 			@Override
-			public void handle(MouseEvent event) {
-				board.promte("q");
-			}
+			public void handle(MouseEvent event) { board.promte("q"); }
 		});
 
 		ImageView rookPromote = new ImageView();
