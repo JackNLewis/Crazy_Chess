@@ -14,7 +14,7 @@ import java.util.ArrayList;
 public class Castle
 {
 	Utilities utils = new Utilities();
-	ExtraChecksAndTools ect = new ExtraChecksAndTools();
+	ExtraChecksAndTools ect = new ExtraChecksAndTools(1);
 	
 	public boolean castleCheck(King p, int xRel, int yRel, boolean isDebug, AbstractPiece[][] gamestate, int moveNo){
 		if(p.getWasMoved() == false) {
