@@ -343,7 +343,7 @@ public class SGameScreen {
 			}
 		});
 		ImageView bishopPromote = new ImageView();
-		bishopPromote.setImage(new Image("/resources/pieces/" + color + "queen.png"));
+		bishopPromote.setImage(new Image("/resources/pieces/" + color + "bishop.png"));
 		bishopPromote.setOnMouseClicked(new EventHandler<MouseEvent>() {
 			@Override
 			public void handle(MouseEvent event) {
