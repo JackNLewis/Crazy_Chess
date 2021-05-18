@@ -1,28 +1,25 @@
 package Graphics;
 
-
-import javafx.scene.image.Image;
-import javafx.scene.image.ImageView;
 import java.io.File;
 import CrazyChess.logic.MainLogic;
 import CrazyChess.logic.savegamestate.*;
 import javafx.event.EventHandler;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
-import javafx.scene.control.Label;
-import javafx.scene.control.Menu;
-import javafx.scene.control.MenuBar;
-import javafx.scene.control.MenuItem;
-import javafx.scene.control.SeparatorMenuItem;
-import javafx.scene.control.RadioMenuItem;
-import javafx.scene.control.CheckMenuItem;
-import javafx.scene.control.ToggleGroup;
+import javafx.scene.control.*;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
+import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 import javafx.stage.WindowEvent;
 
+
+/**
+ * It conects different components of the game screen such as board, power up menu.
+ */
 public class SGameScreen {
 
     private Scene scene;
@@ -48,6 +45,10 @@ public class SGameScreen {
     private CheckMenuItem DummyPiece;
     private CheckMenuItem Teleport;
 
+
+    //buttons for promotes
+	HBox promotes;
+
     public SGameScreen(MainLogic newgame, Stage stage){
     	if(newgame != null) {
     		game = newgame;
@@ -55,7 +56,7 @@ public class SGameScreen {
     	else {
     		game = new MainLogic();
     	}
-//        game = new MainLogic();
+
 
         this.stage = stage;
         root = new VBox();
@@ -64,7 +65,7 @@ public class SGameScreen {
         scene.getStylesheets().add("/Graphics/css/board.css");
 
         
-      //Options menu
+        //Options menu
         Menu optionsMenu = new Menu("Options");
         
         //Menu items
@@ -72,7 +73,7 @@ public class SGameScreen {
         save.setOnAction(e -> {
         	File file = new File("saved.xml");
         	SaveGame saveState = new SaveGame();
-//        	System.out.println("gamestate before " + game);
+
         	byte[] bytes = saveState.save(game, game.getGamestate());
         	
         	try {
@@ -92,18 +93,18 @@ public class SGameScreen {
         	SGameScreen restart = new SGameScreen(refresh, stage);
         	stage.setScene(restart.getScene());
         });
+
         optionsMenu.getItems().add(reset);
         
         optionsMenu.getItems().add(new SeparatorMenuItem());
-//        optionsMenu.getItems().add(new MenuItem("Exit"));
         MenuItem exit = new MenuItem("Exit");
         exit.setOnAction(e -> {
-        	System.exit(0);
+        	MenuScreen menu = new MenuScreen(stage);
+        	stage.setScene(menu.getScene());
         });
         optionsMenu.getItems().add(exit);
 	    
-	//all music menu
-        
+		//all music menu
         Menu musicMenu = new Menu("Music");
         ToggleGroup tG = new ToggleGroup();
         turnOnItem = new RadioMenuItem("TurnOn");
@@ -161,6 +162,11 @@ public class SGameScreen {
 
         //make power up menu
         pwrUpMenu = new PowerUpMenu(this);
+        //addPromotes();
+        promotes = new HBox();
+		//pwrContainer.getChildren().add(promotes);
+
+
 
         askForDraw = new AskForDraw(this, game);
         
@@ -307,4 +313,51 @@ public class SGameScreen {
     
     public void selectPower(String powerUp){}
 
+    public void showPromotes(){
+    	promotes.getChildren().clear();
+		String color = (game.getTurn().equalsIgnoreCase("white")) ? "W_" : "B_";
+
+		ImageView queenPromote = new ImageView();
+		queenPromote.setImage(new Image("/resources/pieces/" + color + "queen.png"));
+		queenPromote.setOnMouseClicked(new EventHandler<MouseEvent>() {
+			@Override
+			public void handle(MouseEvent event) {
+				board.promte("q");
+			}
+		});
+
+		ImageView rookPromote = new ImageView();
+		rookPromote.setImage(new Image("/resources/pieces/" + color + "rook.png"));
+		rookPromote.setOnMouseClicked(new EventHandler<MouseEvent>() {
+			@Override
+			public void handle(MouseEvent event) {
+				board.promte("r");
+			}
+		});
+		ImageView knightPromote = new ImageView();
+		knightPromote.setImage(new Image("/resources/pieces/" + color + "knight.png"));
+		knightPromote.setOnMouseClicked(new EventHandler<MouseEvent>() {
+			@Override
+			public void handle(MouseEvent event) {
+				board.promte("k");
+			}
+		});
+		ImageView bishopPromote = new ImageView();
+		bishopPromote.setImage(new Image("/resources/pieces/" + color + "bishop.png"));
+		bishopPromote.setOnMouseClicked(new EventHandler<MouseEvent>() {
+			@Override
+			public void handle(MouseEvent event) {
+				board.promte("b");
+			}
+		});
+		promotes.getChildren().addAll(queenPromote,rookPromote,knightPromote,bishopPromote);
+
+		VBox pwrContainer = getPwrUpMenu().getPowerUpMenu();
+		pwrContainer.getChildren().add(promotes);
+	}
+
+	public void hidePromotes(){
+		VBox pwrContainer = getPwrUpMenu().getPowerUpMenu();
+		pwrContainer.getChildren().remove(promotes);
+	}
 }
