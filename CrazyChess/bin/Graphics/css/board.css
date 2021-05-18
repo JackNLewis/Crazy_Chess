@@ -6,13 +6,16 @@
 }
 .root {
     -fx-background-image: url("/resources/gameBackground.png");
-    -fx-padding:-10 0 0 0;
+    -fx-padding: -10 0 0 0;
     -fx-alignment: center;
 }
 
 .banner {
     -fx-background-image: url("/resources/banner.png");
     -fx-padding: 5 0 10 0;
+    -fx-border-style: solid none solid none;
+    -fx-border-width: 1 0 1 0;
+    -fx-border-color: white;
 }
 
 .banner-text {
@@ -63,7 +66,6 @@
     -fx-text-fill: white;
 }
 
-
 .menu .label{
     -fx-text-fill: white;
 }
@@ -72,12 +74,9 @@
     -fx-text-fill: white;
 }
 
-/*** The item itself (not hovered / focused) ***/
 .menu-item:hovered {
     -fx-background-color: red;
 }
-
-/*** The item's label (not hovered / focused) ***/
 
 .context-menu {
     -fx-background-color: rgba(7,59,76,0.85);
