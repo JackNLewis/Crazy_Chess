@@ -622,7 +622,7 @@ public class SBoard {
                 Platform.runLater(new Runnable() {
                     @Override
                     public void run() {
-                        powerUps.setPowerUps(powerUpList,game.getTurn());
+                        powerUps.setPowerUps(powerUpList, util.oppositeColor(game.getTurn()));
 
                         updateRuleChangeInfo();
                         renderGameState(game.getGamestate());
