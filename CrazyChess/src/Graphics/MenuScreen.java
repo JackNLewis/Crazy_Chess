@@ -43,7 +43,12 @@ public class MenuScreen {
         this.stage = stage;
 
         //Add Banner Image
-        addMainImg();
+
+        ImageView img = new ImageView();
+        img.setImage(new Image("/resources/menu_text.png"));
+        img.setFitWidth(600);
+        img.setPreserveRatio(true);
+        buttons.getChildren().add(img);
         addButtons(buttons);
         stage.setResizable(false);
     }

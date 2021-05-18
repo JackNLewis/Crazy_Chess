@@ -29,16 +29,19 @@ public class ExtraChecksAndTools
 	BasicValidityChecker bvc = new BasicValidityChecker();
 	Utilities utils = new Utilities();
 	PowerupMain pwrUp;
+	Castle cstl;
 
 	// Default constructor
 	public ExtraChecksAndTools() {
 		pwrUp = new PowerupMain();
+		cstl = new Castle();
 	}
 
 	// Constructor to prevent circular dependencies
 	public ExtraChecksAndTools(int createCode) {
 		if (createCode != 1) {
 			pwrUp = new PowerupMain();
+			cstl = new Castle();
 		}
 	}
 
@@ -363,7 +366,8 @@ public class ExtraChecksAndTools
 					continue;
 				}
 				if(!(p.getXpos()==targetTile.getXpos()&&p.getYpos()==targetTile.getYpos())) {
-					if(bvc.moveCheckAssigner(p, targetTile.getXpos()-p.getXpos(), targetTile.getYpos()-p.getYpos(), isDebug, gamestate, moveNo)) {
+					if(bvc.moveCheckAssigner(p, targetTile.getXpos()-p.getXpos(), targetTile.getYpos()-p.getYpos(), isDebug, gamestate, moveNo)||
+					  ((p instanceof King)&&(cstl.castleCheck((King)p, targetTile.getXpos()-p.getXpos(), targetTile.getYpos()-p.getYpos(), isDebug, gamestate, moveNo)))) {
 						if(!targetTile.getColor().equalsIgnoreCase(p.getColor())){ //checks if the candidate tile doesn't have a piece of the same color on it
 							AbstractPiece[][] newGamestate = utils.safeCopyGamestate(gamestate);
 							newGamestate=utils.relocatePiece(p, newGamestate, targetTile.getPosition());
