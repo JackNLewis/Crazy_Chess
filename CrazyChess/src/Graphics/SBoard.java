@@ -57,6 +57,9 @@ public class SBoard {
     private music sound; // Used to play sound
     
     //to add pawn promotion button
+    boolean promoteWait = false;
+    AbstractPiece promotePiece;
+
     private HBox Wpawnpormote;
     private HBox Bpawnpormote;
     
@@ -95,6 +98,7 @@ public class SBoard {
         board.add(Wpawnpormote, 0 , 10);
         Bpawnpormote = new HBox(4);
         board.add(Bpawnpormote, 5 , 10);
+
         for (int i=0; i<8; i++) {
             board.getColumnConstraints().add(new ColumnConstraints(squareSize));
             board.getRowConstraints().add(new RowConstraints(squareSize));
@@ -156,6 +160,10 @@ public class SBoard {
             tile.getSP().setOnMouseClicked(new EventHandler<MouseEvent>() {
                 @Override
                 public void handle(MouseEvent event) {
+                    if(promoteWait){
+                        System.out.println("need to promote first");
+                        return;
+                    }
                     if(aiTurn){
                         System.out.println("AI is Thinking");
                         return;
@@ -165,22 +173,6 @@ public class SBoard {
                     String selectedColor = game.getPiece(tile.getPos()).getColor();
 
                     boolean success = false;
-
-                    
-                    //check pawn promotion is or is not valid
-                    if (game.getPiece(tile.getPos()) instanceof Pawn && (game.getPiece(tile.getPos()).getColor().equalsIgnoreCase("White") || game.getPiece(tile.getPos()).getColor().equalsIgnoreCase("Black"))
-                    		 && (tile.getPos().getYpos() == 0||tile.getPos().getYpos() == 7)) {
-                    	if(game.getPiece(tile.getPos()).getColor().equalsIgnoreCase("White")) {
-                    		PawnPromote(getWBox(), tile.getPos());
-                    	}
-                    	if(game.getPiece(tile.getPos()).getColor().equalsIgnoreCase("Black")) {
-                    		PawnPromote(getBBox(), tile.getPos());
-                    	}
-                     	
-                     	return;
-                     	
-                   }
-                    
 
                     //If tile not selected
                     if(!selected){
@@ -235,6 +227,14 @@ public class SBoard {
                             	playPwSound();
                                 System.out.println("Successful powered up move");
                                 success = true;
+
+                                //check for pawn promote
+                                AbstractPiece promote = game.isPawnPromote(game.getGamestate());
+                                if(promote!=null){
+                                    SGameScreen.showPromotes();
+                                    promotePiece = promote;
+                                    promoteWait = true;
+                                }
                             }else{
                                 System.out.println("Unsucessful powered move");
                                 return;
@@ -251,6 +251,14 @@ public class SBoard {
                                 updateGui();
 				                playNormalSound();
                                 success = true;
+
+                                //check for pawn promote
+                                AbstractPiece promote = game.isPawnPromote(game.getGamestate());
+                                if(promote!=null){
+                                    SGameScreen.showPromotes();
+                                    promotePiece = promote;
+                                    promoteWait = true;
+                                }
                             }
                             //Normal move was unsuccessful
                             else{
@@ -618,6 +626,11 @@ public class SBoard {
                 ArrayList<String> powerUpList = game.getPowerUps(game.getTurn());
                 game.changeTurn();
 
+                //check for pawn promote
+                AbstractPiece promote = game.isPawnPromote(game.getGamestate());
+                if(promote!=null){
+                    game.promote(promote,"q");
+                }
 
                 Platform.runLater(new Runnable() {
                     @Override
@@ -678,5 +691,13 @@ public class SBoard {
         else{
         	SGameScreen.getRCinfo().setText("");
         }
+    }
+
+    public void promte(String newPiece){
+	    game.promote(promotePiece,newPiece);
+	    renderGameState(game.getGamestate());
+        SGameScreen.hidePromotes();
+        promoteWait = false;
+        promotePiece = null;
     }
 }

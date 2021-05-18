@@ -113,7 +113,6 @@ public class PowerupMain
 			   return "Bomb";
 		   case 5:
 			   return "MiniPromote";
-
 		}
 
 

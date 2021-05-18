@@ -29,6 +29,10 @@ Utilities utils = new Utilities();
 		AbstractPiece gamestateCopy[][]=utils.safeCopyGamestate(gamestate);
 		AbstractPiece piece1 = utils.getPiece(target1, isDebug, gamestateCopy);
 		AbstractPiece piece2 = utils.getPiece(target2, isDebug, gamestateCopy);
+		if((piece1.getPoweruptype().equalsIgnoreCase("dummy"))) {
+			if (isDebug) System.out.println("Can't promote piece which is a DummyPiece. Returning NULL");
+			return null;
+		}
 		if(!(piece1 instanceof Pawn)) {
 			if (isDebug) System.out.println("Can't promote piece which is not Pawn. Returning NULL");
 			return null;
