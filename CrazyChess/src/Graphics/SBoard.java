@@ -80,12 +80,14 @@ public class SBoard {
         powerUps = SGameScreen.getPwrUpMenu();
         powerMain = new PowerupMain();
         sound = new music();
-        SGameScreen.turnOffItem.setOnAction(new EventHandler<ActionEvent>() {
+        
+        //adds even handlers for music turn on or of, reset and exit, as music is initialized in SBoard for some reason and not in SGameScreen, couldn't add them elsewhere to also stop the music
+        SGameScreen.getTurnOffItem().setOnAction(new EventHandler<ActionEvent>() {
             @Override public void handle(ActionEvent e) {
         		sound.turnOff();
             }
         });
-        SGameScreen.turnOnItem.setOnAction(new EventHandler<ActionEvent>() {
+        SGameScreen.getTurnOnItem().setOnAction(new EventHandler<ActionEvent>() {
             @Override public void handle(ActionEvent e) {
         		sound.turnOn();
             }
@@ -96,6 +98,11 @@ public class SBoard {
         	SGameScreen restart = new SGameScreen(refresh, SGameScreen.getStage());
         	SGameScreen.getStage().setScene(restart.getScene());
         	sound.getMediaPlayer().stop();
+        });
+        SGameScreen.getExit().setOnAction(e -> {
+        	MenuScreen menu = new MenuScreen(SGameScreen.getStage());
+        	sound.getMediaPlayer().stop();
+        	SGameScreen.getStage().setScene(menu.getScene());
         });
         
     }
@@ -704,7 +711,4 @@ public class SBoard {
         promotePiece = null;
     }
     
-    public SGameScreen getGameScreen() {
-    	return SGameScreen;
-    }
 }
