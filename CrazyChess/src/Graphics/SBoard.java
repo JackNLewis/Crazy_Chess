@@ -168,18 +168,14 @@ public class SBoard {
 
                     
                     //check pawn promotion is or is not valid
-                    if (game.getPiece(tile.getPos()) instanceof Pawn && (game.getPiece(tile.getPos()).getColor().equalsIgnoreCase("White") || game.getPiece(tile.getPos()).getColor().equalsIgnoreCase("Black"))
-                    		 && (tile.getPos().getYpos() == 0||tile.getPos().getYpos() == 7)) {
-                    	if(game.getPiece(tile.getPos()).getColor().equalsIgnoreCase("White")) {
-                    		PawnPromote(getWBox(), tile.getPos());
-                    	}
-                    	if(game.getPiece(tile.getPos()).getColor().equalsIgnoreCase("Black")) {
-                    		PawnPromote(getBBox(), tile.getPos());
-                    	}
-                     	
-                     	return;
-                     	
-                   }
+                    if((game.getPiece(tile.getPos()) instanceof Pawn) && game.getPiece(tile.getPos()).getColor().equalsIgnoreCase("White")&&(tile.getPos().getYpos() == 7)&&!(game.getPiece(tile.getPos()).getPoweruptype().equalsIgnoreCase("dummy"))) {
+                		PawnPromote(getWBox(), tile.getPos());
+                		return;
+                	}
+                    if((game.getPiece(tile.getPos()) instanceof Pawn) && game.getPiece(tile.getPos()).getColor().equalsIgnoreCase("Black")&&(tile.getPos().getYpos() == 0)&&!(game.getPiece(tile.getPos()).getPoweruptype().equalsIgnoreCase("dummy"))) {
+                		PawnPromote(getBBox(), tile.getPos());
+                		return;
+                	}
                     
 
                     //If tile not selected
