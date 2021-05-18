@@ -101,7 +101,8 @@ public class SGameScreen {
         optionsMenu.getItems().add(new SeparatorMenuItem());
         MenuItem exit = new MenuItem("Exit");
         exit.setOnAction(e -> {
-        	System.exit(0);
+        	MenuScreen menu = new MenuScreen(stage);
+        	stage.setScene(menu.getScene());
         });
         optionsMenu.getItems().add(exit);
 	    

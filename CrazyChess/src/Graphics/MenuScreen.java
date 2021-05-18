@@ -1,7 +1,5 @@
 package Graphics;
 
-
-import javafx.application.Platform;
 import javafx.event.EventHandler;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
@@ -14,10 +12,9 @@ import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 import java.io.File;
-import java.util.concurrent.Semaphore;
 import CrazyChess.logic.MainLogic;
 import CrazyChess.logic.savegamestate.*;
-import CrazyChess.pieces.AbstractPiece;
+
 
 public class MenuScreen {
 
