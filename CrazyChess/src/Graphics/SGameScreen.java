@@ -35,8 +35,8 @@ public class SGameScreen {
     private PowerUpMenu pwrUpMenu;
 	
  // setting menu for music control
-    private RadioMenuItem turnOnItem;
-    private RadioMenuItem turnOffItem;
+    public RadioMenuItem turnOnItem;
+    public RadioMenuItem turnOffItem;
     private CheckMenuItem Bomb;
     private CheckMenuItem setBomb;
     private CheckMenuItem chessmove;

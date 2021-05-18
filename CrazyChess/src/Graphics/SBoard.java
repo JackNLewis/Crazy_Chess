@@ -80,6 +80,16 @@ public class SBoard {
         powerUps = SGameScreen.getPwrUpMenu();
         powerMain = new PowerupMain();
         sound = new music();
+        SGameScreen.turnOffItem.setOnAction(new EventHandler<ActionEvent>() {
+            @Override public void handle(ActionEvent e) {
+        		sound.turnOff();
+            }
+        });
+        SGameScreen.turnOnItem.setOnAction(new EventHandler<ActionEvent>() {
+            @Override public void handle(ActionEvent e) {
+        		sound.turnOn();
+            }
+        });
         
     }
 
@@ -413,12 +423,6 @@ public class SBoard {
 
     //to play chessmove and Bomb sound
     private void playNormalSound(){
-    	if(SGameScreen.isMusicOn()) {
-    		sound.turnOn();
-    	}
-    	else {
-    		sound.turnOff();
-    	}
         if(game.getBB() == 1 || (game.getTurnNo() == game.getBBlt() + 4 &&!(game.getBBlt() == 0))) {
         	if(SGameScreen.isMusicOn() && !SGameScreen.isbombOn()) {
     			sound.turnOffbomb();
@@ -444,14 +448,6 @@ public class SBoard {
     //to play powerups sound
     private void playPwSound(){
         // SUCCESFFUL POWERED MOVE
-        //play sound effects
-    	//check sound menu
-    	if(SGameScreen.isMusicOn()) {
-    		sound.turnOn();
-    	}
-    	else {
-    		sound.turnOff();
-    	}
     	//play sound effects
     	if(powerUps.getSelectedStr().equalsIgnoreCase("teleport")) {
     		if(SGameScreen.isMusicOn() && !SGameScreen.isTeleportOn()) {
