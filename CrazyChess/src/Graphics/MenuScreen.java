@@ -46,11 +46,7 @@ public class MenuScreen {
         this.stage = stage;
 
         //Add Banner Image
-        ImageView img = new ImageView();
-        img.setImage(new Image("/resources/menu_text.png"));
-        img.setFitWidth(400);
-        img.setPreserveRatio(true);
-        buttons.getChildren().add(img);
+        addMainImg();
         addButtons(buttons);
         stage.setResizable(false);
     }
@@ -140,6 +136,7 @@ public class MenuScreen {
                     @Override
                     public void handle(MouseEvent event) {
                         buttons.getChildren().clear();
+                        addMainImg();
                         addButtons(root);
                     }
                 });
@@ -236,7 +233,16 @@ public class MenuScreen {
 					}
 				});
 
-            	buttons.getChildren().addAll(easy, medium, hard);
+                Button back = new Button("Back");
+                back.setOnMouseClicked(new EventHandler<MouseEvent>() {
+                    @Override
+                    public void handle(MouseEvent event) {
+                        buttons.getChildren().clear();
+                        addMainImg();
+                        addButtons(root);
+                    }
+                });
+            	buttons.getChildren().addAll(easy, medium, hard,back);
             };
         });
         
@@ -254,7 +260,13 @@ public class MenuScreen {
         root.getChildren().addAll(newButton,VsAI,title,cb1,cb2,cb3);
     }
 
-
+    private void addMainImg(){
+        ImageView img = new ImageView();
+        img.setImage(new Image("/resources/menu_text.png"));
+        img.setFitWidth(400);
+        img.setPreserveRatio(true);
+        buttons.getChildren().add(img);
+    }
 
     public Scene getScene(){
         return this.scene;
