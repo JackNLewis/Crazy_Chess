@@ -22,11 +22,7 @@
 }
 
 .info-message {
-<<<<<<< HEAD
     -fx-text-fill: #1e453e;
-=======
-    -fx-text-fill: #2b3120;
->>>>>>> dd09c8a78881c3a3ceb1c675f8041b5418383f81
     -fx-font-family: 'Super Mario Bros. 2';
     -fx-font-size: 15px;
     -fx-padding: 5 0 5 0;
@@ -41,11 +37,7 @@
 
 .menu-list{
     -fx-padding: 10 0 20 0;
-<<<<<<< HEAD
     -fx-background-color: rgba(7,59,76,0.85);
-=======
-    -fx-background-color: #2b3120;
->>>>>>> dd09c8a78881c3a3ceb1c675f8041b5418383f81
     -fx-background-radius: 20;
 }
 
@@ -53,11 +45,7 @@
     -fx-cell-size: 30;
     -fx-padding: 0 5 0 5;
     -fx-alignment: center;
-<<<<<<< HEAD
     -fx-text-fill: #b6969d;
-=======
-    -fx-text-fill: #2b3120;
->>>>>>> dd09c8a78881c3a3ceb1c675f8041b5418383f81
     -fx-font-family: 'Super Mario Bros. 2';
     -fx-font-size: 20px;
     -fx-background-color:transparent;

@@ -520,6 +520,12 @@ public class MainLogic
 			AbstractPiece[][] newGamestate = utils.safeCopyGamestate(gamestate);
 			AbstractPiece copiedPiece = utils.safeCopyPiece(p);
 			copiedPiece.setPosition(newPiece.getXpos(), newPiece.getYpos());
+			if(p instanceof Pawn && ((Pawn)p).getEnPassant() == true){ 
+				if(p.getColor().equalsIgnoreCase("white"))
+					newGamestate=utils.placePiece(new BlankPiece("Blank",copiedPiece.getXpos(), (copiedPiece.getYpos()-1), "Normal"), isDebug, newGamestate);
+				else 
+					newGamestate=utils.placePiece(new BlankPiece("Blank",copiedPiece.getXpos(), (copiedPiece.getYpos()+1), "Normal"), isDebug, newGamestate);
+			}
 			if(copiedPiece instanceof King)
 				((King)copiedPiece).setWasMoved(true);
 			if(copiedPiece instanceof Rook) {
