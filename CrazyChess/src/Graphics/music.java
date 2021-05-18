@@ -67,7 +67,7 @@ public class music {
 		Media h = new Media(Paths.get("resources.music/gameMusic.wav").toUri().toString());
         mediaPlayer = new MediaPlayer(h);
 		mediaPlayer.setCycleCount(MediaPlayer.INDEFINITE);
-		mediaPlayer.setVolume(0.4);
+		mediaPlayer.setVolume(0.1);
 		mediaPlayer.play();
 		
 		ulrchessmove = this.getClass().getClassLoader().getResource("resources.music/chessmove.wav");
@@ -108,7 +108,7 @@ public class music {
 	
 	//turn on music
 	public void turnOn() {
-		this.mediaPlayer.setVolume(0.4);
+		this.mediaPlayer.setVolume(0.1);
 	}
 	
 	public void turnOffChessmove() {
@@ -171,6 +171,11 @@ public class music {
 	public void DummyPiece() {
 			DummyPiece.play(DummyPiecesound);
 	}
+	
+	public MediaPlayer getMediaPlayer() {
+		return mediaPlayer;
+	}
+	
 	///////////////////////////////////////////
 	
 }

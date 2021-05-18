@@ -33,7 +33,7 @@ public class SGameScreen {
     private Label ruleChangeInfo;
     private AskForDraw askForDraw;
     private PowerUpMenu pwrUpMenu;
-	
+    private MenuItem reset = new MenuItem("Reset");
  // setting menu for music control
     public RadioMenuItem turnOnItem;
     public RadioMenuItem turnOffItem;
@@ -85,14 +85,6 @@ public class SGameScreen {
         	}
     	});
         optionsMenu.getItems().add(save);
-        
-        MenuItem reset = new MenuItem("Reset");
-        reset.setOnAction(e -> {
-        	MainLogic refresh = new MainLogic();
-			refresh.resetBoard();
-        	SGameScreen restart = new SGameScreen(refresh, stage);
-        	stage.setScene(restart.getScene());
-        });
 
         optionsMenu.getItems().add(reset);
         
@@ -357,5 +349,13 @@ public class SGameScreen {
 	public void hidePromotes(){
 		VBox pwrContainer = getPwrUpMenu().getPowerUpMenu();
 		pwrContainer.getChildren().remove(promotes);
+	}
+	
+	public MenuItem getReset() {
+		return reset;
+	}
+	
+	public Stage getStage() {
+		return stage;
 	}
 }

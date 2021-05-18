@@ -90,6 +90,13 @@ public class SBoard {
         		sound.turnOn();
             }
         });
+        SGameScreen.getReset().setOnAction(e -> {
+        	MainLogic refresh = new MainLogic();
+			refresh.resetBoard();
+        	SGameScreen restart = new SGameScreen(refresh, SGameScreen.getStage());
+        	SGameScreen.getStage().setScene(restart.getScene());
+        	sound.getMediaPlayer().stop();
+        });
         
     }
 
@@ -695,5 +702,9 @@ public class SBoard {
         SGameScreen.hidePromotes();
         promoteWait = false;
         promotePiece = null;
+    }
+    
+    public SGameScreen getGameScreen() {
+    	return SGameScreen;
     }
 }
