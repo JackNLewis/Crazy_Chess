@@ -41,8 +41,6 @@ public class StageHazardTest {
         }
 
         assertTrue(hazardPieceExists);
-        System.out.println(pieceToCheck);
-        System.out.println("HZ at " + pieceToCheck.getPosition());
         assertTrue(("HZ at " + pieceToCheck.getPosition()).equalsIgnoreCase(pieceToCheck.toString()));
         assertTrue(Hazard.getValue(pieceToCheck.getHazard()) != -1);
     }
