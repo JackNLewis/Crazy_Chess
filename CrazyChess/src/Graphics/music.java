@@ -2,7 +2,7 @@ package Graphics;
 
 import java.net.URL;
 
-
+import javafx.scene.control.RadioMenuItem;
 import javafx.scene.media.AudioClip;
 import java.nio.file.Paths;
 import javafx.scene.media.Media;
@@ -68,6 +68,9 @@ public class music {
         mediaPlayer = new MediaPlayer(h);
 		mediaPlayer.setCycleCount(MediaPlayer.INDEFINITE);
 		mediaPlayer.setVolume(0.1);
+		if(mediaPlayer.getStatus()==MediaPlayer.Status.PLAYING) {
+			mediaPlayer.stop();
+		}
 		mediaPlayer.play();
 		
 		ulrchessmove = this.getClass().getClassLoader().getResource("resources.music/chessmove.wav");
@@ -171,11 +174,12 @@ public class music {
 	public void DummyPiece() {
 			DummyPiece.play(DummyPiecesound);
 	}
-	
+	///////////////////////////////////////////
+	/**
+	 * Getter for mediaPlayer 
+	 * @return	mediaPlayer
+	 */
 	public MediaPlayer getMediaPlayer() {
 		return mediaPlayer;
 	}
-	
-	///////////////////////////////////////////
-	
 }
