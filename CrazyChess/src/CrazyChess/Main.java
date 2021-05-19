@@ -11,7 +11,7 @@ import javafx.stage.Stage;
 public class Main extends Application {
 
     public void start(Stage primaryStage){
-//:)
+
         MenuScreen menu = new MenuScreen(primaryStage);
         Scene currentScene = menu.getScene();
         primaryStage.setScene(currentScene);
