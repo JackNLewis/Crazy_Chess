@@ -132,28 +132,5 @@ public class HazardAssigner {
 		}
 	}
 
-	public void setActiveHazard(boolean input) {
-//    		activeHazard = input;
-//    	}
-    //
-//    	public boolean getActiveHazard() {
-//    		return activeHazard;
-//    	}
-    //
-//    	public void setUntilHazard(int input) {
-//    		untilHazard = input;
-//    	}
-    //
-//    	public int getUntilHazard() {
-//    		return untilHazard;
-//    	}
-    //	
-//    	public int getHazardTurns() {
-//    		return hazardTurns;
-//    	}
-    //	
-//    	public void setHazardTurns(int input) {
-//    		hazardTurns = input;
-//    	}
-	}
+
 }

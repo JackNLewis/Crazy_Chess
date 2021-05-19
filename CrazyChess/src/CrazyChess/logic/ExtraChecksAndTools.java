@@ -29,16 +29,19 @@ public class ExtraChecksAndTools
 	BasicValidityChecker bvc = new BasicValidityChecker();
 	Utilities utils = new Utilities();
 	PowerupMain pwrUp;
+	Castle cstl;
 
 	// Default constructor
 	public ExtraChecksAndTools() {
 		pwrUp = new PowerupMain();
+		cstl = new Castle();
 	}
 
 	// Constructor to prevent circular dependencies
 	public ExtraChecksAndTools(int createCode) {
 		if (createCode != 1) {
 			pwrUp = new PowerupMain();
+			cstl = new Castle();
 		}
 	}
 
@@ -380,7 +383,10 @@ public class ExtraChecksAndTools
 					continue;
 				}
 				if(!(p.getXpos()==targetTile.getXpos()&&p.getYpos()==targetTile.getYpos())) {
-					if(bvc.moveCheckAssigner(p, targetTile.getXpos()-p.getXpos(), targetTile.getYpos()-p.getYpos(), isDebug, gamestate, moveNo)) {
+					if(bvc.moveCheckAssigner(p, targetTile.getXpos()-p.getXpos(), targetTile.getYpos()-p.getYpos(), isDebug, gamestate, moveNo)||
+					  ((p instanceof King)&&(cstl.castleCheck((King)p, targetTile.getXpos()-p.getXpos(), targetTile.getYpos()-p.getYpos(), isDebug, gamestate, moveNo)))) {
+						if(p instanceof King)
+							((King)p).setCanCastle(0);
 						if(!targetTile.getColor().equalsIgnoreCase(p.getColor())){ //checks if the candidate tile doesn't have a piece of the same color on it
 							AbstractPiece[][] newGamestate = utils.safeCopyGamestate(gamestate);
 							newGamestate=utils.relocatePiece(p, newGamestate, targetTile.getPosition());
@@ -412,13 +418,13 @@ public class ExtraChecksAndTools
 	
 	/**
 	 * This function returns all possible game states after one turn
-	 * in the game state inputed
+	 * in the game state inputed with powerups
 	 * 
 	 * @param whoseTurn   string of a color of the player whose turn is currently happening
 	 * @param isDebug     is debug mode active
 	 * @param gamestate   starting game state
 	 * @param moveNo      current move number
-	 * @return            ArrayList of possible game states after the turn is completed
+	 * @return            ArrayList of possible game states after the turn is completed with powerup
 	 */
 	
 	public HashMap<AbstractPiece[][], Integer> possibleGamestatesAfterNextMove (String whoseTurn, boolean isDebug, AbstractPiece[][] gamestate, int moveNo, ArrayList<String> powerUps){
@@ -447,8 +453,14 @@ public class ExtraChecksAndTools
 			}
 
 			// Powerup game states
+			ArrayList<String> checkedPowerup = new ArrayList<String>();
 			for (int i = 0; i < powerUps.size(); i++) {
 				String pwrUpStr = powerUps.get(i);
+				if (checkedPowerup.contains(pwrUpStr)) {
+					continue;
+				} else {
+					checkedPowerup.add(pwrUpStr);
+				}
 				AbstractPiece[][] copiedGamestate = utils.safeCopyGamestate(gamestate);
 				ArrayList<Position> validPowerupMoves = pwrUp.validPowerupMoves(pwrUpStr, copiedGamestate, p.getPosition(), isDebug);
 				if (!validPowerupMoves.isEmpty()) {
@@ -660,5 +672,18 @@ public class ExtraChecksAndTools
 	
 	public int getCounter() {
 		return counter;
+	}
+	/**
+	 * get the number of powerups piece on the board
+	 */
+	public int getPowerupNum(AbstractPiece[][] gamestate) {
+		ArrayList<AbstractPiece> Gs = gamestateToPieceArrayList(gamestate);
+		int num = 0;
+		for(AbstractPiece s : Gs) {
+			if (s instanceof Powerup) {
+				num = num + 1;
+			}
+		}
+		return num;
 	}
 }

@@ -72,6 +72,7 @@ public class PowerupMain
 			}
 		}
 		
+		if(ecat.getPowerupNum(copiedGamestate) < 2) {
 		if(turnNo%5==0) {
 			int randomX = ThreadLocalRandom.current().nextInt(0,7+1); //+1 because the method is exclusive
 			int randomY = ThreadLocalRandom.current().nextInt(0,7+1);
@@ -86,6 +87,7 @@ public class PowerupMain
 			Powerup pw = new Powerup(randomX, randomY,"Normal");
 			copiedGamestate=utils.placePiece(pw, isDebug, copiedGamestate);
 				}
+		}
 		if(piecePw != null) {
 			copiedGamestate=utils.placePiece(piecePw, isDebug, copiedGamestate);
 		}
@@ -111,7 +113,6 @@ public class PowerupMain
 			   return "Bomb";
 		   case 5:
 			   return "MiniPromote";
-
 		}
 
 

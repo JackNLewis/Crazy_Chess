@@ -1,28 +1,25 @@
 package Graphics;
 
-
-import javafx.scene.image.Image;
-import javafx.scene.image.ImageView;
 import java.io.File;
 import CrazyChess.logic.MainLogic;
 import CrazyChess.logic.savegamestate.*;
 import javafx.event.EventHandler;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
-import javafx.scene.control.Label;
-import javafx.scene.control.Menu;
-import javafx.scene.control.MenuBar;
-import javafx.scene.control.MenuItem;
-import javafx.scene.control.SeparatorMenuItem;
-import javafx.scene.control.RadioMenuItem;
-import javafx.scene.control.CheckMenuItem;
-import javafx.scene.control.ToggleGroup;
+import javafx.scene.control.*;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
+import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 import javafx.stage.WindowEvent;
 
+
+/**
+ * It conects different components of the game screen such as board, power up menu.
+ */
 public class SGameScreen {
 
     private Scene scene;
@@ -36,7 +33,8 @@ public class SGameScreen {
     private Label ruleChangeInfo;
     private AskForDraw askForDraw;
     private PowerUpMenu pwrUpMenu;
-	
+    private MenuItem reset;
+    private MenuItem exit;
  // setting menu for music control
     private RadioMenuItem turnOnItem;
     private RadioMenuItem turnOffItem;
@@ -48,6 +46,10 @@ public class SGameScreen {
     private CheckMenuItem DummyPiece;
     private CheckMenuItem Teleport;
 
+
+    //buttons for promotes
+	HBox promotes;
+
     public SGameScreen(MainLogic newgame, Stage stage){
     	if(newgame != null) {
     		game = newgame;
@@ -55,16 +57,16 @@ public class SGameScreen {
     	else {
     		game = new MainLogic();
     	}
-//        game = new MainLogic();
+
 
         this.stage = stage;
         root = new VBox();
 
-        scene = new Scene(root, 1101,942);
+        scene = new Scene(root, 800,680);
         scene.getStylesheets().add("/Graphics/css/board.css");
 
         
-      //Options menu
+        //Options menu
         Menu optionsMenu = new Menu("Options");
         
         //Menu items
@@ -72,7 +74,7 @@ public class SGameScreen {
         save.setOnAction(e -> {
         	File file = new File("saved.xml");
         	SaveGame saveState = new SaveGame();
-//        	System.out.println("gamestate before " + game);
+
         	byte[] bytes = saveState.save(game, game.getGamestate());
         	
         	try {
@@ -84,20 +86,15 @@ public class SGameScreen {
         	}
     	});
         optionsMenu.getItems().add(save);
-        
-        MenuItem reset = new MenuItem("Reset");
-        reset.setOnAction(e -> {
-        	//game.resetBoard();
-        });
+
+        reset = new MenuItem("Reset");
         optionsMenu.getItems().add(reset);
-//        optionsMenu.getItems().add(new MenuItem("Reset"));
         
         optionsMenu.getItems().add(new SeparatorMenuItem());
-        optionsMenu.getItems().add(new MenuItem("Exit"));
+        exit = new MenuItem("Exit");
+        optionsMenu.getItems().add(exit);
 	    
-	//all music menu
-        Menu Setting = new Menu("setting");
-        
+		//all music menu
         Menu musicMenu = new Menu("Music");
         ToggleGroup tG = new ToggleGroup();
         turnOnItem = new RadioMenuItem("TurnOn");
@@ -128,17 +125,16 @@ public class SGameScreen {
         moremenu.getItems().addAll(chessmove,Bomb,setBomb,MiniPromote,FreeCard,DummyPiece,Teleport);
         musicMenu.getItems().add(moremenu);
         
-        Setting.getItems().addAll(musicMenu);
-        
         //Main menu bar
         MenuBar menuBar = new MenuBar();
-        menuBar.getMenus().addAll(optionsMenu,Setting);
-        
-		BorderPane menu = new BorderPane();
-		menu.setTop(menuBar);
+        menuBar.getMenus().addAll(optionsMenu,musicMenu);
+	    //menuBar.setStyle("-fx-background-color:gray");
+        menuBar.setId("menuBar");
+		//BorderPane menu = new BorderPane();
+		//menu.setTop(menuBar);
 
 
-        ((VBox) scene.getRoot()).getChildren().addAll(menuBar);
+        ((VBox) scene.getRoot()).getChildren().add(0,menuBar);
 
         //Add top banner
         addBanner();
@@ -156,6 +152,11 @@ public class SGameScreen {
 
         //make power up menu
         pwrUpMenu = new PowerUpMenu(this);
+        //addPromotes();
+        promotes = new HBox();
+		//pwrContainer.getChildren().add(promotes);
+
+
 
         askForDraw = new AskForDraw(this, game);
         
@@ -302,4 +303,90 @@ public class SGameScreen {
     
     public void selectPower(String powerUp){}
 
+    public void showPromotes(){
+    	promotes.getChildren().clear();
+		String color = (game.getTurn().equalsIgnoreCase("white")) ? "W_" : "B_";
+
+		ImageView queenPromote = new ImageView();
+		queenPromote.setImage(new Image("/resources/pieces/" + color + "queen.png"));
+		queenPromote.setOnMouseClicked(new EventHandler<MouseEvent>() {
+			@Override
+			public void handle(MouseEvent event) { board.promte("q"); }
+		});
+
+		ImageView rookPromote = new ImageView();
+		rookPromote.setImage(new Image("/resources/pieces/" + color + "rook.png"));
+		rookPromote.setOnMouseClicked(new EventHandler<MouseEvent>() {
+			@Override
+			public void handle(MouseEvent event) {
+				board.promte("r");
+			}
+		});
+		ImageView knightPromote = new ImageView();
+		knightPromote.setImage(new Image("/resources/pieces/" + color + "knight.png"));
+		knightPromote.setOnMouseClicked(new EventHandler<MouseEvent>() {
+			@Override
+			public void handle(MouseEvent event) {
+				board.promte("k");
+			}
+		});
+		ImageView bishopPromote = new ImageView();
+		bishopPromote.setImage(new Image("/resources/pieces/" + color + "bishop.png"));
+		bishopPromote.setOnMouseClicked(new EventHandler<MouseEvent>() {
+			@Override
+			public void handle(MouseEvent event) {
+				board.promte("b");
+			}
+		});
+		promotes.getChildren().addAll(queenPromote,rookPromote,knightPromote,bishopPromote);
+
+		VBox pwrContainer = getPwrUpMenu().getPowerUpMenu();
+		pwrContainer.getChildren().add(promotes);
+	}
+
+	public void hidePromotes(){
+		VBox pwrContainer = getPwrUpMenu().getPowerUpMenu();
+		pwrContainer.getChildren().remove(promotes);
+	}
+	
+	/**
+	 * Getter for the reset button
+	 * @return	reset button
+	 */
+	public MenuItem getReset() {
+		return reset;
+	}
+	
+	/**
+	 * Getter for the reset button
+	 * @return	reset button
+	 */
+	public MenuItem getExit() {
+		return exit;
+	}
+	
+	/**
+	 * Getter for the reset button
+	 * @return	reset button
+	 */
+	public Stage getStage() {
+		return stage;
+	}
+	
+	/**
+	 * Getter for the getTurnOnItem menu item
+	 * @return	getTurnOnItem menu item
+	 */
+	public RadioMenuItem getTurnOnItem() {
+		return turnOnItem;
+	}
+	
+	/**
+	 * Getter for the getTurnOffItem menu item
+	 * @return	getTurnOffItem menu item
+	 */
+	public RadioMenuItem getTurnOffItem() {
+		return turnOffItem;
+	}
+	
 }

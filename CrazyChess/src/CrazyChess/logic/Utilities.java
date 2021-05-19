@@ -2,6 +2,9 @@
 package CrazyChess.logic;
 import CrazyChess.logic.StageHazards.HazardPiece;
 import CrazyChess.pieces.*;
+
+import java.util.ArrayList;
+
 /**
  * Class with some utilities for getting pieces from
  * and placing pieces to game states
@@ -364,6 +367,26 @@ public class Utilities
 		}else newCol="black";
 		
 		return newCol;
+	}
+
+	/**
+	 * Returns pieces that are different between two gamestates.
+	 * @param gamestateA           previous gamestate
+	 * @param gamestateB           next gamestate
+	 * @return                      ArrayList of pieces with different position
+	 */
+	public ArrayList<AbstractPiece> getPiecesDiff(AbstractPiece[][] gamestateA, AbstractPiece[][] gamestateB) {
+		ArrayList<AbstractPiece> diffPieces = new ArrayList<AbstractPiece>();
+		for (int i = 0; i < 8; i++) {
+			for (int j = 0; j < 8; j++) {
+				AbstractPiece prevPiece = gamestateA[i][j];
+				AbstractPiece nextPiece = gamestateB[i][j];
+				if (!prevPiece.getColor().equalsIgnoreCase(nextPiece.getColor())) {
+					diffPieces.add(prevPiece);
+				}
+			}
+		}
+		return diffPieces;
 	}
 }
 

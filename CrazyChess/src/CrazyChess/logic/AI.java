@@ -2,14 +2,16 @@ package CrazyChess.logic;
 import java.util.ArrayList;
 import java.util.HashMap;
 
+import CrazyChess.logic.StageHazards.HazardPiece;
 import CrazyChess.pieces.*;
 import java.util.*;
+import java.util.stream.Collectors;
 
 public class AI
 {
 	private MainLogic chess;
 	private Utilities utils = new Utilities();
-	private ExtraChecksAndTools ect = new ExtraChecksAndTools();
+	private ExtraChecksAndTools ect;
 
 	public void AI () {
 		//null constructor
@@ -17,22 +19,33 @@ public class AI
 
 	public AbstractPiece[][] AI (MainLogic chess) {
 		this.chess = chess;
+		this.ect = chess.getEcat();
 
 		//System.out.println("turn is "+chess.getTurn());
 		//ExtraChecksAndTools ect = new ExtraChecksAndTools();
 		//AbstractPiece[][] bestBoard = minimax(chess.getGamestate(),1,chess.getTurn());
 		//ArrayList <AbstractPiece[][]> possg = ect.possibleGamestatesAfterNextMove(chess.getTurn(), false, chess.getGamestate(), 0);
 		BoardDetails currentBoard = new BoardDetails(
-				chess.getGamestate(),
-				chess.getPowerUps("white"),
-				chess.getPowerUps("black")
+				this.chess.getGamestate(),
+				this.chess.getPowerUps("white"),
+				this.chess.getPowerUps("black")
 		);
 		BoardDetails bestMoveDetails = minimax(currentBoard,3, chess.getTurn());
 		AbstractPiece[][] bestMove = bestMoveDetails.getGamestate();
 
+		ArrayList<AbstractPiece> diffPieces = utils.getPiecesDiff(currentBoard.getGamestate(), bestMove);
+		if (!diffPieces.isEmpty()) {
+			for (AbstractPiece p: diffPieces) {
+				if (p.getColor().equalsIgnoreCase("powerup")) {
+					this.chess.getPowerUps(chess.getTurn()).add(ect.pwrUp.randomPowerup(false));
+					break;
+				}
+			}
+		}
+
 		int usedPowerupIndex = bestMoveDetails.getUsedPowerup();
 		if (usedPowerupIndex > -1) {
-			chess.getPowerUps(chess.getTurn()).remove(usedPowerupIndex);
+			this.chess.getPowerUps(chess.getTurn()).remove(usedPowerupIndex);
 		}
 		//System.out.println("best move is:");
 		//utils.printGameState(bestMove);
@@ -40,10 +53,13 @@ public class AI
 	}
 	
 	public AbstractPiece[][] AI (MainLogic chess, String difficulty) {
+		this.chess = chess;
+		this.ect = chess.getEcat();
+
 		BoardDetails currentBoard = new BoardDetails(
-				chess.getGamestate(),
-				chess.getPowerUps("white"),
-				chess.getPowerUps("black")
+				this.chess.getGamestate(),
+				this.chess.getPowerUps("white"),
+				this.chess.getPowerUps("black")
 		);
 
 		int max_depth;
@@ -59,6 +75,16 @@ public class AI
 
 		BoardDetails bestMoveDetails = minimax(currentBoard,max_depth, chess.getTurn());
 		AbstractPiece[][] bestMove = bestMoveDetails.getGamestate();
+
+		ArrayList<AbstractPiece> diffPieces = utils.getPiecesDiff(currentBoard.getGamestate(), bestMove);
+		if (!diffPieces.isEmpty()) {
+			for (AbstractPiece p: diffPieces) {
+				if (p.getColor().equalsIgnoreCase("powerup")) {
+					this.chess.getPowerUps(chess.getTurn()).add(ect.pwrUp.randomPowerup(false));
+					break;
+				}
+			}
+		}
 
 		int usedPowerupIndex = bestMoveDetails.getUsedPowerup();
 		if (usedPowerupIndex > -1) {
@@ -172,13 +198,25 @@ public class AI
 
 
 	public int explorePaths (BoardDetails board,int curr_depth, int max_depth, String whoseAI, String whoseTurn, int preMax, int preMin) {
+		ArrayList<String> powerupToCheck;
+		if (whoseTurn.equalsIgnoreCase(utils.oppositeColor(whoseAI))) {
+			powerupToCheck = new ArrayList<String>();
+		} else {
+			powerupToCheck = board.getPowerUps(whoseTurn)
+					.stream()
+					.filter(s -> !s.equalsIgnoreCase("teleport"))
+					.filter(s -> !s.equalsIgnoreCase("dummypiece"))
+					.filter(s -> !s.equalsIgnoreCase("minipromote"))
+					.collect(Collectors.toCollection(ArrayList::new));
+		}
 		HashMap<AbstractPiece[][], Integer> possgWithPwr = ect.possibleGamestatesAfterNextMove(
 				whoseTurn,
 				false,
 				board.getGamestate(),
 				0,
-				board.getPowerUps(whoseTurn)
+				powerupToCheck
 		);
+
 		ArrayList<AbstractPiece[][]> possg = new ArrayList<>(possgWithPwr.keySet());
 		Collections.shuffle(possg);
 		if(curr_depth==max_depth-1) {
@@ -218,6 +256,9 @@ public class AI
 			else {
 				whoseTurnNext="Black";
 			}
+
+			long funcStartTime = System.currentTimeMillis();
+			long funcTimeout = 300;
 			if (whoseTurn.equals("White")) {
 				worst = Integer.MIN_VALUE;
 				//the higher the worse (for black)
@@ -243,6 +284,10 @@ public class AI
 					if(temp>worst) {
 						//worst becomes the worst outcome of all possg branches
 						worst=temp;
+					}
+
+					if ((System.currentTimeMillis() - funcStartTime) >= funcTimeout) {
+						break;
 					}
 				}
 				//return worst up the tree
@@ -275,6 +320,10 @@ public class AI
 					if (temp<best) {
 						//the lower the possibility the better the outcome, so max as black will choose lower
 						best=temp;
+					}
+
+					if ((System.currentTimeMillis() - funcStartTime) >= funcTimeout) {
+						break;
 					}
 				}
 				//System.out.println("\nNo pruning, whole tree searched\n");
@@ -320,11 +369,11 @@ public class AI
 
 		int currentBoardVal;
 
-		int highest = evaluateBoard(boards.get(0));
+		int highest = evaluateBoard(boards.get(0), whoseTurn);
 		int lowest = highest;
 
 		for (int i=1; i < boards.size(); i++) {
-			currentBoardVal = evaluateBoard(boards.get(i));
+			currentBoardVal = evaluateBoard(boards.get(i), whoseTurn);
 			//check if it violates preMin or preMax (if the layer before won't accept this branch's findbestoutcome stop searching now
 			if (currentBoardVal>preMax||currentBoardVal<preMin) {
 				//System.out.println("Pruned out in findBestOutcome to values: current="+currentBoardVal+" preMax="+preMax+" preMin:"+preMin);
@@ -412,7 +461,7 @@ public int findBestOutcome (ArrayList <AbstractPiece[][]> boards, String whoseTu
 	 * queen = 9
 	 * king = 0 (don't factor king into this, theres no point if you have no king
 	 */
-	public int valuePiece(AbstractPiece piece) {
+	public int valuePiece(AbstractPiece piece, String whoseTurn) {
 		//System.out.println("piece is "+piece+" in string is "+piece.toString());
 		if (piece instanceof Pawn){
 			if (piece.getColor()=="Black") {
@@ -474,8 +523,8 @@ public int findBestOutcome (ArrayList <AbstractPiece[][]> boards, String whoseTu
 				return 3;
 			}
 		}
-		else if (piece instanceof Powerup){
-			if (piece.getColor()=="Black") {
+		else if (piece instanceof Powerup) {
+			if (whoseTurn.equalsIgnoreCase("white")) {
 				//System.out.println("black knight");
 				return -2;
 			}
@@ -483,23 +532,21 @@ public int findBestOutcome (ArrayList <AbstractPiece[][]> boards, String whoseTu
 				//System.out.println("white knight");
 				return 2;
 			}
+		}else if (piece.getColor().equalsIgnoreCase("blank")) {
+			return 0;
 		}
 		System.out.println("valuePiece function very broken to reach here");
+		System.out.println(piece.getColor());
 		return 999;
 	}
 
-	public int evaluateBoard (AbstractPiece[][] board) {
+	public int evaluateBoard (AbstractPiece[][] board, String whoseTurn) {
 		ExtraChecksAndTools ect = new ExtraChecksAndTools();
-		ArrayList<AbstractPiece> whitePieces = ect.getWhitePieces(board);
-		ArrayList<AbstractPiece> blackPieces = ect.getBlackPieces(board);
-		//System.out.println("no black="+blackPieces.size()+" no white="+whitePieces.size());
+		ArrayList<AbstractPiece> pieces = ect.gamestateToPieceArrayList(board);
 
 		int value = 0;
-		for (int i=0;i<whitePieces.size();i++) {
-			value += valuePiece(whitePieces.get(i));
-		}
-		for (int j=0;j<blackPieces.size();j++) {
-			value += valuePiece(blackPieces.get(j));
+		for (AbstractPiece p: pieces) {
+			value += valuePiece(p, whoseTurn);
 		}
 
 		//System.out.println("current value is "+value);
