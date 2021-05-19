@@ -403,6 +403,8 @@ public class SBoard {
         }
         if(game.getMateStatus(oppColor)){
             SGameScreen.setInfoMessage(game.getTurn() + " wins!");
+            promoteWait=true; //just so board cant be used
+            SGameScreen.showEndScreen();
             System.out.println(oppColor + " is in check mate");
             askForDraw.hide();
         }

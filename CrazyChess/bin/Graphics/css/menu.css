@@ -33,7 +33,7 @@
 	-fx-background-radius: 20;
 	-fx-background-color: rgba(182,150,157,0.5);
 	-fx-display: flex;
-        -fx-flex-flow: row wrap;
+    -fx-flex-flow: row wrap;
  }
  
   .check-box {
