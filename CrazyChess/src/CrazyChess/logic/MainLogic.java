@@ -846,6 +846,11 @@ public class MainLogic
 		this.rulechange3 = rulechange3;
 	}
 
+	/**
+	 * This takes a gamestate and tell the player if a pawn promotion is available
+	 * @param gamestate
+	 * @return the pawn for promotion or null if none exists
+	 */
 	public AbstractPiece isPawnPromote(AbstractPiece[][] gamestate){
 		for(int i=0; i<7;i++){
 			//check for white pawn
@@ -861,6 +866,11 @@ public class MainLogic
 		return null;
 	}
 
+	/**
+	 * Promotes a pawn. newPice is 'q', 'k', 'r,' b', for queen, king, rook, bishop respectively
+	 * @param piece
+	 * @param newPiece
+	 */
 	public void promote(AbstractPiece piece, String newPiece){
 		AbstractPiece[][] safeGs = utils.safeCopyGamestate(gamestate);
 		Position pos = piece.getPosition();
