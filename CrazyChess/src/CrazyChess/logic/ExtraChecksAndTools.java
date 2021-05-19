@@ -566,7 +566,7 @@ public class ExtraChecksAndTools
 	public void updateRuleChange1() {
 		if (!bvc.getBrs() && !bvc.getPS() && !bvc.getKS())
 		{
-			if (r.nextInt(20) == 0) //will modify this for the final game to happen less often
+			if (r.nextInt(7) == 0) //will modify this for the final game to happen less often
 			{
 				bvc.setBrs();
 				counter = 2 + r.nextInt((6)/2) * 2; //random, between 2 and 8 turns
@@ -600,7 +600,7 @@ public class ExtraChecksAndTools
 	public void updateRuleChange2() {
 		if (!bvc.getBrs() && !bvc.getPS() && !bvc.getKS())
 		{
-			if (r.nextInt(20) == 0) //will modify this for the final game to happen less often
+			if (r.nextInt(7) == 0) //will modify this for the final game to happen less often
 			{
 				bvc.setPS();
 				counter = 2 + r.nextInt((6)/2) * 2; //random, between 2 and 8 turns
@@ -632,7 +632,7 @@ public class ExtraChecksAndTools
 	public void updateRuleChange3() {
 		if (!bvc.getBrs() && !bvc.getPS() && !bvc.getKS())
 		{
-			if (r.nextInt(2) == 0) //will modify this for the final game to happen less often
+			if (r.nextInt(14) == 0) //will modify this for the final game to happen less often
 			{
 				bvc.setKS();
 				counter = 2; //this rule change is very powerful so it shouldn't last longer than 2 turns
