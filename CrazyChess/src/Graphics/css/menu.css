@@ -1,36 +1,57 @@
+@font-face {
+    src: url('PixelFont.ttf');
+}
+
 .root {
-    -fx-background-color: #073B4C;
+    -fx-background-image: url("/resources/menuBackground.png");
     -fx-alignment: center;
     -fx-spacing: 20;
 }
 
 .button
  {
-    -fx-background-color: #EF476F;
-    -fx-text-fill: #073B4C;
-    -fx-font: 15px Rowdies;
+    -fx-background-color: rgb(7,59,76);
+    -fx-text-fill: #b6969d;
+    -fx-font-family: 'Super Mario Bros. 2';
+    -fx-font-size: 15px;
+    -fx-border-color: rgb(49, 89, 23);
+    -fx-border-radius: 5;
+    -fx-effect: dropshadow( one-pass-box , black , 10 , 0 , 2 , 2 );
  }
 
  .button:hover {
     -fx-background-color: #FFD166;
+    -fx-effect: dropshadow( one-pass-box , transparent , 10 , 0 , 2 , 2 );
  }
  
  .label {
- 	-fx-text-fill: #EF476F;
+ 	-fx-text-fill: rgb(7,59,76);
+	-fx-font-family: 'Super Mario Bros. 2';
+	-fx-letter-spacing: -3px;
+	-fx-font-size: 10px;
+	-fx-padding: 5 5 5 5;
+	-fx-background-radius: 20;
+	-fx-background-color: rgba(182,150,157,0.5);
+	-fx-display: flex;
+        -fx-flex-flow: row wrap;
  }
  
   .check-box {
-    -fx-text-fill: #EF476F;
-    -fx-font: 15px Rowdies;
+    -fx-text-fill: rgb(7,59,76);
+    -fx-font-family: 'Super Mario Bros. 2';
+    -fx-font-size: 13px;
+    -fx-padding: 8 8 5 8;
+    -fx-background-radius: 10;
+    -fx-background-color: rgba(182,150,157,0.5);
  }
  
  .check-box:selected > .box {
-    -fx-background-color: #EF476F;
+    -fx-background-color: rgb(7,59,76);
 }
 
 .check-box:selected > .box > .mark,
 .check-box:indeterminate  > .box > .mark {
-    -fx-background-color: #073B4C;
+    -fx-background-color: #b6969d;
 }
 
 .check-box > .box {

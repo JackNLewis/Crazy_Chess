@@ -203,8 +203,7 @@ public class MainLogic
 	 * by default the method sets it to white
 	 */
 	public void changeTurn(){
-		
-		
+
 		if(currentTurn.equalsIgnoreCase("White")){
 			currentTurn = "Black";
 			
@@ -298,11 +297,6 @@ public class MainLogic
 				System.out.println("It is now White's turn.");
 				System.out.println("White's powerups: "+whitePowerUps.toString());}
 		}
-
-		//=======================================STAGE HAZARDS================================================//
-		//GAMESTATE = NEW GAMESTATE
-		gamestate= hazards.assignHazard(gamestate);
-		//=======================================STAGE HAZARDS================================================//
 
 	}
 	
@@ -521,11 +515,19 @@ public class MainLogic
 		//Constructing new possible gamestate
 		//First checks if it can castle
 		if(isValid){
+			if(p instanceof King)
+				cstl.castleCheck((King)p, xRel, yRel, isDebug, gamestate, turnNo);
 			if(p instanceof King && ((King)p).getCanCastle() != 0)
 				cstl.castle((King)p, xRel, yRel, isDebug, gamestate, turnNo);
 			AbstractPiece[][] newGamestate = utils.safeCopyGamestate(gamestate);
 			AbstractPiece copiedPiece = utils.safeCopyPiece(p);
 			copiedPiece.setPosition(newPiece.getXpos(), newPiece.getYpos());
+			if(p instanceof Pawn && ((Pawn)p).getEnPassant() == true){ 
+				if(p.getColor().equalsIgnoreCase("white"))
+					newGamestate=utils.placePiece(new BlankPiece("Blank",copiedPiece.getXpos(), (copiedPiece.getYpos()-1), "Normal"), isDebug, newGamestate);
+				else 
+					newGamestate=utils.placePiece(new BlankPiece("Blank",copiedPiece.getXpos(), (copiedPiece.getYpos()+1), "Normal"), isDebug, newGamestate);
+			}
 			if(copiedPiece instanceof King)
 				((King)copiedPiece).setWasMoved(true);
 			if(copiedPiece instanceof Rook) {
@@ -593,6 +595,14 @@ public class MainLogic
 		
 		
 			//Check if the player is not under check
+
+			//=======================================STAGE HAZARDS================================================//
+			//GAMESTATE = NEW GAMESTATE
+			newGamestate= hazards.assignHazard(newGamestate);
+
+			//=======================================STAGE HAZARDS================================================//
+
+			//checks for checks
 			if(currentTurn.equalsIgnoreCase("white")) {
 				//utils.printGameState(newGamestate);
 				if(ecat.isInCheck("black", isDebug, newGamestate, turnNo+1)) {
@@ -927,5 +937,53 @@ public class MainLogic
 	 */
 	public void setRC3(boolean rulechange3) {
 		this.rulechange3 = rulechange3;
+	}
+
+	/**
+	 * This takes a gamestate and tell the player if a pawn promotion is available
+	 * @param gamestate
+	 * @return the pawn for promotion or null if none exists
+	 */
+	public AbstractPiece isPawnPromote(AbstractPiece[][] gamestate){
+		for(int i=0; i<7;i++){
+			//check for white pawn
+			if((gamestate[i][0] instanceof Pawn) && (gamestate[i][0].getColor().equalsIgnoreCase("black"))){
+				System.out.println("Promote black");
+				return gamestate[i][0];
+			}
+			if((gamestate[i][7] instanceof Pawn) && (gamestate[i][7].getColor().equalsIgnoreCase("white"))){
+				System.out.println("Promote white");
+				return gamestate[i][7];
+			}
+		}
+		return null;
+	}
+
+	/**
+	 * Promotes a pawn. newPice is 'q', 'k', 'r,' b', for queen, king, rook, bishop respectively
+	 * @param piece
+	 * @param newPiece
+	 */
+	public void promote(AbstractPiece piece, String newPiece){
+		AbstractPiece[][] safeGs = utils.safeCopyGamestate(gamestate);
+		Position pos = piece.getPosition();
+
+		if(newPiece.equalsIgnoreCase("q")){
+			Queen q = new Queen(piece.getColor(), pos,"Normal");
+			utils.placePiece(q,isDebug,safeGs);
+		}
+		else if(newPiece.equalsIgnoreCase("k")){
+			Knight k = new Knight(piece.getColor(), pos,"Normal");
+			utils.placePiece(k,isDebug,safeGs);
+		}
+		else if(newPiece.equalsIgnoreCase("r")){
+			Rook r = new Rook(piece.getColor(), pos,"Normal");
+			utils.placePiece(r,isDebug,safeGs);
+		}
+		else if(newPiece.equalsIgnoreCase("b")){
+			Bishop b = new Bishop(piece.getColor(), pos,"Normal");
+			utils.placePiece(b,isDebug,safeGs);
+		}
+		setGamestate(safeGs);
 	}
 }

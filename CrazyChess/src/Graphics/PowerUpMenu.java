@@ -11,6 +11,9 @@ import javafx.scene.layout.VBox;
 
 import java.util.ArrayList;
 
+/**
+ * Class for the power up menu where players can select the power ups they want to use.
+ */
 public class PowerUpMenu {
 
     private VBox container;
@@ -21,6 +24,10 @@ public class PowerUpMenu {
     private int selectedIndex = -1;
     private String selectedstr;
 
+    /**
+     * Constructor for power up menu
+     * @param gameScreen
+     */
     public PowerUpMenu(SGameScreen gameScreen){
         this.gameScreen = gameScreen;
         container = new VBox();
@@ -57,6 +64,12 @@ public class PowerUpMenu {
         container.getChildren().addAll(title,powerList);
     }
 
+    /**
+     * Sets the observable power up
+     *
+     * @param powers
+     * @param player
+     */
     public void setPowerUps(ArrayList<String> powers,String player){
         if(player.equalsIgnoreCase("black")){
             blackPowers.clear();
@@ -69,18 +82,34 @@ public class PowerUpMenu {
         }
     }
 
+    /**
+     *
+     * @return the power up menu container
+     */
     public VBox getPowerUpMenu(){
         return container;
     }
 
+    /**
+     *
+     * @return the index of the selected power up
+     */
     public int getSelectedIndex(){
         return selectedIndex;
     }
 
+    /**
+     *
+     * @return the index of the selected power up
+     */
     public void setSelectedIndex(int index){
         selectedIndex = index;
     }
-    
+
+    /**
+     *
+     * @return the string of the selected power up
+     */
     public String getSelectedStr() {
     	return selectedstr;
     }

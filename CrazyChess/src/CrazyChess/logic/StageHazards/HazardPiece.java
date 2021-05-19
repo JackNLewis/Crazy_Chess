@@ -2,10 +2,11 @@ package CrazyChess.logic.StageHazards;
 
 import CrazyChess.logic.Position;
 import CrazyChess.pieces.AbstractPiece;
+
 /**
  * A class for the stage hazzard piece
- *
  */
+
 public class HazardPiece extends AbstractPiece {
 
     protected AbstractPiece originalPiece;
@@ -24,10 +25,12 @@ public class HazardPiece extends AbstractPiece {
     }
     /**
      * Returns a string representation of the stage hazard
+     * @return the string of the hazard piece
      */
     public String toString(){
         return "HZ at " + position;
     }
+
     /**
      * Gets the type of the hazard
      * @return type of the hazzard (BURN or FROZEN)

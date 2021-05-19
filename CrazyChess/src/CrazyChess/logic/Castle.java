@@ -14,7 +14,7 @@ import java.util.ArrayList;
 public class Castle
 {
 	Utilities utils = new Utilities();
-	ExtraChecksAndTools ect = new ExtraChecksAndTools();
+	ExtraChecksAndTools ect = new ExtraChecksAndTools(1);
 	
 	/**
 	 * Checks if a player can castle

@@ -380,7 +380,7 @@ public class Utilities
 			for (int j = 0; j < 8; j++) {
 				AbstractPiece prevPiece = gamestateA[i][j];
 				AbstractPiece nextPiece = gamestateB[i][j];
-				if (prevPiece.getColor() != nextPiece.getColor()) {
+				if (!prevPiece.getColor().equalsIgnoreCase(nextPiece.getColor())) {
 					diffPieces.add(prevPiece);
 				}
 			}
