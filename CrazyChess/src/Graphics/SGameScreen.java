@@ -53,6 +53,11 @@ public class SGameScreen {
     //buttons for promotes
 	HBox promotes;
 
+	/**
+	 * Constructor for SGameScreen
+	 * @param newgame
+	 * @param stage
+	 */
     public SGameScreen(MainLogic newgame, Stage stage){
     	if(newgame != null) {
     		game = newgame;
@@ -186,7 +191,7 @@ public class SGameScreen {
         
         stage.setOnCloseRequest(e -> Platform.exit());
     }
-    
+
 	public void loadLogic(MainLogic newgame){
 		if(newgame != null) {
 			game = newgame;
@@ -197,10 +202,17 @@ public class SGameScreen {
 		}
 	}
 
+	/**
+	 * returns the scene
+	 * @return
+	 */
 	public Scene getScene() {
 		return this.scene;
 	}
 
+	/**
+	 * Adds the banner image
+	 */
 	public void addBanner() {
 		HBox hbox = new HBox();
 		hbox.getStyleClass().add("banner");
@@ -213,6 +225,10 @@ public class SGameScreen {
 		root.getChildren().add(hbox);
 	}
 
+	/**
+	 * Updates the label for current players move
+	 * @param player
+	 */
 	public void updateMoveLabel(String player) {
 		if (player.equalsIgnoreCase("white")) {
 			playerLabel.setText("White's Turn");
@@ -221,26 +237,43 @@ public class SGameScreen {
 		}
 	}
 
+	/**
+	 * Sets the info message
+	 * @param message
+	 */
 	public void setInfoMessage(String message) {
 		this.infoMessage.setText(message);
 	}
 
+	/**
+	 * closes the application
+	 */
 	public void close() {
 		MenuScreen menu = new MenuScreen(stage);
 		stage.setScene(menu.getScene());
 	}
 
+	/**
+	 * returns the power up menu
+	 * @return
+	 */
 	public PowerUpMenu getPwrUpMenu() {
 		return pwrUpMenu;
 	}
 
+	/**
+	 * returns the board
+	 * @return
+	 */
 	public SBoard getBoard() {
 		return this.board;
 	}
 
 
-
-	
+	/**
+	 *
+	 * @return true if music is enables
+	 */
 	///all for check the music menuItem is or is not selected
 	public boolean isMusicOn() {
     	if(turnOffItem.isSelected()) {
@@ -248,35 +281,60 @@ public class SGameScreen {
     	}
     	return turnOnItem.isSelected();
     	}
-    
-   	 public boolean isbombOn() {
-    		return Bomb.isSelected();
-    	}
-    
-    	public boolean isSetbombOn() {
-        	return setBomb.isSelected();
-    	}
-    
-    	public boolean ischessmoveOn() {
-        	return chessmove.isSelected();
-    	}
-    
-   	 public boolean isMiniPromoteOn() {
-        	return MiniPromote.isSelected();
-    	}
-    
-    	public boolean isFreeCardOn() {
-        	return FreeCard.isSelected();
-    	}
-    
-    	public boolean isDummyPieceOn() {
-       		return DummyPiece.isSelected();
-    	}
-    
-    	public boolean isTeleportOn() {
-        	return Teleport.isSelected();
-    	}
-  
+
+	/**
+	 *
+	 * @return true if bomb is on
+	 */
+	public boolean isbombOn() {
+    	return Bomb.isSelected();
+    }
+
+	/**
+	 *
+	 * @return true if bomb is on
+	 */
+    public boolean isSetbombOn() {
+        return setBomb.isSelected();
+    }
+
+    public boolean ischessmoveOn() {
+        return chessmove.isSelected();
+    }
+
+	/**
+	 *
+	 * @return true if mini promote is on
+	 */
+    public boolean isMiniPromoteOn() {
+        return MiniPromote.isSelected();
+    }
+
+	/**
+	 *
+	 * @return true if free card is on
+	 */
+    public boolean isFreeCardOn() {
+        return FreeCard.isSelected();
+    }
+
+	/**
+	 *
+	 * @return true if dummy piece is on
+	 */
+    public boolean isDummyPieceOn() {
+       	return DummyPiece.isSelected();
+    }
+
+	/**
+	 *
+	 * @return true if teleport is on
+	 */
+    public boolean isTeleportOn() {
+        return Teleport.isSelected();
+    }
+
+
 
     public Label getRCinfo() {
     	return ruleChangeInfo;
@@ -293,22 +351,37 @@ public class SGameScreen {
 	public boolean getRC3() {
 		return game.getRC3();
 	}
-	
+
+	/**
+	 * sets rule change 1
+	 * @param rulechange1
+	 */
 	public void setRC1(boolean rulechange1) {
 		game.setRC1(rulechange1);
 	}
-	
+
+	/**
+	 * sets rule change 2
+	 * @param rulechange2
+	 */
 	public void setRC2(boolean rulechange2) {
 		game.setRC2(rulechange2);
 	}
-	
+
+	/**
+	 * sets rule change 3
+	 * @param rulechange3
+	 */
 	public void setRC3(boolean rulechange3) {
 		game.setRC3(rulechange3);
 	}
     
     public void selectPower(String powerUp){}
 
-    public void showPromotes(){
+	/**
+	 * shows the promote buttons
+	 */
+	public void showPromotes(){
     	promotes.getChildren().clear();
 		String color = (game.getTurn().equalsIgnoreCase("white")) ? "W_" : "B_";
 
@@ -349,6 +422,9 @@ public class SGameScreen {
 		pwrContainer.getChildren().add(promotes);
 	}
 
+	/**
+	 * hides the promote buttons
+	 */
 	public void hidePromotes(){
 		VBox pwrContainer = getPwrUpMenu().getPowerUpMenu();
 		pwrContainer.getChildren().remove(promotes);
@@ -421,8 +497,9 @@ public class SGameScreen {
     	Button no = new Button("no");
     	container.getChildren().addAll(label, yes, no);
     	container.getStylesheets().add("/Graphics/css/popup.css");
-		Scene stageScene = new Scene(container, 300, 300);
+		Scene stageScene = new Scene(container, 200, 120);
 		drawStage.setScene(stageScene);
+		drawStage.centerOnScreen();
 		drawStage.show();
 		
 		yes.setOnMouseClicked(new EventHandler<MouseEvent>()

@@ -15,16 +15,18 @@ import java.io.File;
 import CrazyChess.logic.MainLogic;
 import CrazyChess.logic.savegamestate.*;
 
-
+/**
+ * Class for the menu screen
+ */
 public class MenuScreen {
 
     private VBox buttons;
     private Scene scene;
     private Stage stage;
-    
 
-//    MainLogic game = new MainLogic();
-//    private AbstractPiece[][] gamestate;
+    private VBox warnings;
+
+
 
     private CheckBox cb1;
     private CheckBox cb2;
@@ -34,7 +36,10 @@ public class MenuScreen {
     private boolean isSelected2;
     private boolean isSelected3;
 
-
+    /**
+     * Constructor for the menu screen
+     * @param stage
+     */
     public MenuScreen(Stage stage){
         buttons = new VBox();
         buttons.setAlignment(Pos.CENTER);
@@ -53,6 +58,10 @@ public class MenuScreen {
         stage.setResizable(false);
     }
 
+    /**
+     * Adds the buttons to the menu screen
+     * @param root
+     */
     public void addButtons(VBox root){
 
         //Add New Game
@@ -132,6 +141,7 @@ public class MenuScreen {
                         System.out.println("rulechange 3 selected " + isSelected3);
 
                         stage.setScene(sp.getScene());
+                        stage.centerOnScreen();
                         sp.setDrawMenu();
 					}
             	});
@@ -261,10 +271,24 @@ public class MenuScreen {
         cb2.setSelected(true);
         cb3.setSelected(true);
         
-        root.getChildren().addAll(newButton,VsAI,title,cb1,cb2,cb3);
+        //warnings about rule changes or stage hazards causing you to get checked
+        warnings = new VBox();
+        warnings.setAlignment(Pos.CENTER);
+        warnings.setSpacing(4);
+        Label warning = new Label("Pay attention to when stage hazards disappear");
+        Label warning2 = new Label("Pay attention to what rule changes might come");
+        Label warning3 = new Label("Get checked at the end of your turn and you LOSE");
+        warnings.getChildren().addAll(warning,warning2,warning3);
+        
+        root.getChildren().addAll(newButton,VsAI,title,cb1,cb2,cb3,warnings);
     }
 
+
+    /**
+     * Adds the main image
+     */
     private void addMainImg(){
+
         ImageView img = new ImageView();
         img.setImage(new Image("/resources/menu_text.png"));
         img.setFitWidth(400);
@@ -272,6 +296,10 @@ public class MenuScreen {
         buttons.getChildren().add(img);
     }
 
+    /**
+     *
+     * @return the scene
+     */
     public Scene getScene(){
         return this.scene;
     }

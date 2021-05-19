@@ -9,23 +9,34 @@ import CrazyChess.pieces.King;
 import java.util.ArrayList;
 import java.util.Random;
 
-
+/**
+ * Class for the hazard assigner which applies the stage hazards to the board
+ */
 public class HazardAssigner {
 
-	final int hazardInterval = 4; // number of go's between hazards spawning
+	final int hazardInterval = 5; // number of go's between hazards spawning
 	int untilHazard; // number of turns before next hazard
-	int hazardDuration = 2; // number of turns hazards last for
+	int hazardDuration = 3; // number of turns hazards last for
 	int hazardTurns = 0; // how many turns hazard has been active
 	boolean activeHazard;
 	Utilities utils;
 	ExtraChecksAndTools ecat = new ExtraChecksAndTools();
 
+	/**
+	 * Constructor for a hazard assigner
+	 */
 	public HazardAssigner() {
 		utils = new Utilities();
 		activeHazard = false;
 		untilHazard = hazardInterval;
 	}
 
+	/**
+	 * Assigns a hazard to the gamestate
+	 *
+	 * @param gameState
+	 * @return
+	 */
 	public AbstractPiece[][] assignHazard(AbstractPiece[][] gameState) {
 		AbstractPiece[][] safeGameState = utils.safeCopyGamestate(gameState);
 		// spawn a hazard
@@ -39,7 +50,7 @@ public class HazardAssigner {
 			int randHazardIndex = rand.nextInt(Hazard.values().length);
 			Hazard randHazard = Hazard.values()[randHazardIndex];
 
-			// code for randomly choosing hazard
+			//code for randomly choosing hazard
 			if (randHazard == Hazard.FROZEN) {
 				System.out.println("FROZEN");
 				return frozenHazard(gameState);
@@ -47,6 +58,7 @@ public class HazardAssigner {
 				System.out.println("BURN");
 				return burnHazard(gameState);
 			}
+
 		} else {
 			if (activeHazard) {
 				if (hazardTurns == hazardDuration) {// needs to despawn hazard
@@ -65,6 +77,11 @@ public class HazardAssigner {
 		return gameState;
 	}
 
+	/**
+	 * Applies the frozen hazard to the gamestate
+	 * @param gameState
+	 * @return
+	 */
 	private AbstractPiece[][] frozenHazard(AbstractPiece[][] gameState) {
 		ArrayList<AbstractPiece> pieces = ecat.gamestateToPieceArrayList(gameState);
 		Random rand = new Random();
@@ -82,6 +99,12 @@ public class HazardAssigner {
 		return gs;
 	}
 
+	/**
+	 * Applies the burn hazard to the gamestate
+	 *
+	 * @param gameState
+	 * @return
+	 */
 	private AbstractPiece[][] burnHazard(AbstractPiece[][] gameState) {
 		// System.out.println("In burn");
 		// player cannot move onto that tile if it is a burnTile but only blank tiles
@@ -102,6 +125,12 @@ public class HazardAssigner {
 		return gs;
 	}
 
+	/**
+	 * Removes any gamestate hazards from the gamestate
+	 *
+	 * @param gameState
+	 * @return
+	 */
 	private AbstractPiece[][] despawn(AbstractPiece[][] gameState) {
 		System.out.println("=======================================");
 		System.out.println("Despawn the stage hazards");
@@ -120,6 +149,11 @@ public class HazardAssigner {
 		return gs;
 	}
 
+	/**
+	 * returns the amount of tiles the hazard should affect depending on how many available tiles there are
+	 * @param size
+	 * @return
+	 */
 	private int getThreshhold(int size) {
 		if (size > 24) {
 			return 3;

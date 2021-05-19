@@ -5,14 +5,18 @@
     src: url('/resources/PrStart.ttf');
 }
 .root {
-    -fx-background-color: rgba(7,59,76,0.85);
-    -fx-padding: -10 0 0 0;
+    -fx-background-color: rgb(12,17,34);
+    -fx-padding: -8 0 0 0;
+    -fx-radius: 5;
     -fx-alignment: center;
-    -fx-effect: dropshadow( one-pass-box , black , 10 , 0 , 2 , 2 );
+    -fx-border-color: rgb(49, 89, 23);
+    -fx-border-radius: 5;
+    -fx-spacing: 5px
 }
 
 .label {
 	-fx-text-fill: white;
+	-fx-font-family: 'Super Mario Bros. 2';
 }
 
 .button

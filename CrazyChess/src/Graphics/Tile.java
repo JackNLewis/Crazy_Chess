@@ -21,6 +21,11 @@ public class Tile {
     private int tileSize;
 
 
+    /**
+     * Constructor for a Tile
+     * @param pos
+     * @param tileSize
+     */
     public Tile(Position pos, int tileSize){
         this.pos = pos;
         this.tileSize = tileSize;

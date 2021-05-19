@@ -25,7 +25,7 @@
 }
 
 .info-message {
-    -fx-text-fill: #1e453e;
+    -fx-text-fill:#2596be;
     -fx-font-family: 'Super Mario Bros. 2';
     -fx-font-size: 15px;
     -fx-padding: 5 0 5 0;
@@ -62,7 +62,7 @@
 }
 
 #menuBar {
-    -fx-background-color: rgba(7,59,76,0.85);
+    -fx-background-color: rgba(12,17,34,0.85);
     -fx-text-fill: white;
 }
 
@@ -79,7 +79,7 @@
 }
 
 .context-menu {
-    -fx-background-color: rgba(7,59,76,0.85);
+    -fx-background-color: rgba(12,17,34,0.85);
 }
 
 

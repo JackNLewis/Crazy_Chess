@@ -37,7 +37,7 @@ public class SBoard {
 
     //Used for checking
     private MainLogic game;
-  //  private ExtraChecksAndTools ect;
+    private ExtraChecksAndTools ect;
     private Utilities util;
 
     //board logic
@@ -65,11 +65,11 @@ public class SBoard {
     
     private boolean musicOn;
     
+    //Ai stuff
     private boolean aiEnabled = false;
     private AI ai = new AI();
     private boolean aiTurn = false;
-    
-//    private HazardPiece hazardPiece;
+
 
     public SBoard(MainLogic game, SGameScreen SGameScreen){
         initBoard("white");
@@ -78,6 +78,7 @@ public class SBoard {
         selected = false;
      //   ect = new ExtraChecksAndTools();
         util = new Utilities();
+        ect = new ExtraChecksAndTools();
         askForDraw = new AskForDraw(SGameScreen, game);
         powerUps = SGameScreen.getPwrUpMenu();
         powerMain = new PowerupMain();
@@ -127,11 +128,6 @@ public class SBoard {
         boardSize = 50*8;
         board = new GridPane();
         tiles = new ArrayList<Tile>();
-
-        Wpawnpormote = new HBox(4);
-        board.add(Wpawnpormote, 0 , 10);
-        Bpawnpormote = new HBox(4);
-        board.add(Bpawnpormote, 5 , 10);
 
         for (int i=0; i<8; i++) {
             board.getColumnConstraints().add(new ColumnConstraints(squareSize));
@@ -269,6 +265,7 @@ public class SBoard {
                                     promotePiece = promote;
                                     promoteWait = true;
                                 }
+                                updateGui();
                             }else{
                                 System.out.println("Unsucessful powered move");
                                 return;
@@ -314,6 +311,21 @@ public class SBoard {
                         powerUps.setSelectedIndex(-1);
                         renderGameState(game.getGamestate());
 
+                        //check if the player is starting their go and checking someone
+                        if(ect.isInCheck(util.oppositeColor(game.getTurn()), false,game.getGamestate(),game.getTurnNo())){
+                            System.out.println("==============================================");
+                            System.out.println("Player " + game.getTurn() + "Wins!!!!!!");
+                            System.out.println("==============================================");
+                            SGameScreen.setInfoMessage("Player " + game.getTurn() + "Wins!!");
+                        }
+
+                        //check if the player is starting there go in check
+                        if(ect.isInCheck(game.getTurn(), false,game.getGamestate(),game.getTurnNo())){
+                            System.out.println("==============================================");
+                            System.out.println("Player " + game.getTurn() + game.getCheckStatus(game.getTurn()));
+                            System.out.println("==============================================");
+                       }
+
                         //If ai is enabled make the ai move
                         if(aiEnabled){
                             aiMove();
@@ -325,7 +337,11 @@ public class SBoard {
         }
     }
 
-
+    /**
+     * returns the correct image for the piece
+     * @param p
+     * @return
+     */
     public ImageView getImageView(AbstractPiece p) {
         String filename = "";
         String name;
@@ -364,6 +380,9 @@ public class SBoard {
         return imgView;
     }
 
+    /**
+     * Updates the labels on the gui to show the state of the game such as check, checkmates and draws
+     */
     public void updateGui(){
         String oppColor = util.oppositeColor(game.getTurn());
         SGameScreen.setInfoMessage("");
@@ -383,7 +402,11 @@ public class SBoard {
             askForDraw.hide();
         }
     }
-
+    /**
+     * Sets the default colour of the tile
+     *
+     * @param tile
+     */
     private void setDefaultColor(Tile tile){
         if ((tile.getPos().getXpos() % 2 == 1 && tile.getPos().getYpos() % 2 == 1)
                 || ((tile.getPos().getXpos() % 2 == 0) && (tile.getPos().getYpos() % 2 == 0))) {
@@ -393,6 +416,9 @@ public class SBoard {
         }
     }
 
+    /**
+     * Displays the available normal chess moves for the currently selected piece
+     */
     public void showMoves(){
         renderGameState(game.getGamestate());
         if(selectedTile ==null){
@@ -410,6 +436,9 @@ public class SBoard {
         selectedTile.setbgColor(new Image("/resources/selectedTile.png"));
     }
 
+    /**
+     * Displays second available moves for a power up if it contains two parts. E.g. teleport
+     */
     public void showPowerMoves(){
         renderGameState(game.getGamestate());
         int powerIndex = powerUps.getSelectedIndex();
@@ -427,6 +456,9 @@ public class SBoard {
         }
     }
 
+    /**
+     * Displays the available powered up moves for the selected piece
+     */
     public void showInitPowerMoves(){
         renderGameState(game.getGamestate());
         int powerIndex = powerUps.getSelectedIndex();
@@ -445,7 +477,9 @@ public class SBoard {
         selected = false;
     }
 
-    //to play chessmove and Bomb sound
+    /**
+     * Plays the default chess sound
+     */
     private void playNormalSound(){
         if(game.getBB() == 1 || (game.getTurnNo() == game.getBBlt() + 4 &&!(game.getBBlt() == 0))) {
         	if(SGameScreen.isMusicOn() && !SGameScreen.isbombOn()) {
@@ -468,8 +502,10 @@ public class SBoard {
     		sound.chessmove();
     	}
     }
-    
-    //to play powerups sound
+
+    /**
+     * plays the correct powered move sound
+     */
     private void playPwSound(){
         // SUCCESFFUL POWERED MOVE
     	//play sound effects
@@ -513,7 +549,6 @@ public class SBoard {
 	 * @param b the box we use for adding buttons, we have two in SBoard, one for white and the other one for black
 	 * @param p the position of the pawn which reach the edge of board.
 	 */
-	
 	public void PawnPromote(HBox b,Position p) {
 		AbstractPiece[][] gamestateCopy = util.safeCopyGamestate(game.getGamestate());
 		AbstractPiece copiedPiece = util.getPiece(p, true, gamestateCopy);
@@ -595,22 +630,26 @@ public class SBoard {
 		}
 	}
 
+    /**
+     * returns the board gridpane
+     * @return
+     */
     public GridPane getBoard(){
         return this.board;
     }
-    
-    public HBox getWBox() {
-    	return Wpawnpormote;
-    }
 
-    public HBox getBBox() {
-    	return Bpawnpormote;
-    }
-
+    /**
+     *
+     * @return true if tile is selected
+     */
     public boolean isSelected(){
         return selected;
     }
 
+    /**
+     * Enables the AI to play
+     * @param levels
+     */
     public void enableAI(String levels){
         this.aiEnabled = true;
         if(levels == "easy") {
@@ -624,6 +663,9 @@ public class SBoard {
         }
     }
 
+    /**
+     * This method makes the move for the AI
+     */
     private void aiMove(){
         Thread thread = new Thread(){
             public void run(){
@@ -631,8 +673,8 @@ public class SBoard {
                 long startTime = System.currentTimeMillis();
                 AbstractPiece[][] gs = ai.AI(game);
                 long endTime = System.currentTimeMillis();
-                //So the ai takes at least 4 seconds to make it feel more realistic
-                if((endTime-startTime)<4000){
+                //So the ai takes at least 2 seconds to make it feel more realistic
+                if((endTime-startTime)<1000){
                     System.out.println("Going to sleep");
                     try {
                         sleep(endTime-startTime);
@@ -684,7 +726,10 @@ public class SBoard {
         };
         thread.start();
     }
-    
+
+    /**
+     * Updates the rule change info
+     */
     public void updateRuleChangeInfo(){
    // 	System.out.println("qqqqqqqqqq");
         if(game.getBrs()){
@@ -713,6 +758,10 @@ public class SBoard {
         }
     }
 
+    /**
+     * Used to promote a piece on the board
+     * @param newPiece
+     */
     public void promte(String newPiece){
 	    game.promote(promotePiece,newPiece);
 	    renderGameState(game.getGamestate());

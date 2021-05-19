@@ -32,6 +32,8 @@
 	-fx-padding: 5 5 5 5;
 	-fx-background-radius: 20;
 	-fx-background-color: rgba(182,150,157,0.5);
+	-fx-display: flex;
+        -fx-flex-flow: row wrap;
  }
  
   .check-box {
