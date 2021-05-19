@@ -63,7 +63,7 @@ public class SBoard {
     private HBox Wpawnpormote;
     private HBox Bpawnpormote;
     
-    private boolean musicOn;
+    private boolean musicOn = true;
     
     //Ai stuff
     private boolean aiEnabled = false;
@@ -803,8 +803,10 @@ public class SBoard {
     public void setMusic(boolean music) {
     	if(music) {
     		sound.turnOn();
+    		musicOn = true;
     	} else {
     		sound.turnOff();
+    		musicOn = false;
     	}
     }
 }

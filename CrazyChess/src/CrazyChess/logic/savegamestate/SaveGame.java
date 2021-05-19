@@ -35,14 +35,13 @@ import CrazyChess.logic.Utilities;
 import CrazyChess.logic.StageHazards.Hazard;
 import CrazyChess.logic.StageHazards.HazardAssigner;
 import CrazyChess.logic.StageHazards.HazardPiece;
-import CrazyChess.logic.savegamestate.ChessIO;
 import CrazyChess.pieces.*;
 import Graphics.SGameScreen;
 	/**
 	 * A class that handles saving and loading the game
 	 *
 	 */
-public class SaveGame implements ChessIO {
+public class SaveGame {
 	
 	public AbstractPiece p;
 	public AbstractPiece originalp;
@@ -70,7 +69,7 @@ public class SaveGame implements ChessIO {
      * @param gamestate  current gamestate
      * @return           byte array with the information about a current game
      */
-	@Override
+
 	public byte[] save(MainLogic board, AbstractPiece[][] gamestate) {
 		
 		ArrayList<AbstractPiece> blackPieces = ecat.getBlackPieces(gamestate);
@@ -272,7 +271,7 @@ public class SaveGame implements ChessIO {
 
 	/**
 	 * Method to load the information about the pieces 
-	 * @param writer                the XMLStreamWriter object
+	 * @param reader                the XMLStreamWriter object
 	 * @param gamestate             gamestate to be loaded into
 	 * @throws XMLStreamException
 	 * @returns                     a gamestate with the pieces loaded into it
@@ -374,11 +373,10 @@ public class SaveGame implements ChessIO {
 	}
 
 	
-/**
+     /**
 	 * Returns an XML file description
 	 * @return an XML file description
 	 */
-	@Override
 	public String getFileTypeDescription() {
 		return "XML files (*.xml)";
 	}
@@ -387,7 +385,6 @@ public class SaveGame implements ChessIO {
 	 * Returns an XML file extension
 	 * @return an XML file extension ("xml")
 	 */
-	@Override
 	public String getFileExtension() {
 		return "xml";
 	}
