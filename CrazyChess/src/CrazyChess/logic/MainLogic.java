@@ -515,6 +515,8 @@ public class MainLogic
 		//Constructing new possible gamestate
 		//First checks if it can castle
 		if(isValid){
+			if(p instanceof King)
+				cstl.castleCheck((King)p, xRel, yRel, isDebug, gamestate, turnNo);
 			if(p instanceof King && ((King)p).getCanCastle() != 0)
 				cstl.castle((King)p, xRel, yRel, isDebug, gamestate, turnNo);
 			AbstractPiece[][] newGamestate = utils.safeCopyGamestate(gamestate);

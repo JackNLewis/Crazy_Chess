@@ -368,6 +368,8 @@ public class ExtraChecksAndTools
 				if(!(p.getXpos()==targetTile.getXpos()&&p.getYpos()==targetTile.getYpos())) {
 					if(bvc.moveCheckAssigner(p, targetTile.getXpos()-p.getXpos(), targetTile.getYpos()-p.getYpos(), isDebug, gamestate, moveNo)||
 					  ((p instanceof King)&&(cstl.castleCheck((King)p, targetTile.getXpos()-p.getXpos(), targetTile.getYpos()-p.getYpos(), isDebug, gamestate, moveNo)))) {
+						if(p instanceof King)
+							((King)p).setCanCastle(0);
 						if(!targetTile.getColor().equalsIgnoreCase(p.getColor())){ //checks if the candidate tile doesn't have a piece of the same color on it
 							AbstractPiece[][] newGamestate = utils.safeCopyGamestate(gamestate);
 							newGamestate=utils.relocatePiece(p, newGamestate, targetTile.getPosition());
