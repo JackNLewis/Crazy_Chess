@@ -660,8 +660,8 @@ public class SBoard {
                 long startTime = System.currentTimeMillis();
                 AbstractPiece[][] gs = ai.AI(game);
                 long endTime = System.currentTimeMillis();
-                //So the ai takes at least 4 seconds to make it feel more realistic
-                if((endTime-startTime)<4000){
+                //So the ai takes at least 2 seconds to make it feel more realistic
+                if((endTime-startTime)<2000){
                     System.out.println("Going to sleep");
                     try {
                         sleep(endTime-startTime);
