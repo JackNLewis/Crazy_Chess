@@ -14,9 +14,9 @@ import java.util.Random;
  */
 public class HazardAssigner {
 
-	final int hazardInterval = 4; // number of go's between hazards spawning
+	final int hazardInterval = 5; // number of go's between hazards spawning
 	int untilHazard; // number of turns before next hazard
-	int hazardDuration = 2; // number of turns hazards last for
+	int hazardDuration = 3; // number of turns hazards last for
 	int hazardTurns = 0; // how many turns hazard has been active
 	boolean activeHazard;
 	Utilities utils;
@@ -50,7 +50,7 @@ public class HazardAssigner {
 			int randHazardIndex = rand.nextInt(Hazard.values().length);
 			Hazard randHazard = Hazard.values()[randHazardIndex];
 
-			// code for randomly choosing hazard
+			//code for randomly choosing hazard
 			if (randHazard == Hazard.FROZEN) {
 				System.out.println("FROZEN");
 				return frozenHazard(gameState);
@@ -58,6 +58,7 @@ public class HazardAssigner {
 				System.out.println("BURN");
 				return burnHazard(gameState);
 			}
+
 		} else {
 			if (activeHazard) {
 				if (hazardTurns == hazardDuration) {// needs to despawn hazard
