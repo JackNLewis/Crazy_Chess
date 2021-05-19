@@ -16,6 +16,16 @@ public class Castle
 	Utilities utils = new Utilities();
 	ExtraChecksAndTools ect = new ExtraChecksAndTools();
 	
+	/**
+	 * Checks if a player can castle
+	 * @param p          King of the player
+	 * @param xRel       relative movement of the King on the X axis
+	 * @param yRel       relative movement of the King on the Y axis
+	 * @param isDebug    is debug mode active
+	 * @param gamestate  current gamestate
+	 * @param moveNo     current move number
+	 * @return           true if player is able to castle, false if not
+	 */
 	public boolean castleCheck(King p, int xRel, int yRel, boolean isDebug, AbstractPiece[][] gamestate, int moveNo){
 		if(p.getWasMoved() == false) {
 			if(xRel == 2 && yRel == 0) { //castle to the right
@@ -120,7 +130,15 @@ public class Castle
 		}
 		return false;
 	}
-	
+	/**
+	 * Actually performs the castling action
+	 * @param p          King of the player
+	 * @param xRel       relative movement of the King on the X axis
+	 * @param yRel       relative movement of the King on the Y axis
+	 * @param isDebug    is debug mode active
+	 * @param gamestate  current gamestate
+	 * @param moveNo     current move number
+	 */
 	public void castle(King p, int xRel, int yRel, boolean isDebug, AbstractPiece[][] gamestate, int moveNo) {
 		if (p.getCanCastle() == 1) {
 			gamestate=utils.placePiece(new BlankPiece("Blank", 7, 0,"Normal"), isDebug, gamestate);

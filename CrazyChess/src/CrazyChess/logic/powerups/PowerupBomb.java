@@ -9,7 +9,10 @@ import CrazyChess.logic.Utilities;
 import CrazyChess.pieces.AbstractPiece;
 import CrazyChess.pieces.King;
 import CrazyChess.pieces.Pawn;
-
+/**
+ * Class for the Bomb powerup
+ *
+ */
 public class PowerupBomb {
 	Utilities utils = new Utilities();
 	ExtraChecksAndTools ecat = new ExtraChecksAndTools();

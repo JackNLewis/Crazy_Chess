@@ -5,7 +5,6 @@ import CrazyChess.logic.Position;
 /**
  * Class that represents the Rook in game
  * 
- * @author Darius
  *
  */
 public class Rook extends AbstractPiece

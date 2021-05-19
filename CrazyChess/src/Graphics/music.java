@@ -88,7 +88,9 @@ public class music {
 		/////////////////////////////////
 	}
 	////////////////////////////////////
-	//turn on music
+	/**
+	 * Turns the music off in the game
+	 */
 	public void turnOff() {
 		this.bombsound = 0.0;
 		this.chessmovesound = 0.0;
@@ -99,7 +101,9 @@ public class music {
 		this.DummyPiecesound = 0.0;
 	}
 	
-	//turn on music
+	/**
+	 * Turns the music on in the game
+	 */
 	public void turnOn() {
 		this.bombsound = 0.1;
 		this.chessmovesound = 1.0;
@@ -109,64 +113,93 @@ public class music {
 		this.FreeCardsound = 0.6;
 		this.DummyPiecesound = 1.0;
 	}
-	
+	/**
+	 * Turns off the sound for moving pieces
+	 */
 	public void turnOffChessmove() {
 		this.chessmovesound = 0.0;
 	}
-	
+	/**
+	 * Turns off the sound for bombs exploding
+	 */
 	public void turnOffbomb() {
 		this.bombsound = 0.0;
 	}
-	
+	/**
+	 * Turns off sound the sound setting up a bomb
+	 */
 	public void turnOffSetBomb() {
 		this.SetBombsound = 0.0;
 	}
-	
+	/**
+	 * Turns off sound for mini promotions
+	 */
 	public void turnOffMini() {
 		this.Minisound = 0.0;
 	}
-	
+	/**
+	 * Turns off the sounds for teleports
+	 */
 	public void turnOffTeleport() {
 		this.Teleportsound = 0.0;
 	}
-	
+	/**
+	 * Turns off the sounds for free cards
+	 */
 	public void turnOffFreeCard() {
 		this.FreeCardsound = 0.0;
 	}
-	
+	/**
+	 * Turns off the sounds for dummy pieces
+	 */
 	public void turnOffDummy() {
 		this.DummyPiecesound = 0.0;
 	}
 	
-	//play chessmove sound
+	/**
+	 * Plays the sound for moving pieces
+	 */
 	public void chessmove() {
 			chessmove.play(chessmovesound);
 	}
 	
-	//play bomb sound
+	/**
+	 * Plays the sound for bombs exploding
+	 */
 	public void Bomb() {
 			Bomb.play(bombsound);
 	}
+	/**
+	 * Plays the sound for setting up bombs
+	 */
 	public void SetBomb() {
 			SetBomb.play(SetBombsound);
 	}
 	
-	//play Mini-Promote sound
+	/**
+	 * Plays the sound for mini promotions
+	 */
 	public void MiniPromote() {
 			MiniPromote.play(Minisound);
 	}
 	
-	//play Teleport sound
+	/**
+	 * Plays the sound for teleports
+	 */
 	public void Teleport() {
 			Teleport.play(Teleportsound);
 	}
 	
-	//play FreeCard sound
+	/**
+	 * Plays the sound for free card
+	 */
 	public void FreeCard() {
 			FreeCard.play(FreeCardsound);
 	}
 	
-	//play DummyPiece sound
+	/**
+	 * Plays the sound for dummy pieces
+	 */
 	public void DummyPiece() {
 			DummyPiece.play(DummyPiecesound);
 	}

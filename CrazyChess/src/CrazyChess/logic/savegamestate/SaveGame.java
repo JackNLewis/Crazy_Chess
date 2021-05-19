@@ -35,7 +35,10 @@ import CrazyChess.logic.Utilities;
 import CrazyChess.logic.StageHazards.HazardPiece;
 import CrazyChess.pieces.*;
 import Graphics.SGameScreen;
-	
+	/**
+	 * A class that handles saving and loading the game
+	 *
+	 */
 public class SaveGame implements ChessIO {
 	
 //	MainLogic board = new MainLogic();
@@ -44,7 +47,11 @@ public class SaveGame implements ChessIO {
 	AbstractPiece color;
 	Utilities utils = new Utilities();
 	ExtraChecksAndTools ecat = new ExtraChecksAndTools();
-    
+    /**
+     * Method that saves an array of data to an inputted file
+     * @param data    the array of data
+     * @param file    the file to write to
+     */
 	public static void saveDataToFile(byte[] data, File file) {
 		try {
 			Files.write(Paths.get(file.toURI()), data);
@@ -53,6 +60,12 @@ public class SaveGame implements ChessIO {
 		}
 	}
 
+	 /**
+     * Method that saves the current game into a byte array
+     * @param board      the MainLogic object of the current game
+     * @param gamestate  current gamestate
+     * @return           byte array with the information about a current game
+     */
 	@Override
 	public byte[] save(MainLogic board, AbstractPiece[][] gamestate) {
 //		AbstractPiece[][] gamestate;
@@ -91,7 +104,12 @@ public class SaveGame implements ChessIO {
 		}
 		return baos.toByteArray();
 	}
-
+/**
+ * Method to write the information about the pieces on the board 
+ * @param pieces               ArrayList of pieces to write
+ * @param writer               the XMLStreamWriter object
+ * @throws XMLStreamException
+ */
 	private void writePieces(ArrayList<AbstractPiece> pieces, XMLStreamWriter writer) throws XMLStreamException {
 		writer.writeStartElement(pieces.get(0).getColor());
 		for (AbstractPiece piece : pieces) {
@@ -109,7 +127,11 @@ public class SaveGame implements ChessIO {
 		}
 		writer.writeEndElement();
 	}
-	
+	/**
+	 * Loads a game from a file into a byte array
+	 * @param file   file witha saved game
+	 * @return       an array of bytes containing information about the loaded game
+	 */
 	public static byte[] loadDataFromFile(File file) {
 		try {
 			return Files.readAllBytes(Paths.get(file.toURI()));
@@ -118,9 +140,15 @@ public class SaveGame implements ChessIO {
 			return null;
 		}
 	}
-	
 
-	
+
+	/**
+	 * Method to load information from the byte array
+	 * into an actual game
+	 * @param data        the byte array of data about the game
+	 * @param board       a MainLogic object to be loaded into
+	 * @param gamestate   gamestate to be loaded into
+	 */
 	public void load(byte[] data, MainLogic board, AbstractPiece[][] gamestate) {
 		// AbstractPiece p;
 		ByteArrayInputStream bais = new ByteArrayInputStream(data);
@@ -179,7 +207,13 @@ public class SaveGame implements ChessIO {
 		}
 		
 	}
-
+	/**
+	 * Method to load the information about the pieces 
+	 * @param writer                the XMLStreamWriter object
+	 * @param gamestate             gamestate to be loaded into
+	 * @throws XMLStreamException
+	 * @returns                     a gamestate with the pieces loaded into it
+	 */
 	private AbstractPiece[][] loadPiece(XMLStreamReader reader, AbstractPiece[][] gamestate) throws XMLStreamException {
 		// AbstractPiece[][] gamestate = null;
 		// AbstractPiece piece;
@@ -226,12 +260,18 @@ public class SaveGame implements ChessIO {
 //		System.out.println("successfully rendered gamestate");
 	}
 	
-
+/**
+	 * Returns an XML file description
+	 * @returns an XML file description 
+	 */
 	@Override
 	public String getFileTypeDescription() {
 		return "XML files (*.xml)";
 	}
-
+	/**
+	 * Returns an XML file extension
+	 * @returns an XML file extension ("xml") 
+	 */
 	@Override
 	public String getFileExtension() {
 		return "xml";

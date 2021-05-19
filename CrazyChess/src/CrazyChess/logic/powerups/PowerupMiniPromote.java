@@ -5,6 +5,10 @@ import CrazyChess.logic.Utilities;
 import CrazyChess.logic.ExtraChecksAndTools;
 import CrazyChess.pieces.*;
 
+/**
+ * A class for the mini-promote powerup
+ *
+ */
 public class PowerupMiniPromote {
 Utilities utils = new Utilities();
 	

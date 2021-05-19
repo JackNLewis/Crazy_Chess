@@ -5,7 +5,6 @@ import CrazyChess.logic.Position;
 /**
  * Class that represents the Queen in game
  * 
- * @author Darius
  *
  */
 public class Queen extends AbstractPiece

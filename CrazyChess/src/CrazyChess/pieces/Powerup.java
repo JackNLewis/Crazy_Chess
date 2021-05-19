@@ -5,7 +5,6 @@ import CrazyChess.logic.Position;
 /**
  * Class that represents the Bishop in game
  * 
- * @author Darius
  *
  */
 public class Powerup extends AbstractPiece

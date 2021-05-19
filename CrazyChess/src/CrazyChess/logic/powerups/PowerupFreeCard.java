@@ -2,7 +2,10 @@ package CrazyChess.logic.powerups;
 
 import CrazyChess.logic.*;
 import CrazyChess.pieces.*;
-
+/**
+ * Class for the "get out of check free card" powerup
+ *
+ */
 public class PowerupFreeCard {
 	Utilities utils = new Utilities();
 	MainLogic main = new MainLogic();

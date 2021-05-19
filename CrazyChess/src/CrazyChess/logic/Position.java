@@ -8,7 +8,6 @@ import java.io.Serializable;
  * 
  * The positions are represented by x and y coordinates.
  * For example, square A1 would be coordinate (0,0), H8 would be (7,7) and so on.
- * @author Darius
  *
  */
 public class Position implements Serializable

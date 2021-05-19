@@ -10,7 +10,6 @@ import java.util.ArrayList;
  * and placing pieces to game states
  * 
  * 
- * @author Darius
  *
  */
 

@@ -17,10 +17,9 @@ import CrazyChess.pieces.*;
  * because of methods like canCapture, capturableBy and
  * possibleGamestatesAfterNextMove.
  * This class also holds methods for checking for checks
- * and checkmates. (should probably split it up in the future)
+ * and checkmates.
  * 
  * 
- * @author Darius
  *
  */
 
@@ -604,7 +603,9 @@ public class ExtraChecksAndTools
 			}
 		}
 	}
-	
+	/**
+	 * A method that randomly triggers rule change 3 (kings can move like queens)
+	 */
 	public void updateRuleChange3() {
 		if (!bvc.getBrs() && !bvc.getPS() && !bvc.getKS())
 		{
@@ -634,19 +635,31 @@ public class ExtraChecksAndTools
 			}
 		}
 	}
-	
+	/**
+	 * Gets the status of the Bishop-Rook rulechange
+	 * @return   true if the rulechange is active, false if not
+	 */
 	public boolean getBrs() {
 		return bvc.getBrs();
 	}
-	
+	/**
+	 * Gets the status of the "Pawns can go backwards" rulechange
+	 * @return   true if the rulechange is active, false if not
+	 */
 	public boolean getPS() {
 		return bvc.getPS();
 	}
-	
+	/**
+	 * Gets the status of the "Kings can move like Queens" rulechange
+	 * @return   true if the rulechange is active, false if not
+	 */
 	public boolean getKS() {
 		return bvc.getKS();
 	}
-	
+	/**
+	 * Gets the counter for the number of turns that the rulechange will be active
+	 * @return   number of turns that the rulechange will be active
+	 */
 	public int getCounter() {
 		return counter;
 	}

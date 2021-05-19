@@ -5,7 +5,6 @@ import CrazyChess.logic.*;
 
 /**
  * Class for the teleport powerup
- * @author Darius
  *
  */
 

@@ -8,6 +8,10 @@ import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.VBox;
 import CrazyChess.logic.MainLogic;
 
+/**
+ * A class that handles asking for a draw in game
+ *
+ */
 public class AskForDraw
 {
 	private VBox		container;

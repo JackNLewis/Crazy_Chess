@@ -5,7 +5,6 @@ import CrazyChess.logic.Position;
 /**
  * Class that represents the Pawn in game
  * 
- * @author Darius
  *
  */
 

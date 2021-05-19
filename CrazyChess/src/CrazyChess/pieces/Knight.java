@@ -5,7 +5,6 @@ import CrazyChess.logic.Position;
 /**
  * Class that represents the Knight in game
  * 
- * @author Darius
  *
  */
 public class Knight extends AbstractPiece

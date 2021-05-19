@@ -11,7 +11,10 @@ import javafx.scene.image.Image;
 import javafx.scene.paint.ImagePattern;
 
 import java.util.ArrayList;
-
+/**
+ * A class to represent a tile on the board in the GUI
+ *
+ */
 public class Tile {
 
     private StackPane sp;
@@ -20,6 +23,11 @@ public class Tile {
     private Position pos;
     private int tileSize;
 
+    /**
+     * Contructor for the Tile object
+     * @param pos        position of the tile
+     * @param tileSize   size of the tile
+     */
 
     public Tile(Position pos, int tileSize){
         this.pos = pos;

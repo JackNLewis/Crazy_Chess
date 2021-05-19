@@ -13,7 +13,6 @@ import CrazyChess.pieces.*;
  * This is the main class for the chess game logic.
  * Ties everything to do with logic together.
  * 
- * @author Darius
  *
  */
 
@@ -40,10 +39,10 @@ public class MainLogic
 	protected boolean rulechange3;     //boolean to show if rule change 1 was selected to play with
 	
 	//for bomb limit
-	protected int WBlt;
-	protected int BBlt;
-	protected int WB;
-	protected int BB;
+	protected int WBlt; //Stores the turn a bomb was placed on a white piece
+	protected int BBlt; //Stores the turn a bomb was placed on a black piece
+	protected int WB; //shows if we need to play a bomb sound for white (is set either to 0 or 1)
+	protected int BB; //shows if we need to play a bomb sound for black (is set either to 0 or 1)
 	
 	ArrayList<String> whitePowerUps = new ArrayList<String>();  //ArrayList to store white's powerups
 	ArrayList<String> blackPowerUps = new ArrayList<String>();  //ArrayList tp store black's powerups
@@ -138,10 +137,17 @@ public class MainLogic
 	public String getTurn(){
 		return currentTurn;
 	}
-//	??????????????????
+ /**
+  * Changes current turn
+  * @param currentTurn  color of the player who's turn to switct to
+  */
 	public void setCurrentTurnColor(String currentTurn) {
 		this.currentTurn = currentTurn;
 	}
+	/**
+	 * Changes the current turn number
+	 * @param currentTurn   the desired turn number
+	 */
 	public void setCurrentTurn(int currentTurn) {
 		this.turnNo = currentTurn;
 	}
@@ -694,7 +700,10 @@ public class MainLogic
 		utils.printGameState(gamestate);
 	}
 
-
+/**
+ * Gives you the current turn number
+ * @return    current turn number
+ */
 	public int getTurnNo() {
 		return turnNo;
 	}
@@ -730,6 +739,11 @@ public class MainLogic
 		return false;
 	}
 
+	/**
+	 * Gives you powerups of the desired player
+	 * @param player  color of the desired player
+	 * @return        ArrayList of powerups that the player has
+	 */
 	public ArrayList<String> getPowerUps(String player){
 		if(player.equalsIgnoreCase("black")){
 			return blackPowerUps;
@@ -737,39 +751,65 @@ public class MainLogic
 			return whitePowerUps;
 		}
 	}
-	
+	/**
+	 * Returns the status of Bishop-Rook rulechange
+	 * @return  true if the rulechange is active, false if not
+	 */
 	public boolean getBrs() {
 		return ecat.getBrs();
 	}
-	
+	/**
+	 * Returns the status of "Pawns can go backwards" rulechange
+	 * @return  true if the rulechange is active, false if not
+	 */
 	public boolean getPS() {
 		return ecat.getPS();
 	}
-	
+	/**
+	 * Returns the status of "Kings can move like Queens" rulechange
+	 * @return  true if the rulechange is active, false if not
+	 */
 	public boolean getKS() {
 		return ecat.getKS();
 	}
-	
+	/**
+	 * Returns the drawAsked status
+	 * @return true if the draw is asked, false if not
+	 */
 	public boolean getDrawAsked(){
 		return isDrawAsked;
 	}
-	
+	/**
+	 * Sets the drawAsked status to true
+	 * 
+	 */
 	public void setDrawAsked(){
 		isDrawAsked = true;
 	}
-	
+	/**
+	 * Gets the draw status
+	 * @return true if the game is in draw, false if not
+	 */
 	public boolean getDraw(){
 		return isDraw;
 	}
-	
+	/**
+	 * Sets the draw status
+	 */
 	public void setDraw(){
 		isDraw = true;
 	}
-	
+	/**
+	 * Refuses a draw
+	 */
 	public void refuseDraw(){
 		isDrawAsked = false;
 	}
-
+/**
+ * Sets the "under check" status of a desired player
+ * @param player  desired player's color
+ * @param check   check status (true if the player is checked, false if not)
+ */
 	public void setCheck(String player,boolean check){
 		if(player.equalsIgnoreCase("white")){
 			isWhiteChecked = check;
@@ -777,7 +817,11 @@ public class MainLogic
 			isBlackChecked = check;
 		}
 	}
-
+	/**
+	 * Sets the "under checkmate" status of a desired player
+	 * @param player  desired player's color
+	 * @param check   check status (true if the player is mated, false if not)
+	 */
 	public void setMate(String player, boolean mate){
 		if(player.equalsIgnoreCase("white")){
 			isWhiteMated = mate;
@@ -785,57 +829,102 @@ public class MainLogic
 			isBlackMated = mate;
 		}
 	}
-	
+
+	/**
+	 * Resets the white bomb sound (sets WB back to 0) .
+	 */
 	public void resetWBombsound() {
 		WB = 0;
 	}
+	/**
+	 * Resets the black bomb sound (sets BB back to 0) .
+	 */
 	public void resetBBombsound() {
 		BB = 0;
 	}
-	
+	/**
+	 * Gets the value for WB. The value is used to check if a bomb explosion
+	 * sound is supposed to be played for white.
+	 * @return   value of WB (1 if the sound is supposed to be played, 0 if not)
+	 */
 	public int getWB() {
 		return WB;
 	}
-	
+	/**
+	 * Gets the value for BB. The value is used to check if a bomb explosion
+	 * sound is supposed to be played for black.
+	 * @return   value of BB (1 if the sound is supposed to be played, 0 if not)
+	 */
 	public int getBB() {
 		return BB;
 	}
+	/**
+	 * 
+	 * @return
+	 */
 	public int getWBlt() {
 		return WBlt;
 	}
-	
+	/**
+	 * 
+	 * @return
+	 */
 	public int getBBlt() {
 		return BBlt;
 	}
-	
+	/**
+	 * Gets the ExtraToolsAndChecks object
+	 * @return  ExtraToolsAndChecks object
+	 */
 	public ExtraChecksAndTools getEcat() {
 		return ecat;
 	}
-	
+	/**
+	 * Gets the counter for the number of turns that the rulechange will be active
+	 * @return   number of turns that the rulechange will be active
+	 */
 	public int getCounter() {
 		return ecat.getCounter();
 	}
-	
+	/**
+	 * Gets the status of rulechange 1, that is stored in MainLogic
+	 * @return   true if rulechange 1 is active, false if not
+	 */
 	public boolean getRC1() {
 		return rulechange1;
 	}
-	
+	/**
+	 * Gets the status of rulechange 2, that is stored in MainLogic
+	 * @return   true if rulechange 2 is active, false if not
+	 */
 	public boolean getRC2() {
 		return rulechange2;
 	}
-	
+	/**
+	 * Gets the status of rulechange 3, that is stored in MainLogic
+	 * @return   true if rulechange 3 is active, false if not
+	 */
 	public boolean getRC3() {
 		return rulechange3;
 	}
-	
+	/**
+	 * Sets the status of rulechange 1, that is stored in MainLogic
+	 * @param rulechange1  value for the rulechange (true if active, false if not)
+	 */
 	public void setRC1(boolean rulechange1) {
 		this.rulechange1 = rulechange1;
 	}
-	
+	/**
+	 * Sets the status of rulechange 2, that is stored in MainLogic
+	 * @param rulechange2  value for the rulechange (true if active, false if not)
+	 */
 	public void setRC2(boolean rulechange2) {
 		this.rulechange2 = rulechange2;
 	}
-	
+	/**
+	 * Sets the status of rulechange 3, that is stored in MainLogic
+	 * @param rulechange  value for the rulechange (true if active, false if not)
+	 */
 	public void setRC3(boolean rulechange3) {
 		this.rulechange3 = rulechange3;
 	}

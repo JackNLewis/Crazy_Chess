@@ -10,7 +10,6 @@ import java.util.Random;
  * move on the board is at least somewhat valid.
  * i.e. doesn't go through other pieces, doesn't go off the board
  * 
- * @author Darius
  *
  */
 
@@ -654,47 +653,68 @@ public class BasicValidityChecker
 			return true;
 		return false;
 	}
-	
+	/**
+	 * Returns the status of the Bishop-Rook rulechange
+	 * @return  true if the rulechange is active, false if not
+	 */
 	public boolean getBrs()
 	{
 		return brswitch;
 	}
-	
+	/**
+	 * Activates the Bishop-Rook rulechange
+	 */
 	public void setBrs()
 	{
 		brswitch = true;
 	}
-	
+	/**
+	 * Deactivates the Bishop-Rook rulechange
+	 */
 	public void endBrs()
 	{
 		brswitch = false;
 	}
-	
+	/**
+	 * Returns the status of the "Pawns can go backwards" rulechange
+	 * @return  true if the rulechange is active, false if not
+	 */
 	public boolean getPS()
 	{
 		return pawnswitch;
 	}
-	
+	/**
+	 * Activates the "Pawns can go backwards" rulechange
+	 */
 	public void setPS()
 	{
 		pawnswitch = true;
 	}
-	
+	/**
+	 * Deactivates the "Pawns can go backwards" rulechange
+	 */
 	public void endPS()
 	{
 		pawnswitch = false;
 	}
-	
+	/**
+	 * Returns the status of the "Kings can move like Queens" rulechange
+	 * @return  true if the rulechange is active, false if not
+	 */
 	public boolean getKS()
 	{
 		return kingswitch;
 	}
-	
+	/**
+	 * Activates the "Kings can move like Queens" rulechange
+	 */
 	public void setKS()
 	{
 		kingswitch = true;
 	}
-	
+	/**
+	 * Deactivates the "Kings can move like Queens" rulechange
+	 */
 	public void endKS()
 	{
 		kingswitch = false;

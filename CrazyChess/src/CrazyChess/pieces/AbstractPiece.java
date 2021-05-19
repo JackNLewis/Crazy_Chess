@@ -9,7 +9,6 @@ import java.io.Serializable;
  * classes of pieces.
  * All other pieces extend this.
  * 
- * @author Darius
  *
  */
 

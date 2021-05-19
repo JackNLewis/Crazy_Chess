@@ -6,12 +6,17 @@ import CrazyChess.logic.*;
 import java.util.ArrayList;
 import java.util.concurrent.ThreadLocalRandom;
 
+/**
+ * Class for the main logic of the power up
+ * mechanic.
+ *
+ */
 
 public class PowerupMain
 {
 	Utilities utils = new Utilities();
 	ExtraChecksAndTools ecat = new ExtraChecksAndTools(1);
-
+	
 	/**
 	 * Uses the desired   powerup and returns an altered gamestate
 	 * @param powerup     powerup to be used
@@ -21,7 +26,7 @@ public class PowerupMain
 	 * @param turnNo	  number representing which turn is it
 	 * @param currentTurn string representing which player's turn is it (black or white)
 	 * @param isDebug     is debug mode active
-	 * @return
+	 * @return            a gamestate where the effect of the powerup has been resolved
 	 */
 	public AbstractPiece[][] powerupAssigner(String powerup, AbstractPiece[][] gamestate, Position target1, 
 												 Position target2, int turnNo, String currentTurn, boolean isDebug) {
@@ -121,6 +126,15 @@ public class PowerupMain
 		return null;
 	}
 	
+	/**
+	 * A method to get all of the possible moves you can do
+	 * with a power up.
+	 * @param powerup   the powerup to be used
+	 * @param gamestate current gamestate
+	 * @param target1   position of the piece the powerup is targeting
+	 * @param isDebug   is debug mode on
+	 * @return          An ArrayList of possitions for valid powerup moves
+	 */
 	public ArrayList<Position> validPowerupMoves (String powerup, AbstractPiece[][] gamestate, Position target1, boolean isDebug){
 		
 		ArrayList<Position> moves = new ArrayList<Position>(); //ArrayList to store valid moves
@@ -191,10 +205,10 @@ public class PowerupMain
 
 	/**
 	 * Method returns the initial moves that can be used on a power up
-	 * @param powerup
-	 * @param gamestate
-	 * @param turn
-	 * @return
+	 * @param powerup	  what powerup is being used
+	 * @param gamestate	  current gamestate
+	 * @param turn        color of the player 
+	 * @return            an ArrayList of position that can be targeted by the powerup
 	 */
 	public ArrayList<Position> initialPowerupMoves(String powerup, AbstractPiece[][] gamestate,String turn) {
 		ArrayList<Position> moves = new ArrayList<>();
@@ -253,9 +267,15 @@ public class PowerupMain
 		return moves;
 	}
 
-	/**
-	 * Returns a gamestate after the explosion
-	 */
+/**
+ * Returns a gamestate after the bomb powerup explodes
+ * @param newGamestate   gamestate to be edited
+ * @param newPiece		 piece that had the bomb on it
+ * @param copiedPiece	 copy of a piece that had a bomb on it
+ * @param utils          the utilities object
+ * @param isDebug        is debug mode active
+ * @return               
+ */
 	public AbstractPiece[][] doBomb(AbstractPiece[][] newGamestate,AbstractPiece newPiece,AbstractPiece copiedPiece,Utilities utils, boolean isDebug){
 		if(utils.isOnBoard(newPiece.getXpos() -1, newPiece.getYpos() -1)&&!((utils.getPiece(newPiece.getXpos() -1, newPiece.getYpos() -1, isDebug, newGamestate)) instanceof King))newGamestate=utils.placePiece(new BlankPiece("Blank", newPiece.getXpos() -1,newPiece.getYpos() -1,"Normal"), isDebug, newGamestate);
         if(utils.isOnBoard(newPiece.getXpos() -1,newPiece.getYpos())&&!((utils.getPiece(newPiece.getXpos() -1, newPiece.getYpos() , isDebug, newGamestate)) instanceof King))newGamestate=utils.placePiece(new BlankPiece("Blank", newPiece.getXpos() -1,newPiece.getYpos(),"Normal"), isDebug, newGamestate);

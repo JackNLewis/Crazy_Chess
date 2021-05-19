@@ -1,6 +1,5 @@
 /**
  * This class represents a blank unoccupied square on the board
- * @author Darius
  */
 
 

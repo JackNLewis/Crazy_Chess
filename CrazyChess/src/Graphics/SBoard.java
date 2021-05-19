@@ -65,7 +65,11 @@ public class SBoard {
     private AI ai = new AI();
     
 //    private HazardPiece hazardPiece;
-
+/**
+ * 
+ * @param game
+ * @param SGameScreen
+ */
     public SBoard(MainLogic game, SGameScreen SGameScreen){
         initBoard("white");
         this.game = game;

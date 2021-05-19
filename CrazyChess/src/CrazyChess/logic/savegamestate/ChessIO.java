@@ -4,6 +4,7 @@ import CrazyChess.logic.MainLogic;
 import CrazyChess.pieces.AbstractPiece;
 import Graphics.SGameScreen;
 
+
 public interface ChessIO {
 	
 //	void load(byte[] data, MainLogic board);

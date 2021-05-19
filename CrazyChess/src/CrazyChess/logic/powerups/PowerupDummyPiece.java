@@ -4,6 +4,10 @@ import CrazyChess.logic.ExtraChecksAndTools;
 import CrazyChess.logic.Position;
 import CrazyChess.logic.Utilities;
 import CrazyChess.pieces.*;
+/**
+ * Class for the Dummy Piece powerup
+ * 
+ */
 
 public class PowerupDummyPiece {
 	Utilities utils = new Utilities();

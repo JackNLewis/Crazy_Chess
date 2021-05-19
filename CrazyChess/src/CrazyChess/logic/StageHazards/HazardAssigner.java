@@ -8,7 +8,11 @@ import CrazyChess.pieces.King;
 
 import java.util.ArrayList;
 import java.util.Random;
-
+/**
+ * A class that holds the functionality to assign
+ * stage hazards to gamestates
+ *
+ */
 
 public class HazardAssigner {
 
@@ -19,13 +23,19 @@ public class HazardAssigner {
 	boolean activeHazard;
 	Utilities utils;
 	ExtraChecksAndTools ecat = new ExtraChecksAndTools();
-
+/**
+ * Constructor for the HazzardAssigner class
+ */
 	public HazardAssigner() {
 		utils = new Utilities();
 		activeHazard = false;
 		untilHazard = hazardInterval;
 	}
-
+/**
+ * Assigns hazards to a desired gamestate
+ * @param gameState  desired gamestate
+ * @return           a gamestate with hazards assigned
+ */
 	public AbstractPiece[][] assignHazard(AbstractPiece[][] gameState) {
 		AbstractPiece[][] safeGameState = utils.safeCopyGamestate(gameState);
 		// spawn a hazard
@@ -64,7 +74,11 @@ public class HazardAssigner {
 		}
 		return gameState;
 	}
-
+/**
+ * Freezes tiles on a desired gamestate
+ * @param gameState    desired gamestate
+ * @return             a gamestate with new frozen tiles on it
+ */
 	private AbstractPiece[][] frozenHazard(AbstractPiece[][] gameState) {
 		ArrayList<AbstractPiece> pieces = ecat.gamestateToPieceArrayList(gameState);
 		Random rand = new Random();
@@ -81,7 +95,11 @@ public class HazardAssigner {
 		}
 		return gs;
 	}
-
+	/**
+	 * Sets tiles on fire in a desired gamestate
+	 * @param gameState    desired gamestate
+	 * @return             a gamestate with new burning tiles on it
+	 */
 	private AbstractPiece[][] burnHazard(AbstractPiece[][] gameState) {
 		// System.out.println("In burn");
 		// player cannot move onto that tile if it is a burnTile but only blank tiles
@@ -101,7 +119,11 @@ public class HazardAssigner {
 		utils.printGameState(gameState);
 		return gs;
 	}
-
+	/**
+	 * Despawns hazzards from a desired gamestate
+	 * @param gameState      desired gamestate
+	 * @return               gamestate without any stage hazards
+	 */
 	private AbstractPiece[][] despawn(AbstractPiece[][] gameState) {
 		System.out.println("=======================================");
 		System.out.println("Despawn the stage hazards");
@@ -119,7 +141,12 @@ public class HazardAssigner {
 		System.out.println("=======================================");
 		return gs;
 	}
-
+/**
+ * Method is used to decide how many tiles on the board will be affected
+ * by a stage hazard, depending on
+ * @param size
+ * @return
+ */
 	private int getThreshhold(int size) {
 		if (size > 24) {
 			return 3;
@@ -132,28 +159,5 @@ public class HazardAssigner {
 		}
 	}
 
-	public void setActiveHazard(boolean input) {
-//    		activeHazard = input;
-//    	}
-    //
-//    	public boolean getActiveHazard() {
-//    		return activeHazard;
-//    	}
-    //
-//    	public void setUntilHazard(int input) {
-//    		untilHazard = input;
-//    	}
-    //
-//    	public int getUntilHazard() {
-//    		return untilHazard;
-//    	}
-    //	
-//    	public int getHazardTurns() {
-//    		return hazardTurns;
-//    	}
-    //	
-//    	public void setHazardTurns(int input) {
-//    		hazardTurns = input;
-//    	}
-	}
+
 }
