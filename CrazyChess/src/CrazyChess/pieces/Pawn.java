@@ -22,6 +22,7 @@ public class Pawn extends AbstractPiece
 	 * @param color     color of the pawn
 	 * @param xCoord    x coordinate
 	 * @param yCoord    y coordinate
+	 * @param Type 		type of piece
 	 */
 	public Pawn(String color, int xCoord, int yCoord, String Type){
 		super(color, xCoord, yCoord, Type);
@@ -32,6 +33,8 @@ public class Pawn extends AbstractPiece
 	 *
 	 * @param color      color of the pawn
 	 * @param position   position object to set initial position
+	 * @param Type 		type of piece
+	 *
 	 */
 	public Pawn(String color, Position position, String Type){
 		super(color, position,Type);
@@ -63,7 +66,7 @@ public class Pawn extends AbstractPiece
 	}
 	/**
 	 * Getter for canEnPassant
-	 * @param bool   if the pawn can enPassant
+	 * @return if the pawn can enPassant
 	 */
 	public boolean getEnPassant() {
 		return canEnPassant;

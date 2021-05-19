@@ -41,7 +41,7 @@ public class Tile {
 
     /**
      * Adds the imageView of piece to the tile
-     *
+     * @param img the image your adding
      */
     public void addImg(ImageView img){
         imgs.add(img);
@@ -67,7 +67,7 @@ public class Tile {
 
     /**
      * Sets the color of the tile background
-     *
+     * @param img - the background image
      */
     public void setbgColor(Image img){
         background.setFill(new ImagePattern(img));

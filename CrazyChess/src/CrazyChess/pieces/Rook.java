@@ -16,6 +16,7 @@ public class Rook extends AbstractPiece
 	 * @param color     color of the rook
 	 * @param xCoord    x coordinate
 	 * @param yCoord    y coordinate
+	 * @param Type the type of piece
 	 */
 	public Rook(String color, int xCoord, int yCoord, String Type){
 		super(color, xCoord, yCoord,Type);
@@ -26,6 +27,7 @@ public class Rook extends AbstractPiece
 	 *
 	 * @param color      color of the rook
 	 * @param position   position object to set initial position
+	 * @param Type the type of piece
 	 */
 	public Rook(String color, Position position, String Type){
 		super(color, position, Type);

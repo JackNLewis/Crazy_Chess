@@ -103,6 +103,8 @@ public class PowerupMain
 	/**
 	 * Returns a string representation of a random powerup. Should be used to get a random powerup when a powerup piece 
 	 * gets captured on the board, then added to whitePowerUps or blackPowerUps ArrayList.
+	 * @param isDebug - if debug is on
+	 *
 	 * @return    string representation of a random powerup
 	 */
 	public String randomPowerup(boolean isDebug) {
@@ -273,7 +275,7 @@ public class PowerupMain
  * @param copiedPiece	 copy of a piece that had a bomb on it
  * @param utils          the utilities object
  * @param isDebug        is debug mode active
- * @return               
+ * @return  the altered gamestate
  */
 	public AbstractPiece[][] doBomb(AbstractPiece[][] newGamestate,AbstractPiece newPiece,AbstractPiece copiedPiece,Utilities utils, boolean isDebug){
 		if(utils.isOnBoard(newPiece.getXpos() -1, newPiece.getYpos() -1)&&!((utils.getPiece(newPiece.getXpos() -1, newPiece.getYpos() -1, isDebug, newGamestate)) instanceof King))newGamestate=utils.placePiece(new BlankPiece("Blank", newPiece.getXpos() -1,newPiece.getYpos() -1,"Normal"), isDebug, newGamestate);

@@ -15,6 +15,7 @@ public class BlankPiece extends AbstractPiece
 	 * @param color   color of piece
 	 * @param xCoord    x coordinate
 	 * @param yCoord    y coordinate
+	 * @param Type the type of piece
 	 */
 	public BlankPiece(String color, int xCoord, int yCoord, String Type)
 	{
@@ -27,6 +28,7 @@ public class BlankPiece extends AbstractPiece
 	 *
 	 * @param color      color of piece
 	 * @param position   position object to set initial position
+	 * @param Type  the type of piece
 	 */
 	public BlankPiece(String color, Position position, String Type){
 		super(color, position,Type);

@@ -376,16 +376,16 @@ public class SaveGame implements ChessIO {
 	
 /**
 	 * Returns an XML file description
-	 * @returns an XML file description 
+	 * @return an XML file description
 	 */
-
 	@Override
 	public String getFileTypeDescription() {
 		return "XML files (*.xml)";
 	}
+
 	/**
 	 * Returns an XML file extension
-	 * @returns an XML file extension ("xml") 
+	 * @return an XML file extension ("xml")
 	 */
 	@Override
 	public String getFileExtension() {

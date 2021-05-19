@@ -829,8 +829,9 @@ public class MainLogic
 	}
 	/**
 	 * Sets the "under checkmate" status of a desired player
+	 *
 	 * @param player  desired player's color
-	 * @param check   check status (true if the player is mated, false if not)
+	 * @param mate   check status (true if the player is mated, false if not)
 	 */
 	public void setMate(String player, boolean mate){
 		if(player.equalsIgnoreCase("white")){
@@ -869,15 +870,15 @@ public class MainLogic
 		return BB;
 	}
 	/**
-	 * 
-	 * @return
+	 * Gets the value of WBlt
+	 * @return value of WBlt (1 if the sound is supposed to be played, 0 if not)
 	 */
 	public int getWBlt() {
 		return WBlt;
 	}
 	/**
-	 * 
-	 * @return
+	 * Gets the value of BBlt
+	 * @return value of BBlt (1 if the sound is supposed to be played, 0 if not)
 	 */
 	public int getBBlt() {
 		return BBlt;
@@ -933,7 +934,7 @@ public class MainLogic
 	}
 	/**
 	 * Sets the status of rulechange 3, that is stored in MainLogic
-	 * @param rulechange  value for the rulechange (true if active, false if not)
+	 * @param rulechange3  value for the rulechange (true if active, false if not)
 	 */
 	public void setRC3(boolean rulechange3) {
 		this.rulechange3 = rulechange3;
@@ -941,7 +942,7 @@ public class MainLogic
 
 	/**
 	 * This takes a gamestate and tell the player if a pawn promotion is available
-	 * @param gamestate
+	 * @param gamestate the gamestate to check
 	 * @return the pawn for promotion or null if none exists
 	 */
 	public AbstractPiece isPawnPromote(AbstractPiece[][] gamestate){
@@ -961,8 +962,9 @@ public class MainLogic
 
 	/**
 	 * Promotes a pawn. newPice is 'q', 'k', 'r,' b', for queen, king, rook, bishop respectively
-	 * @param piece
-	 * @param newPiece
+	 *
+	 * @param piece the piece to promote
+	 * @param newPiece the type of piece to promote to
 	 */
 	public void promote(AbstractPiece piece, String newPiece){
 		AbstractPiece[][] safeGs = utils.safeCopyGamestate(gamestate);

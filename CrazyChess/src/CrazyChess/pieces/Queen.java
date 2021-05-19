@@ -15,6 +15,7 @@ public class Queen extends AbstractPiece
 	 * @param color     color of the queen
 	 * @param xCoord    x coordinate
 	 * @param yCoord    y coordinate
+	 * @param Type the type of piece
 	 */
 	public Queen(String color, int xCoord, int yCoord, String Type){
 		super(color, xCoord, yCoord,Type);
@@ -25,6 +26,7 @@ public class Queen extends AbstractPiece
 	 *
 	 * @param color      color of the queen
 	 * @param position   position object to set initial position
+	 * @param Type the type of piece
 	 */
 	public Queen(String color, Position position, String Type){
 		super(color, position,Type);

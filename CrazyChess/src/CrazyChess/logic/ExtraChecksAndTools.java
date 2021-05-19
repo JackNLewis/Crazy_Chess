@@ -269,6 +269,7 @@ public class ExtraChecksAndTools
 	/**
 	 * Method to get a list of pieces that can capture a blank target
 	 * @param target     The target piece
+	 * @param color      The color
 	 * @param isDebug    is debug mode active
 	 * @param gamestate  game state currently to be examined
 	 * @param moveNo	 current move number
@@ -423,6 +424,7 @@ public class ExtraChecksAndTools
 	 * @param isDebug     is debug mode active
 	 * @param gamestate   starting game state
 	 * @param moveNo      current move number
+	 * @param powerUps    the arraylist of powerups
 	 * @return            ArrayList of possible game states after the turn is completed with powerup
 	 */
 	
@@ -490,6 +492,7 @@ public class ExtraChecksAndTools
 	 * @param isDebug     is debug mode activated
 	 * @param gamestate   game state to be examined
 	 * @param moveNo      current move number
+	 * @param powerUps    the arraylist of powerups
 	 * @return            true if the player is in checkmate, false if they still have possible moves
 	 */
 	public boolean isInCheckmate(String color, boolean isDebug, AbstractPiece[][] gamestate, int moveNo, ArrayList<String> powerUps){
@@ -517,6 +520,7 @@ public class ExtraChecksAndTools
 	 * @param isDebug     is debug mode activated
 	 * @param gamestate   game state to be examined
 	 * @param moveNo      current move number
+	 * @param powerUps    the arraylist of powerups
 	 * @return            true if the game state is in draw, false if it still has possible moves
 	 */
 	public boolean isInDraw(String currentTurn, boolean isDebug, AbstractPiece[][] gamestate, int moveNo, ArrayList<String> powerUps){
@@ -688,6 +692,9 @@ public class ExtraChecksAndTools
 	}
 	/**
 	 * get the number of powerups piece on the board
+	 *
+	 * @param gamestate the gamestate to check
+	 * @return the number of power ups on the board
 	 */
 	public int getPowerupNum(AbstractPiece[][] gamestate) {
 		ArrayList<AbstractPiece> Gs = gamestateToPieceArrayList(gamestate);

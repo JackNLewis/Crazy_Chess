@@ -770,7 +770,7 @@ public class SBoard {
 
     /**
      * Used to promote a piece on the board
-     * @param newPiece
+     * @param newPiece what you are promoting to. 'q','k','b','r' for queen, knight, bishop, rook respectively
      */
     public void promte(String newPiece){
 	    game.promote(promotePiece,newPiece);

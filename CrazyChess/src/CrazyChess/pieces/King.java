@@ -18,6 +18,7 @@ public class King extends AbstractPiece
 	 * @param color     color of the king
 	 * @param xCoord    x coordinate
 	 * @param yCoord    y coordinate
+	 * @param Type 		type of piece
 	 */
 	public King(String color, int xCoord, int yCoord, String Type){
 		super(color, xCoord, yCoord,Type);
@@ -28,6 +29,7 @@ public class King extends AbstractPiece
 	 *
 	 * @param color      color of the king
 	 * @param position   position object to set initial position
+	 * @param Type 		type of piece
 	 */
 	public King(String color, Position position, String Type){
 		super(color, position,Type);

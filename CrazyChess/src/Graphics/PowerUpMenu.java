@@ -99,8 +99,9 @@ public class PowerUpMenu {
     }
 
     /**
+     * sets the selected index
      *
-     * @return the index of the selected power up
+     * @param index the index of the selectd power up
      */
     public void setSelectedIndex(int index){
         selectedIndex = index;
