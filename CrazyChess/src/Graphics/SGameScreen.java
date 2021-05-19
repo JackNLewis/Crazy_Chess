@@ -3,6 +3,7 @@ package Graphics;
 import java.io.File;
 import CrazyChess.logic.MainLogic;
 import CrazyChess.logic.savegamestate.*;
+import javafx.application.Platform;
 import javafx.event.EventHandler;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
@@ -14,6 +15,7 @@ import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
+import javafx.stage.StageStyle;
 import javafx.stage.WindowEvent;
 
 
@@ -45,7 +47,8 @@ public class SGameScreen {
     private CheckMenuItem FreeCard;
     private CheckMenuItem DummyPiece;
     private CheckMenuItem Teleport;
-
+    
+    private MenuBar menuBar = new MenuBar();
 
     //buttons for promotes
 	HBox promotes;
@@ -97,8 +100,8 @@ public class SGameScreen {
 		//all music menu
         Menu musicMenu = new Menu("Music");
         ToggleGroup tG = new ToggleGroup();
-        turnOnItem = new RadioMenuItem("TurnOn");
-        turnOffItem = new RadioMenuItem("TurnOff");
+        turnOnItem = new RadioMenuItem("Turn on");
+        turnOffItem = new RadioMenuItem("Turn off");
         Bomb = new CheckMenuItem("Bomb");
         setBomb = new CheckMenuItem("setBomb");
         chessmove = new CheckMenuItem("chessmove");
@@ -126,7 +129,7 @@ public class SGameScreen {
         musicMenu.getItems().add(moremenu);
         
         //Main menu bar
-        MenuBar menuBar = new MenuBar();
+     //   MenuBar menuBar = new MenuBar();
         menuBar.getMenus().addAll(optionsMenu,musicMenu);
 	    //menuBar.setStyle("-fx-background-color:gray");
         menuBar.setId("menuBar");
@@ -180,6 +183,8 @@ public class SGameScreen {
                 //add close action
             }
         });
+        
+        stage.setOnCloseRequest(e -> Platform.exit());
     }
     
 	public void loadLogic(MainLogic newgame){
@@ -389,4 +394,60 @@ public class SGameScreen {
 		return turnOffItem;
 	}
 	
+	public void setDrawMenu() {
+		if(!board.getAIEnabled()) {
+			Menu drawMenu = new Menu("Draw");
+	        
+	        //Menu items
+	        MenuItem draw = new MenuItem("Ask for draw");
+	        draw.setOnAction(e -> {
+	        	System.out.println(game.getTurn() + " asked for draw");
+				game.switchTurn();
+				game.setDrawAsked();
+				updateMoveLabel(game.getTurn());
+				drawPopup();
+	    	});
+	        drawMenu.getItems().add(draw);
+			menuBar.getMenus().addAll(drawMenu);
+		}
+	}
+	
+	public void drawPopup(){
+		Stage drawStage = new Stage();
+		drawStage.initStyle(StageStyle.UNDECORATED);
+		VBox container = new VBox();
+		Label label = new Label("Do you accept?");
+		Button yes = new Button("yes");
+    	Button no = new Button("no");
+    	container.getChildren().addAll(label, yes, no);
+    	container.getStylesheets().add("/Graphics/css/popup.css");
+		Scene stageScene = new Scene(container, 300, 300);
+		drawStage.setScene(stageScene);
+		drawStage.show();
+		
+		yes.setOnMouseClicked(new EventHandler<MouseEvent>()
+		{
+			@Override
+			public void handle(MouseEvent event)
+			{
+				setInfoMessage("It's a draw!");
+				game.setDraw();
+				drawStage.hide();
+				System.out.println(game.getTurn() + " accepted the draw, the game ended.");
+			}
+		});
+		no.setOnMouseClicked(new EventHandler<MouseEvent>()
+		{
+			@Override
+			public void handle(MouseEvent event)
+			{
+				System.out.println(game.getTurn() + " refused the draw");
+				setInfoMessage(game.getTurn() + " refused the draw");
+				game.refuseDraw();
+				game.switchTurn();
+				updateMoveLabel(game.getTurn());
+				drawStage.hide();
+			}
+		});
+		}
 }
