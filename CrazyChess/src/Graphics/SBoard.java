@@ -78,6 +78,30 @@ public class SBoard {
         powerMain = new PowerupMain();
         sound = new music();
         
+        //adds even handlers for music turn on or of, reset and exit, as music is initialized in SBoard for some reason and not in SGameScreen, couldn't add them elsewhere to also stop the music
+        SGameScreen.getTurnOffItem().setOnAction(new EventHandler<ActionEvent>() {
+            @Override public void handle(ActionEvent e) {
+        		sound.turnOff();
+            }
+        });
+        SGameScreen.getTurnOnItem().setOnAction(new EventHandler<ActionEvent>() {
+            @Override public void handle(ActionEvent e) {
+        		sound.turnOn();
+            }
+        });
+        SGameScreen.getReset().setOnAction(e -> {
+        	MainLogic refresh = new MainLogic();
+			refresh.resetBoard();
+        	SGameScreen restart = new SGameScreen(refresh, SGameScreen.getStage());
+        	SGameScreen.getStage().setScene(restart.getScene());
+        	sound.getMediaPlayer().stop();
+        });
+        SGameScreen.getExit().setOnAction(e -> {
+        	MenuScreen menu = new MenuScreen(SGameScreen.getStage());
+        	sound.getMediaPlayer().stop();
+        	SGameScreen.getStage().setScene(menu.getScene());
+        });
+        
     }
 
     /**
@@ -427,12 +451,6 @@ public class SBoard {
      * Plays the default chess sound
      */
     private void playNormalSound(){
-    	if(SGameScreen.isMusicOn()) {
-    		sound.turnOn();
-    	}
-    	else {
-    		sound.turnOff();
-    	}
         if(game.getBB() == 1 || (game.getTurnNo() == game.getBBlt() + 4 &&!(game.getBBlt() == 0))) {
         	if(SGameScreen.isMusicOn() && !SGameScreen.isbombOn()) {
     			sound.turnOffbomb();
@@ -460,14 +478,6 @@ public class SBoard {
      */
     private void playPwSound(){
         // SUCCESFFUL POWERED MOVE
-        //play sound effects
-    	//check sound menu
-    	if(SGameScreen.isMusicOn()) {
-    		sound.turnOn();
-    	}
-    	else {
-    		sound.turnOff();
-    	}
     	//play sound effects
     	if(powerUps.getSelectedStr().equalsIgnoreCase("teleport")) {
     		if(SGameScreen.isMusicOn() && !SGameScreen.isTeleportOn()) {
@@ -729,4 +739,5 @@ public class SBoard {
         promoteWait = false;
         promotePiece = null;
     }
+    
 }

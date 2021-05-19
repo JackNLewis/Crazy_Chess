@@ -33,7 +33,8 @@ public class SGameScreen {
     private Label ruleChangeInfo;
     private AskForDraw askForDraw;
     private PowerUpMenu pwrUpMenu;
-	
+    private MenuItem reset;
+    private MenuItem exit;
  // setting menu for music control
     private RadioMenuItem turnOnItem;
     private RadioMenuItem turnOffItem;
@@ -90,23 +91,12 @@ public class SGameScreen {
         	}
     	});
         optionsMenu.getItems().add(save);
-        
-        MenuItem reset = new MenuItem("Reset");
-        reset.setOnAction(e -> {
-        	MainLogic refresh = new MainLogic();
-			refresh.resetBoard();
-        	SGameScreen restart = new SGameScreen(refresh, stage);
-        	stage.setScene(restart.getScene());
-        });
 
+        reset = new MenuItem("Reset");
         optionsMenu.getItems().add(reset);
         
         optionsMenu.getItems().add(new SeparatorMenuItem());
-        MenuItem exit = new MenuItem("Exit");
-        exit.setOnAction(e -> {
-        	MenuScreen menu = new MenuScreen(stage);
-        	stage.setScene(menu.getScene());
-        });
+        exit = new MenuItem("Exit");
         optionsMenu.getItems().add(exit);
 	    
 		//all music menu
@@ -434,4 +424,45 @@ public class SGameScreen {
 		VBox pwrContainer = getPwrUpMenu().getPowerUpMenu();
 		pwrContainer.getChildren().remove(promotes);
 	}
+	
+	/**
+	 * Getter for the reset button
+	 * @return	reset button
+	 */
+	public MenuItem getReset() {
+		return reset;
+	}
+	
+	/**
+	 * Getter for the reset button
+	 * @return	reset button
+	 */
+	public MenuItem getExit() {
+		return exit;
+	}
+	
+	/**
+	 * Getter for the reset button
+	 * @return	reset button
+	 */
+	public Stage getStage() {
+		return stage;
+	}
+	
+	/**
+	 * Getter for the getTurnOnItem menu item
+	 * @return	getTurnOnItem menu item
+	 */
+	public RadioMenuItem getTurnOnItem() {
+		return turnOnItem;
+	}
+	
+	/**
+	 * Getter for the getTurnOffItem menu item
+	 * @return	getTurnOffItem menu item
+	 */
+	public RadioMenuItem getTurnOffItem() {
+		return turnOffItem;
+	}
+	
 }
