@@ -114,6 +114,7 @@ public class SBoard {
         	MenuScreen menu = new MenuScreen(SGameScreen.getStage());
         	sound.getMediaPlayer().stop();
         	SGameScreen.getStage().setScene(menu.getScene());
+        	SGameScreen.getStage().centerOnScreen();
         });
         
     }
