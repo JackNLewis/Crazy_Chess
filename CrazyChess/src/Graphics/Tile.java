@@ -55,8 +55,8 @@ public class Tile {
         	img.setFitWidth(tileSize-2);
             img.setFitHeight(tileSize-2);
         }else {
-        	img.setFitWidth(tileSize-1);
-            img.setFitHeight(tileSize-1);
+        	img.setFitWidth(tileSize);
+            img.setFitHeight(tileSize);
         }
         sp.getChildren().add(img);
     }

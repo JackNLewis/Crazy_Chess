@@ -64,7 +64,7 @@ public class music {
 	
 	public music() {
 		//starts the background music
-		Media h = new Media(this.getClass().getClassLoader().getResource("resources.music/gameMusic.wav").toString());
+		Media h = new Media(this.getClass().getClassLoader().getResource("resources.music/gameMusic.mp3").toString());
         mediaPlayer = new MediaPlayer(h);
 		mediaPlayer.setCycleCount(MediaPlayer.INDEFINITE);
 		mediaPlayer.setVolume(0.1);

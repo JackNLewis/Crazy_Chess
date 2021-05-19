@@ -17,6 +17,7 @@ public class Main extends Application {
         primaryStage.setScene(currentScene);
 
         primaryStage.setTitle("Crazy Chess");
+        primaryStage.centerOnScreen();
         primaryStage.show();
     }
 

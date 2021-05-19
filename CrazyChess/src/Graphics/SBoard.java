@@ -60,6 +60,11 @@ public class SBoard {
     boolean promoteWait = false;
     AbstractPiece promotePiece;
 
+    private HBox Wpawnpormote;
+    private HBox Bpawnpormote;
+    
+    private boolean musicOn;
+    
     //Ai stuff
     private boolean aiEnabled = false;
     private AI ai = new AI();
@@ -93,11 +98,13 @@ public class SBoard {
         SGameScreen.getTurnOffItem().setOnAction(new EventHandler<ActionEvent>() {
             @Override public void handle(ActionEvent e) {
         		sound.turnOff();
+        		musicOn = false;
             }
         });
         SGameScreen.getTurnOnItem().setOnAction(new EventHandler<ActionEvent>() {
             @Override public void handle(ActionEvent e) {
         		sound.turnOn();
+        		musicOn = true;
             }
         });
         SGameScreen.getReset().setOnAction(e -> {
@@ -105,12 +112,19 @@ public class SBoard {
 			refresh.resetBoard();
         	SGameScreen restart = new SGameScreen(refresh, SGameScreen.getStage());
         	SGameScreen.getStage().setScene(restart.getScene());
+        	restart.getBoard().setAIEnabled(aiEnabled);
         	sound.getMediaPlayer().stop();
+        	restart.getBoard().setMusic(musicOn);
+        	refresh.setRC1(game.getRC1());
+        	refresh.setRC2(game.getRC2());
+        	refresh.setRC3(game.getRC3());
+        	restart.setDrawMenu();
         });
         SGameScreen.getExit().setOnAction(e -> {
         	MenuScreen menu = new MenuScreen(SGameScreen.getStage());
         	sound.getMediaPlayer().stop();
         	SGameScreen.getStage().setScene(menu.getScene());
+        	SGameScreen.getStage().centerOnScreen();
         });
         
     }
@@ -767,4 +781,19 @@ public class SBoard {
         promotePiece = null;
     }
     
+    public void setAIEnabled(boolean ai) {
+    	aiEnabled = ai;
+    }
+    
+    public boolean getAIEnabled() {
+    	return aiEnabled;
+    }
+    
+    public void setMusic(boolean music) {
+    	if(music) {
+    		sound.turnOn();
+    	} else {
+    		sound.turnOff();
+    	}
+    }
 }

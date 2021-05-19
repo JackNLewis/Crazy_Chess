@@ -109,6 +109,7 @@ public class MenuScreen {
 
 //						sp.loadLogic(newgame);
                             stage.setScene(sp.getScene());
+                            sp.setDrawMenu();
 
 
 						} catch (Exception exc) {
@@ -140,6 +141,8 @@ public class MenuScreen {
                         System.out.println("rulechange 3 selected " + isSelected3);
 
                         stage.setScene(sp.getScene());
+                        stage.centerOnScreen();
+                        sp.setDrawMenu();
 					}
             	});
                 Button back = new Button("Back");
