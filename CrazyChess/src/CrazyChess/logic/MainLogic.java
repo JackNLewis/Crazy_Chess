@@ -197,8 +197,7 @@ public class MainLogic
 	 * by default the method sets it to white
 	 */
 	public void changeTurn(){
-		
-		
+
 		if(currentTurn.equalsIgnoreCase("White")){
 			currentTurn = "Black";
 			
@@ -292,11 +291,6 @@ public class MainLogic
 				System.out.println("It is now White's turn.");
 				System.out.println("White's powerups: "+whitePowerUps.toString());}
 		}
-
-		//=======================================STAGE HAZARDS================================================//
-		//GAMESTATE = NEW GAMESTATE
-		gamestate= hazards.assignHazard(gamestate);
-		//=======================================STAGE HAZARDS================================================//
 
 	}
 	
@@ -595,6 +589,14 @@ public class MainLogic
 		
 		
 			//Check if the player is not under check
+
+			//=======================================STAGE HAZARDS================================================//
+			//GAMESTATE = NEW GAMESTATE
+			newGamestate= hazards.assignHazard(newGamestate);
+
+			//=======================================STAGE HAZARDS================================================//
+
+			//checks for checks
 			if(currentTurn.equalsIgnoreCase("white")) {
 				//utils.printGameState(newGamestate);
 				if(ecat.isInCheck("black", isDebug, newGamestate, turnNo+1)) {
@@ -848,6 +850,11 @@ public class MainLogic
 		this.rulechange3 = rulechange3;
 	}
 
+	/**
+	 * This takes a gamestate and tell the player if a pawn promotion is available
+	 * @param gamestate
+	 * @return the pawn for promotion or null if none exists
+	 */
 	public AbstractPiece isPawnPromote(AbstractPiece[][] gamestate){
 		for(int i=0; i<7;i++){
 			//check for white pawn
@@ -863,6 +870,11 @@ public class MainLogic
 		return null;
 	}
 
+	/**
+	 * Promotes a pawn. newPice is 'q', 'k', 'r,' b', for queen, king, rook, bishop respectively
+	 * @param piece
+	 * @param newPiece
+	 */
 	public void promote(AbstractPiece piece, String newPiece){
 		AbstractPiece[][] safeGs = utils.safeCopyGamestate(gamestate);
 		Position pos = piece.getPosition();

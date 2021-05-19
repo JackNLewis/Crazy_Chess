@@ -15,17 +15,18 @@ import java.io.File;
 import CrazyChess.logic.MainLogic;
 import CrazyChess.logic.savegamestate.*;
 
-
+/**
+ * Class for the menu screen
+ */
 public class MenuScreen {
 
     private VBox buttons;
     private Scene scene;
     private Stage stage;
-    private VBox warnings;
-    
 
-//    MainLogic game = new MainLogic();
-//    private AbstractPiece[][] gamestate;
+    private VBox warnings;
+
+
 
     private CheckBox cb1;
     private CheckBox cb2;
@@ -35,7 +36,10 @@ public class MenuScreen {
     private boolean isSelected2;
     private boolean isSelected3;
 
-
+    /**
+     * Constructor for the menu screen
+     * @param stage
+     */
     public MenuScreen(Stage stage){
         buttons = new VBox();
         buttons.setAlignment(Pos.CENTER);
@@ -54,6 +58,10 @@ public class MenuScreen {
         stage.setResizable(false);
     }
 
+    /**
+     * Adds the buttons to the menu screen
+     * @param root
+     */
     public void addButtons(VBox root){
 
         //Add New Game
@@ -272,7 +280,12 @@ public class MenuScreen {
         root.getChildren().addAll(newButton,VsAI,title,cb1,cb2,cb3,warnings);
     }
 
-    private void addMainImg(){[[]]
+
+    /**
+     * Adds the main image
+     */
+    private void addMainImg(){
+
         ImageView img = new ImageView();
         img.setImage(new Image("/resources/menu_text.png"));
         img.setFitWidth(400);
@@ -280,6 +293,10 @@ public class MenuScreen {
         buttons.getChildren().add(img);
     }
 
+    /**
+     *
+     * @return the scene
+     */
     public Scene getScene(){
         return this.scene;
     }
