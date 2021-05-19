@@ -35,8 +35,8 @@ public class MainLogic
 	
 
 	protected boolean rulechange1;     //boolean to show if rule change 1 was selected to play with
-	protected boolean rulechange2;     //boolean to show if rule change 1 was selected to play with
-	protected boolean rulechange3;     //boolean to show if rule change 1 was selected to play with
+	protected boolean rulechange2;     //boolean to show if rule change 2 was selected to play with
+	protected boolean rulechange3;     //boolean to show if rule change 3 was selected to play with
 	
 	//for bomb limit
 	protected int WBlt; //Stores the turn a bomb was placed on a white piece
@@ -257,17 +257,19 @@ public class MainLogic
 			
 			gamestate=pwrUp.powerupSpawn(gamestate, turnNo, isDebug);
 			
-			if(rulechange1) {
-				ecat.updateRuleChange1();
-			}
-			if(rulechange2) {
-				ecat.updateRuleChange2();
-			}
-			if(rulechange3) {
-				ecat.updateRuleChange3();
+			if(turnNo > 6) {
+				if(rulechange1) {
+					ecat.updateRuleChange1();
+				}
+				if(rulechange2) {
+					ecat.updateRuleChange2();
+				}
+				if(rulechange3) {
+					ecat.updateRuleChange3();
+				}
 			}
 			
-			System.out.println("brswitch " + ecat.getBrs());
+		//	System.out.println("brswitch " + ecat.getBrs());
 
 			
 			if(isDebug)
