@@ -37,7 +37,7 @@ public class SBoard {
 
     //Used for checking
     private MainLogic game;
-  //  private ExtraChecksAndTools ect;
+    private ExtraChecksAndTools ect;
     private Utilities util;
 
     //board logic
@@ -73,6 +73,7 @@ public class SBoard {
         selected = false;
      //   ect = new ExtraChecksAndTools();
         util = new Utilities();
+        ect = new ExtraChecksAndTools();
         askForDraw = new AskForDraw(SGameScreen, game);
         powerUps = SGameScreen.getPwrUpMenu();
         powerMain = new PowerupMain();
@@ -227,6 +228,7 @@ public class SBoard {
                                     promotePiece = promote;
                                     promoteWait = true;
                                 }
+                                updateGui();
                             }else{
                                 System.out.println("Unsucessful powered move");
                                 return;
@@ -271,6 +273,21 @@ public class SBoard {
                         selected = false;
                         powerUps.setSelectedIndex(-1);
                         renderGameState(game.getGamestate());
+
+                        //check if the player is starting their go and checking someone
+                        if(ect.isInCheck(util.oppositeColor(game.getTurn()), false,game.getGamestate(),game.getTurnNo())){
+                            System.out.println("==============================================");
+                            System.out.println("Player " + game.getTurn() + "Wins!!!!!!");
+                            System.out.println("==============================================");
+                            SGameScreen.setInfoMessage("Player " + game.getTurn() + "Wins!!");
+                        }
+
+                        //check if the player is starting there go in check
+                        if(ect.isInCheck(game.getTurn(), false,game.getGamestate(),game.getTurnNo())){
+                            System.out.println("==============================================");
+                            System.out.println("Player " + game.getTurn() + game.getCheckStatus(game.getTurn()));
+                            System.out.println("==============================================");
+                       }
 
                         //If ai is enabled make the ai move
                         if(aiEnabled){

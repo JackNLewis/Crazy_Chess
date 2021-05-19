@@ -197,8 +197,7 @@ public class MainLogic
 	 * by default the method sets it to white
 	 */
 	public void changeTurn(){
-		
-		
+
 		if(currentTurn.equalsIgnoreCase("White")){
 			currentTurn = "Black";
 			
@@ -292,11 +291,6 @@ public class MainLogic
 				System.out.println("It is now White's turn.");
 				System.out.println("White's powerups: "+whitePowerUps.toString());}
 		}
-
-		//=======================================STAGE HAZARDS================================================//
-		//GAMESTATE = NEW GAMESTATE
-		gamestate= hazards.assignHazard(gamestate);
-		//=======================================STAGE HAZARDS================================================//
 
 	}
 	
@@ -593,6 +587,14 @@ public class MainLogic
 		
 		
 			//Check if the player is not under check
+
+			//=======================================STAGE HAZARDS================================================//
+			//GAMESTATE = NEW GAMESTATE
+			newGamestate= hazards.assignHazard(newGamestate);
+
+			//=======================================STAGE HAZARDS================================================//
+
+			//checks for checks
 			if(currentTurn.equalsIgnoreCase("white")) {
 				//utils.printGameState(newGamestate);
 				if(ecat.isInCheck("black", isDebug, newGamestate, turnNo+1)) {
