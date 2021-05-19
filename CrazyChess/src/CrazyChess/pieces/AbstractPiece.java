@@ -27,6 +27,7 @@ public abstract class AbstractPiece implements Serializable
 	 * @param color   color of piece
 	 * @param xCoord    x coordinate
 	 * @param yCoord    y coordinate
+	 * @param type the type of piece
 	 */
 	public AbstractPiece(String color, int xCoord, int yCoord, String type){
 		this.color = color;
@@ -39,6 +40,7 @@ public abstract class AbstractPiece implements Serializable
 	 *
 	 * @param color      color of piece
 	 * @param position   position object to set initial position
+	 * @param type       the type of piece
 	 */
 	public AbstractPiece(String color, Position position, String type){
 		this.color = color;
@@ -57,7 +59,7 @@ public abstract class AbstractPiece implements Serializable
 	/**
 	 * Sets color (only used in checking for castling)
 	 *
-	 * 
+	 * @param col the color to set to
 	 */
 	public void setColor(String col){
 		color = col;

@@ -265,10 +265,9 @@ public class Utilities
 	
 	/**
 	 * Safely copies the inputed piece
-	 * @param gamestate    piece to be copied
+	 * @param p    piece to be copied
 	 * @return             the copied piece
 	 */
-	
 	public AbstractPiece safeCopyPiece(AbstractPiece p) {
 		String pieceType = p.getClass().getSimpleName();
 		//System.out.println("Copying piece type: "+pieceType);

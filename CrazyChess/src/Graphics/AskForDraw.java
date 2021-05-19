@@ -91,9 +91,9 @@ public class AskForDraw
 	}
 
 	/**
-	 * Getter for the "Ask for draw" button.
+	 * Getter for the Ask for draw button.
 	 * 
-	 * @return container	"Ask for draw" button
+	 * @return container	Ask for draw button
 	 */
 	
 	public VBox getAskForDraw()
@@ -102,9 +102,8 @@ public class AskForDraw
 	}
 
 	/**
-	 * Hides the "Ask for draw" label & button.
+	 * Hides the ask for draw
 	 */
-	
 	public void hide()
 	{
 		container.getChildren().clear();

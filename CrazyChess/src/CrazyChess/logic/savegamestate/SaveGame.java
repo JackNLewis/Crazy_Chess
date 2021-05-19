@@ -271,7 +271,7 @@ public class SaveGame {
 
 	/**
 	 * Method to load the information about the pieces 
-	 * @param writer                the XMLStreamWriter object
+	 * @param reader                the XMLStreamWriter object
 	 * @param gamestate             gamestate to be loaded into
 	 * @throws XMLStreamException
 	 * @returns                     a gamestate with the pieces loaded into it
@@ -373,19 +373,18 @@ public class SaveGame {
 	}
 
 	
-/**
+     /**
 	 * Returns an XML file description
-	 * @returns an XML file description 
+	 * @return an XML file description
 	 */
-
 	public String getFileTypeDescription() {
 		return "XML files (*.xml)";
 	}
+
 	/**
 	 * Returns an XML file extension
-	 * @returns an XML file extension ("xml") 
+	 * @return an XML file extension ("xml")
 	 */
-
 	public String getFileExtension() {
 		return "xml";
 	}

@@ -55,8 +55,8 @@ public class SGameScreen {
 
 	/**
 	 * Constructor for SGameScreen
-	 * @param newgame
-	 * @param stage
+	 * @param newgame - the mainlogic passed
+	 * @param stage - the stage of the window
 	 */
     public SGameScreen(MainLogic newgame, Stage stage){
     	if(newgame != null) {
@@ -204,7 +204,7 @@ public class SGameScreen {
 
 	/**
 	 * returns the scene
-	 * @return
+	 * @return the scene of the screen
 	 */
 	public Scene getScene() {
 		return this.scene;
@@ -227,7 +227,7 @@ public class SGameScreen {
 
 	/**
 	 * Updates the label for current players move
-	 * @param player
+	 * @param player - the player to display on the label
 	 */
 	public void updateMoveLabel(String player) {
 		if (player.equalsIgnoreCase("white")) {
@@ -239,7 +239,7 @@ public class SGameScreen {
 
 	/**
 	 * Sets the info message
-	 * @param message
+	 * @param message - the message to display
 	 */
 	public void setInfoMessage(String message) {
 		this.infoMessage.setText(message);
@@ -255,15 +255,14 @@ public class SGameScreen {
 
 	/**
 	 * returns the power up menu
-	 * @return
+	 * @return the PowerUpMenu object
 	 */
 	public PowerUpMenu getPwrUpMenu() {
 		return pwrUpMenu;
 	}
 
 	/**
-	 * returns the board
-	 * @return
+	 * @return returns the board
 	 */
 	public SBoard getBoard() {
 		return this.board;
@@ -283,7 +282,6 @@ public class SGameScreen {
     	}
 
 	/**
-	 *
 	 * @return true if bomb is on
 	 */
 	public boolean isbombOn() {
@@ -335,7 +333,10 @@ public class SGameScreen {
     }
 
 
-
+	/**
+	 *
+	 * @return the label of rule changes
+	 */
     public Label getRCinfo() {
     	return ruleChangeInfo;
     }
@@ -354,7 +355,7 @@ public class SGameScreen {
 
 	/**
 	 * sets rule change 1
-	 * @param rulechange1
+	 * @param rulechange1 - true if rule 1 is enabled
 	 */
 	public void setRC1(boolean rulechange1) {
 		game.setRC1(rulechange1);
@@ -362,7 +363,7 @@ public class SGameScreen {
 
 	/**
 	 * sets rule change 2
-	 * @param rulechange2
+	 * @param rulechange2 - true if rule 2 is enabled
 	 */
 	public void setRC2(boolean rulechange2) {
 		game.setRC2(rulechange2);
@@ -370,7 +371,7 @@ public class SGameScreen {
 
 	/**
 	 * sets rule change 3
-	 * @param rulechange3
+	 * @param rulechange3 - true if rule 3 is enabled
 	 */
 	public void setRC3(boolean rulechange3) {
 		game.setRC3(rulechange3);

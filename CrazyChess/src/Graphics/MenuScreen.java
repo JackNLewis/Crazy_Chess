@@ -38,7 +38,7 @@ public class MenuScreen {
 
     /**
      * Constructor for the menu screen
-     * @param stage
+     * @param stage the stage of screen
      */
     public MenuScreen(Stage stage){
         buttons = new VBox();
@@ -60,7 +60,7 @@ public class MenuScreen {
 
     /**
      * Adds the buttons to the menu screen
-     * @param root
+     * @param root the root
      */
     public void addButtons(VBox root){
 

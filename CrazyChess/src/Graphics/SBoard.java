@@ -71,16 +71,15 @@ public class SBoard {
 
     
 //    private HazardPiece hazardPiece;
-/**
- * 
- * @param game
- * @param SGameScreen
- */
-
     private boolean aiTurn = false;
 
 
-
+    /**
+     * The constructor for SBoard
+     *
+     * @param game - the main logic
+     * @param SGameScreen - the SGameScreen
+     */
     public SBoard(MainLogic game, SGameScreen SGameScreen){
         initBoard("white");
         this.game = game;
@@ -173,7 +172,7 @@ public class SBoard {
     /**
      * Renders the gamestate onto the board
      *
-     * @param gamesState
+     * @param gamesState - the gamestate your rendering
      */
     public void renderGameState(AbstractPiece[][] gamesState){
         for(Tile tile : tiles){
@@ -416,7 +415,7 @@ public class SBoard {
     /**
      * Sets the default colour of the tile
      *
-     * @param tile
+     * @param tile - the tile you want the default color of
      */
     private void setDefaultColor(Tile tile){
         if ((tile.getPos().getXpos() % 2 == 1 && tile.getPos().getYpos() % 2 == 1)
@@ -643,7 +642,7 @@ public class SBoard {
 
     /**
      * returns the board gridpane
-     * @return
+     * @return - the gridpane of the board
      */
     public GridPane getBoard(){
         return this.board;
@@ -659,7 +658,7 @@ public class SBoard {
 
     /**
      * Enables the AI to play
-     * @param levels
+     * @param levels - the difficulty level. 'easy', 'medium', 'hard'
      */
     public void enableAI(String levels){
         this.aiEnabled = true;
@@ -771,7 +770,7 @@ public class SBoard {
 
     /**
      * Used to promote a piece on the board
-     * @param newPiece
+     * @param newPiece what you are promoting to. 'q','k','b','r' for queen, knight, bishop, rook respectively
      */
     public void promte(String newPiece){
 	    game.promote(promotePiece,newPiece);
@@ -780,15 +779,27 @@ public class SBoard {
         promoteWait = false;
         promotePiece = null;
     }
-    
+
+    /**
+     * set ai
+     * @param ai - true to enable ai. false to disable ai
+     */
     public void setAIEnabled(boolean ai) {
     	aiEnabled = ai;
     }
-    
+
+    /**
+     *
+     * @return true if ai is enabled
+     */
     public boolean getAIEnabled() {
     	return aiEnabled;
     }
-    
+
+    /**
+     * enables the music
+     * @param music - true to enable music
+     */
     public void setMusic(boolean music) {
     	if(music) {
     		sound.turnOn();

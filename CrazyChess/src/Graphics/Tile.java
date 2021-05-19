@@ -25,14 +25,8 @@ public class Tile {
 
     /**
      * Contructor for the Tile object
-     * @param pos        position of the tile
-     * @param tileSize   size of the tile
-     */
-
-    /**
-     * Constructor for a Tile
-     * @param pos
-     * @param tileSize
+     * @param pos - position of the tile
+     * @param tileSize - size of the tile
      */
     public Tile(Position pos, int tileSize){
         this.pos = pos;
@@ -47,7 +41,7 @@ public class Tile {
 
     /**
      * Adds the imageView of piece to the tile
-     *
+     * @param img the image your adding
      */
     public void addImg(ImageView img){
         imgs.add(img);
@@ -73,7 +67,7 @@ public class Tile {
 
     /**
      * Sets the color of the tile background
-     *
+     * @param img - the background image
      */
     public void setbgColor(Image img){
         background.setFill(new ImagePattern(img));
