@@ -4,7 +4,6 @@ import java.net.URL;
 
 import javafx.scene.control.RadioMenuItem;
 import javafx.scene.media.AudioClip;
-import java.nio.file.Paths;
 import javafx.scene.media.Media;
 import javafx.scene.media.MediaPlayer;
 /**
@@ -64,7 +63,7 @@ public class music {
 	
 	public music() {
 		//starts the background music
-		Media h = new Media(this.getClass().getClassLoader().getResource("resources.music/gameMusic.mp3").toString());
+		Media h = new Media(this.getClass().getClassLoader().getResource("resources.music/gameMusic.wav").toString());
         mediaPlayer = new MediaPlayer(h);
 		mediaPlayer.setCycleCount(MediaPlayer.INDEFINITE);
 		mediaPlayer.setVolume(0.1);
