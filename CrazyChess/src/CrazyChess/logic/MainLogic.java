@@ -408,9 +408,6 @@ public class MainLogic
 //			utils.printGameState(gs);
 //		}
 		
-
-		
-		
 		//Save old position (to place a blank later)
 		Position oldPos = new Position(p.getXpos(), p.getYpos());
 		//New position, using x and y to be relative
@@ -646,7 +643,6 @@ public class MainLogic
 			}
 
 			// Check if the new gamestate will be a draw
-
 			if (ecat.isInDraw(currentTurn, isDebug, newGamestate, turnNo+1, getPowerUps(currentTurn)) && !isEndgame) {
 				if (isDebug) {
 					System.out.println("The game resulted in a draw");

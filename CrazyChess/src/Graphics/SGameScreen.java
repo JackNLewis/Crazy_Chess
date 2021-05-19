@@ -13,10 +13,15 @@ import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
+import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
+import javafx.scene.paint.Color;
+import javafx.scene.shape.Rectangle;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
 import javafx.stage.WindowEvent;
+
+import static java.lang.Thread.sleep;
 
 
 /**
@@ -47,7 +52,10 @@ public class SGameScreen {
     private CheckMenuItem FreeCard;
     private CheckMenuItem DummyPiece;
     private CheckMenuItem Teleport;
-    
+
+    StackPane endScreen;
+    VBox root2;
+
     private MenuBar menuBar = new MenuBar();
 
     //buttons for promotes
@@ -66,6 +74,10 @@ public class SGameScreen {
     		game = new MainLogic();
     	}
 
+    	endScreen = new StackPane();
+    	root2 = new VBox();
+    	root2.setAlignment(Pos.CENTER);
+		endScreen.getChildren().add(root2);
 
         this.stage = stage;
         root = new VBox();
@@ -134,7 +146,6 @@ public class SGameScreen {
         musicMenu.getItems().add(moremenu);
         
         //Main menu bar
-     //   MenuBar menuBar = new MenuBar();
         menuBar.getMenus().addAll(optionsMenu,musicMenu);
 	    //menuBar.setStyle("-fx-background-color:gray");
         menuBar.setId("menuBar");
@@ -143,6 +154,7 @@ public class SGameScreen {
 
 
         ((VBox) scene.getRoot()).getChildren().add(0,menuBar);
+		root.getChildren().add(endScreen);
 
         //Add top banner
         addBanner();
@@ -150,12 +162,12 @@ public class SGameScreen {
         //Add the info message
         infoMessage = new Label();
         infoMessage.getStyleClass().add("info-message");
-        root.getChildren().add(infoMessage);
+        root2.getChildren().add(infoMessage);
 
         //Add the rule change info
         ruleChangeInfo = new Label();
         ruleChangeInfo.getStyleClass().add("info-message");
-        root.getChildren().add(ruleChangeInfo);
+        root2.getChildren().add(ruleChangeInfo);
         
 
         //make power up menu
@@ -180,7 +192,7 @@ public class SGameScreen {
         //boardContainer.getChildren().addAll(board.getBoard(), pwrUpMenu.getPowerUpMenu(), askForDraw.getAskForDraw());
 		boardContainer.getChildren().addAll(board.getBoard(), pwrUpMenu.getPowerUpMenu());
         boardContainer.setAlignment(Pos.CENTER);
-        root.getChildren().add(boardContainer);
+        root2.getChildren().add(boardContainer);
 
         stage.setOnCloseRequest(new EventHandler<WindowEvent>() {
             @Override
@@ -222,7 +234,7 @@ public class SGameScreen {
 		hbox.setAlignment(Pos.CENTER);
 		hbox.getChildren().add(playerLabel);
 
-		root.getChildren().add(hbox);
+		root2.getChildren().add(hbox);
 	}
 
 	/**
@@ -527,5 +539,37 @@ public class SGameScreen {
 				drawStage.hide();
 			}
 		});
-		}
+	}
+
+	public void showEndScreen(){
+		Thread thread = new Thread(new Runnable() {
+			@Override
+			public void run() {
+				try {
+					System.out.println("sleeping");
+					sleep(1000);
+					System.out.println("awake");
+				} catch (InterruptedException e) {
+					e.printStackTrace();
+				}
+				Platform.runLater(new Runnable() {
+					@Override
+					public void run() {
+						Rectangle screen = new Rectangle(800,648, Color.rgb(1,1,1,0.6));
+						endScreen.setStyle("-fx-padding: 5 0 0 0");
+						Button button = new Button("Exit");
+						button.setOnMouseClicked(new EventHandler<MouseEvent>() {
+							@Override
+							public void handle(MouseEvent event) {
+								MenuScreen menuScreen = new MenuScreen(stage);
+								stage.setScene(menuScreen.getScene());
+							}
+						});
+						endScreen.getChildren().addAll(screen,button);
+					}
+				});
+			}
+		});
+		thread.start();
+	}
 }
