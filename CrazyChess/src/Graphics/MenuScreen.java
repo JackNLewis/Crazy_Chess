@@ -21,6 +21,7 @@ public class MenuScreen {
     private VBox buttons;
     private Scene scene;
     private Stage stage;
+    private VBox warnings;
     
 
 //    MainLogic game = new MainLogic();
@@ -259,10 +260,19 @@ public class MenuScreen {
         cb2.setSelected(true);
         cb3.setSelected(true);
         
-        root.getChildren().addAll(newButton,VsAI,title,cb1,cb2,cb3);
+        //warnings about rule changes or stage hazards causing you to get checked
+        warnings = new VBox();
+        warnings.setAlignment(Pos.CENTER);
+        warnings.setSpacing(4);
+        Label warning = new Label("Pay attention to when stage hazards disappear");
+        Label warning2 = new Label("Pay attention to what rule changes might come");
+        Label warning3 = new Label("Get checked at the end of your turn and you LOSE");
+        warnings.getChildren().addAll(warning,warning2,warning3);
+        
+        root.getChildren().addAll(newButton,VsAI,title,cb1,cb2,cb3,warnings);
     }
 
-    private void addMainImg(){
+    private void addMainImg(){[[]]
         ImageView img = new ImageView();
         img.setImage(new Image("/resources/menu_text.png"));
         img.setFitWidth(400);

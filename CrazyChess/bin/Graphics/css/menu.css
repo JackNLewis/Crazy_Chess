@@ -2,6 +2,12 @@
     src: url('PixelFont.ttf');
 }
 
+.warnings{
+    -fx-alignment: center;
+    -fx-spacing: 5;
+    -fx-padding: 0 20 0 0;
+}
+
 .root {
     -fx-background-image: url("/resources/menuBackground.png");
     -fx-alignment: center;
@@ -32,6 +38,8 @@
 	-fx-padding: 5 5 5 5;
 	-fx-background-radius: 20;
 	-fx-background-color: rgba(182,150,157,0.5);
+	-fx-display: flex;
+        -fx-flex-flow: row wrap;
  }
  
   .check-box {
