@@ -144,9 +144,7 @@ public class SaveGame implements ChessIO {
 			    writer.writeAttribute("YCoordinate", String.valueOf(piece.getYpos()));
 			    writer.writeAttribute("Powerup", piece.getPoweruptype() + "");
 				writer.writeAttribute("isChecked", ((King) piece).getIsChecked() + "");
-				System.out.println("isitChecked:" + ((King) piece).getIsChecked());
 				writer.writeAttribute("wasMovedKing", ((King) piece).getWasMoved() + "");
-				System.out.println("isitMoved:" + ((King) piece).getWasMoved());
 				break;
 			case "Rook":
 				writer.writeAttribute("Type", piece.getClass().getSimpleName());
@@ -277,14 +275,11 @@ public class SaveGame implements ChessIO {
 			p = new Pawn(color, position, powerup);
 			int PawnJump = Integer.parseInt(reader.getAttributeValue("", "Doublejump"));
 			((Pawn) p).setDoublejump(PawnJump);
-//			Boolean Passant = Boolean.parseBoolean(reader.getAttributeValue("", "enPassant"));
-//			((Pawn) p).setEnPassant(Passant);
 			break;
 		case "BlankPiece":
 			p = new BlankPiece(color, position, powerup);
 			break;
 		case "HazardPiece":
-//			AbstractPiece originalp;
 			switch (OriginalPiece) {
 			case "Rook":
 				originalp = new Rook(color, position, powerup);
