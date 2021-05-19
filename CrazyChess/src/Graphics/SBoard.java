@@ -336,8 +336,8 @@ public class SBoard {
 
     /**
      * returns the correct image for the piece
-     * @param p
-     * @return
+     * @param p    piece in question
+     * @return	   ImageView object of the piece
      */
     public ImageView getImageView(AbstractPiece p) {
         String filename = "";
