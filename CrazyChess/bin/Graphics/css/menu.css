@@ -2,12 +2,6 @@
     src: url('PixelFont.ttf');
 }
 
-.warnings{
-    -fx-alignment: center;
-    -fx-spacing: 5;
-    -fx-padding: 0 20 0 0;
-}
-
 .root {
     -fx-background-image: url("/resources/menuBackground.png");
     -fx-alignment: center;

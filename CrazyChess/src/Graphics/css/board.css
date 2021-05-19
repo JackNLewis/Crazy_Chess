@@ -62,7 +62,7 @@
 }
 
 #menuBar {
-    -fx-background-color: rgba(7,59,76,0.85);
+    -fx-background-color: rgba(12,17,34,0.85);
     -fx-text-fill: white;
 }
 
@@ -79,7 +79,7 @@
 }
 
 .context-menu {
-    -fx-background-color: rgba(7,59,76,0.85);
+    -fx-background-color: rgba(12,17,34,0.85);
 }
 
 
