@@ -26,7 +26,7 @@ public class PowerUpMenu {
 
     /**
      * Constructor for power up menu
-     * @param gameScreen
+     * @param gameScreen the SGameScreen object
      */
     public PowerUpMenu(SGameScreen gameScreen){
         this.gameScreen = gameScreen;
@@ -67,8 +67,8 @@ public class PowerUpMenu {
     /**
      * Sets the observable power up
      *
-     * @param powers
-     * @param player
+     * @param powers the arraylist of powers you are setting it to
+     * @param player the player whos power ups your setting
      */
     public void setPowerUps(ArrayList<String> powers,String player){
         if(player.equalsIgnoreCase("black")){

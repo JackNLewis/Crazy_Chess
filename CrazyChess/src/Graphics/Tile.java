@@ -25,14 +25,8 @@ public class Tile {
 
     /**
      * Contructor for the Tile object
-     * @param pos        position of the tile
-     * @param tileSize   size of the tile
-     */
-
-    /**
-     * Constructor for a Tile
-     * @param pos
-     * @param tileSize
+     * @param pos - position of the tile
+     * @param tileSize - size of the tile
      */
     public Tile(Position pos, int tileSize){
         this.pos = pos;
