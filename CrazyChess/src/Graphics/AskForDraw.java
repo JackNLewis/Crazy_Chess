@@ -26,8 +26,10 @@ public class AskForDraw
 	/**
 	 * Adds an "Ask for draw" button, then a "Do you accept?" option for the other player in solo mode.
 	 * 
-	 * @param sGameScreen	game screen
-	 * @param game			game logic
+	 * @param sGameScreen
+	 *            game screen
+	 * @param game
+	 *            game logic
 	 */
 
 	public AskForDraw(SGameScreen sGameScreen, MainLogic game)
@@ -93,9 +95,9 @@ public class AskForDraw
 	/**
 	 * Getter for the Ask for draw button.
 	 * 
-	 * @return container	Ask for draw button
+	 * @return container Ask for draw button
 	 */
-	
+
 	public VBox getAskForDraw()
 	{
 		return container;

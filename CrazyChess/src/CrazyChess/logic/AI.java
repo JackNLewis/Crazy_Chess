@@ -1,54 +1,55 @@
 package CrazyChess.logic;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 
-import CrazyChess.logic.StageHazards.HazardPiece;
 import CrazyChess.pieces.*;
 import java.util.*;
 import java.util.stream.Collectors;
+
 /**
- * The class responsible for the Artificial Intelligence in
- * our game. It uses the minimax algorithm with alpha-beta
- * pruning to decide on what moves to make while also
- * taking powerups, stage hazards and rulechanges into account.
+ * The class responsible for the Artificial Intelligence in our game. It uses the minimax algorithm with alpha-beta pruning to decide on
+ * what moves to make while also taking powerups, stage hazards and rulechanges into account.
  *
  */
 public class AI
 {
-	private MainLogic chess;
-	private Utilities utils = new Utilities();
-	private ExtraChecksAndTools ect;
-/**
- * The null constructor for the class
- */
-	public void AI () {
+	private MainLogic			chess;
+	private Utilities			utils	= new Utilities();
+	private ExtraChecksAndTools	ect;
+
+	/**
+	 * The null constructor for the class
+	 */
+	public void AI()
+	{
 		//null constructor
 	}
-/**
- * This method makes an AI move and returns the new gamestate
- * @param chess        MainLogic object being used
- * @return			   a gamestate altered by the AI
- */
-	public AbstractPiece[][] AI (MainLogic chess) {
+
+	/**
+	 * This method makes an AI move and returns the new gamestate
+	 * 
+	 * @param chess
+	 *            MainLogic object being used
+	 * @return a gamestate altered by the AI
+	 */
+	public AbstractPiece[][] AI(MainLogic chess)
+	{
 		this.chess = chess;
 		this.ect = chess.getEcat();
 
-		//System.out.println("turn is "+chess.getTurn());
-		//ExtraChecksAndTools ect = new ExtraChecksAndTools();
-		//AbstractPiece[][] bestBoard = minimax(chess.getGamestate(),1,chess.getTurn());
-		//ArrayList <AbstractPiece[][]> possg = ect.possibleGamestatesAfterNextMove(chess.getTurn(), false, chess.getGamestate(), 0);
-		BoardDetails currentBoard = new BoardDetails(
-				this.chess.getGamestate(),
-				this.chess.getPowerUps("white"),
-				this.chess.getPowerUps("black")
-		);
-		BoardDetails bestMoveDetails = minimax(currentBoard,3, chess.getTurn());
+		BoardDetails currentBoard = new BoardDetails(this.chess.getGamestate(), this.chess.getPowerUps("white"),
+				this.chess.getPowerUps("black"));
+		BoardDetails bestMoveDetails = minimax(currentBoard, 3, chess.getTurn());
 		AbstractPiece[][] bestMove = bestMoveDetails.getGamestate();
 
 		ArrayList<AbstractPiece> diffPieces = utils.getPiecesDiff(currentBoard.getGamestate(), bestMove);
-		if (!diffPieces.isEmpty()) {
-			for (AbstractPiece p: diffPieces) {
-				if (p.getColor().equalsIgnoreCase("powerup")) {
+		if (!diffPieces.isEmpty())
+		{
+			for (AbstractPiece p : diffPieces)
+			{
+				if (p.getColor().equalsIgnoreCase("powerup"))
+				{
 					this.chess.getPowerUps(chess.getTurn()).add(ect.pwrUp.randomPowerup(false));
 					break;
 				}
@@ -56,47 +57,54 @@ public class AI
 		}
 
 		int usedPowerupIndex = bestMoveDetails.getUsedPowerup();
-		if (usedPowerupIndex > -1) {
+		if (usedPowerupIndex > -1)
+		{
 			this.chess.getPowerUps(chess.getTurn()).remove(usedPowerupIndex);
 		}
-		//System.out.println("best move is:");
-		//utils.printGameState(bestMove);
 		return bestMove;
 	}
+
 	/**
 	 * This method makes an AI move and returns the new gamestate, takes difficulty into account
-	 * @param chess          the MainLogic object to use
-	 * @param difficulty     the difficulty setting ("easy", "medium" or "hard")
-	 * @return               a gamestate altered by the AI
+	 * 
+	 * @param chess
+	 *            the MainLogic object to use
+	 * @param difficulty
+	 *            the difficulty setting ("easy", "medium" or "hard")
+	 * @return a gamestate altered by the AI
 	 */
-	public AbstractPiece[][] AI (MainLogic chess, String difficulty) {
+	public AbstractPiece[][] AI(MainLogic chess, String difficulty)
+	{
 		this.chess = chess;
 		this.ect = chess.getEcat();
 
-		BoardDetails currentBoard = new BoardDetails(
-				this.chess.getGamestate(),
-				this.chess.getPowerUps("white"),
-				this.chess.getPowerUps("black")
-		);
+		BoardDetails currentBoard = new BoardDetails(this.chess.getGamestate(), this.chess.getPowerUps("white"),
+				this.chess.getPowerUps("black"));
 
 		int max_depth;
-		if (difficulty.contentEquals("easy")) {
+		if (difficulty.contentEquals("easy"))
+		{
 			max_depth = 2;
 		}
-		else if(difficulty.contentEquals("medium")) {
+		else if (difficulty.contentEquals("medium"))
+		{
 			max_depth = 3;
 		}
-		else {
+		else
+		{
 			max_depth = 4;
 		}
 
-		BoardDetails bestMoveDetails = minimax(currentBoard,max_depth, chess.getTurn());
+		BoardDetails bestMoveDetails = minimax(currentBoard, max_depth, chess.getTurn());
 		AbstractPiece[][] bestMove = bestMoveDetails.getGamestate();
 
 		ArrayList<AbstractPiece> diffPieces = utils.getPiecesDiff(currentBoard.getGamestate(), bestMove);
-		if (!diffPieces.isEmpty()) {
-			for (AbstractPiece p: diffPieces) {
-				if (p.getColor().equalsIgnoreCase("powerup")) {
+		if (!diffPieces.isEmpty())
+		{
+			for (AbstractPiece p : diffPieces)
+			{
+				if (p.getColor().equalsIgnoreCase("powerup"))
+				{
 					this.chess.getPowerUps(chess.getTurn()).add(ect.pwrUp.randomPowerup(false));
 					break;
 				}
@@ -104,7 +112,8 @@ public class AI
 		}
 
 		int usedPowerupIndex = bestMoveDetails.getUsedPowerup();
-		if (usedPowerupIndex > -1) {
+		if (usedPowerupIndex > -1)
+		{
 			chess.getPowerUps(chess.getTurn()).remove(usedPowerupIndex);
 		}
 
@@ -113,31 +122,33 @@ public class AI
 
 	//the board entering this is not the chess gamestate, there is one function managing this one. If that doesn't happen
 	/**
-	 * The main method for the minimax algorithm 
-	 * @param board         the BoardDetails obeject for the board
-	 * @param max_depth     how many turns into the future the algorithm will look
-	 * @param whoseAI       color of the AI player
-	 * @return              A BoardDetails object, where the best move has been made 
+	 * The main method for the minimax algorithm
+	 * 
+	 * @param board
+	 *            the BoardDetails obeject for the board
+	 * @param max_depth
+	 *            how many turns into the future the algorithm will look
+	 * @param whoseAI
+	 *            color of the AI player
+	 * @return A BoardDetails object, where the best move has been made
 	 */
-	public BoardDetails minimax (BoardDetails board, int max_depth, String whoseAI){
+	public BoardDetails minimax(BoardDetails board, int max_depth, String whoseAI)
+	{
 		//don't need to know whoseTurn because its always AI's turn at the 0th board
 		//possg are all the possible immediate moves the AI can take in the current gamestate's turn
-		HashMap<AbstractPiece[][], Integer> possgWithPwr = ect.possibleGamestatesAfterNextMove(
-				whoseAI,
-				false,
-				board.getGamestate(),
-				0,
-				board.getPowerUps(whoseAI)
-		);
+		HashMap<AbstractPiece[][], Integer> possgWithPwr = ect.possibleGamestatesAfterNextMove(whoseAI, false, board.getGamestate(), 0,
+				board.getPowerUps(whoseAI));
 		ArrayList<AbstractPiece[][]> possg = new ArrayList<>(possgWithPwr.keySet());
 		Collections.shuffle(possg);
 		//need to pass whoseTurn to next function and it will be whoever is not AI's turn so whoseTurn is decided below
 		String whoseTurn;
-		if (whoseAI.equals("Black")) {
-			whoseTurn="White";
+		if (whoseAI.equals("Black"))
+		{
+			whoseTurn = "White";
 		}
-		else {
-			whoseTurn="Black";
+		else
+		{
+			whoseTurn = "Black";
 		}
 
 		//we pass each of these into the explore paths function and choose the one with the best worst-case outcome
@@ -148,59 +159,62 @@ public class AI
 		int temp;
 
 		//System.out.println("in minimax:");
-		if (whoseAI.equals("Black")) {
+		if (whoseAI.equals("Black"))
+		{
 			//in black's case the lower the value the better
 			bestValue = Integer.MAX_VALUE;
 			//sets bestval to max value so it will be set to the first returning value from the explorePaths function
-			//System.out.println("Bestval is init as: "+bestValue);
-			for (int i=0; i<possg.size(); i++) {
+			for (int i = 0; i < possg.size(); i++)
+			{
 				// Create a new chess board details to account powerup usage
 				BoardDetails newBoard = new BoardDetails(possg.get(i));
 				newBoard.setPowerUps("white", new ArrayList<String>(board.getPowerUps("white")));
 				newBoard.setPowerUps("black", new ArrayList<String>(board.getPowerUps("black")));
 				int usedPowerup = possgWithPwr.get(newBoard.getGamestate());
-				if (usedPowerup > -1) {
+				if (usedPowerup > -1)
+				{
 					newBoard.setUsedPowerup(usedPowerup);
 					newBoard.getPowerUps(whoseAI).remove(usedPowerup);
 				}
 
-				temp = explorePaths(newBoard,1,max_depth,whoseAI,whoseTurn,Integer.MAX_VALUE,Integer.MIN_VALUE);
+				temp = explorePaths(newBoard, 1, max_depth, whoseAI, whoseTurn, Integer.MAX_VALUE, Integer.MIN_VALUE);
 				//if temp (this move) has a lower risk for black then set bestMove and bestValue to temp and the current board
-				if (temp < bestValue) {
+				if (temp < bestValue)
+				{
 					bestValue = temp;
 					bestMove = newBoard;
-					//System.out.println("New best value of "+bestValue+" for board: ");
 					utils.printGameState(bestMove.getGamestate());
 				}
 			}
 		}
-		else {
+		else
+		{
 			//in white's case its the same except the higher the value the better
 			bestValue = Integer.MIN_VALUE;
 			//sets bestval to min value so it will be set to the first returning value from the explorePaths function
-			//System.out.println("Bestval is init as: "+bestValue);
-			for (int i=0; i<possg.size(); i++) {
+			for (int i = 0; i < possg.size(); i++)
+			{
 				// Create a new chess board details to account powerup usage
 				BoardDetails newBoard = new BoardDetails(possg.get(i));
 				newBoard.setPowerUps("white", new ArrayList<String>(board.getPowerUps("white")));
 				newBoard.setPowerUps("black", new ArrayList<String>(board.getPowerUps("black")));
 				int usedPowerup = possgWithPwr.get(newBoard.getGamestate());
-				if (usedPowerup > -1) {
+				if (usedPowerup > -1)
+				{
 					newBoard.setUsedPowerup(usedPowerup);
 					newBoard.getPowerUps(whoseAI).remove(usedPowerup);
 				}
 
-				temp = explorePaths(newBoard,1,max_depth,whoseAI,whoseTurn,Integer.MAX_VALUE,Integer.MIN_VALUE);
+				temp = explorePaths(newBoard, 1, max_depth, whoseAI, whoseTurn, Integer.MAX_VALUE, Integer.MIN_VALUE);
 				//if temp (this move) has a lower risk for black then set bestMove and bestValue to temp and the current board
-				if (temp > bestValue) {
+				if (temp > bestValue)
+				{
 					bestValue = temp;
 					bestMove = newBoard;
-					//System.out.println("New best value of "+bestValue+" for board: ");
 					utils.printGameState(bestMove.getGamestate());
 				}
 			}
 		}
-		//System.out.println("final best value of "+bestValue+" for board: ");
 		utils.printGameState(bestMove.getGamestate());
 		return bestMove;
 	}
@@ -220,63 +234,65 @@ public class AI
 	 *   do similar to the above but for findworst/bestoutcome?
 	 */
 
-/**
- * Method that explores the possible paths using recursion
- * @param board          the BoardDetails obeject for the board
- * @param curr_depth     how deep the search is currently
- * @param max_depth      max depth for the search
- * @param whoseAI        color of the AI player
- * @param whoseTurn      color of the current turn
- * @param preMax         previous maximum value of the gamestate (used for pruning)
- * @param preMin         previous minimum value of the gamestate (used for pruning)
- * @return               the value of the gamestate currently being explored
- */
-	public int explorePaths (BoardDetails board,int curr_depth, int max_depth, String whoseAI, String whoseTurn, int preMax, int preMin) {
+	/**
+	 * Method that explores the possible paths using recursion
+	 * 
+	 * @param board
+	 *            the BoardDetails obeject for the board
+	 * @param curr_depth
+	 *            how deep the search is currently
+	 * @param max_depth
+	 *            max depth for the search
+	 * @param whoseAI
+	 *            color of the AI player
+	 * @param whoseTurn
+	 *            color of the current turn
+	 * @param preMax
+	 *            previous maximum value of the gamestate (used for pruning)
+	 * @param preMin
+	 *            previous minimum value of the gamestate (used for pruning)
+	 * @return the value of the gamestate currently being explored
+	 */
+	public int explorePaths(BoardDetails board, int curr_depth, int max_depth, String whoseAI, String whoseTurn, int preMax, int preMin)
+	{
 		ArrayList<String> powerupToCheck;
-		if (whoseTurn.equalsIgnoreCase(utils.oppositeColor(whoseAI))) {
+		if (whoseTurn.equalsIgnoreCase(utils.oppositeColor(whoseAI)))
+		{
 			powerupToCheck = new ArrayList<String>();
-		} else {
-			powerupToCheck = board.getPowerUps(whoseTurn)
-					.stream()
-					.filter(s -> !s.equalsIgnoreCase("teleport"))
-					.filter(s -> !s.equalsIgnoreCase("dummypiece"))
-					.filter(s -> !s.equalsIgnoreCase("minipromote"))
+		}
+		else
+		{
+			powerupToCheck = board.getPowerUps(whoseTurn).stream().filter(s -> !s.equalsIgnoreCase("teleport"))
+					.filter(s -> !s.equalsIgnoreCase("dummypiece")).filter(s -> !s.equalsIgnoreCase("minipromote"))
 					.collect(Collectors.toCollection(ArrayList::new));
 		}
-		HashMap<AbstractPiece[][], Integer> possgWithPwr = ect.possibleGamestatesAfterNextMove(
-				whoseTurn,
-				false,
-				board.getGamestate(),
-				0,
-				powerupToCheck
-		);
+		HashMap<AbstractPiece[][], Integer> possgWithPwr = ect.possibleGamestatesAfterNextMove(whoseTurn, false, board.getGamestate(), 0,
+				powerupToCheck);
 
 		ArrayList<AbstractPiece[][]> possg = new ArrayList<>(possgWithPwr.keySet());
 		Collections.shuffle(possg);
-		if(curr_depth==max_depth-1) {
+		if (curr_depth == max_depth - 1)
+		{
 			//-1 because we use possg so we look one more move ahead
-			/*if (whoseAI.contentEquals(whoseTurn)) {
-				int worst=findWorstOutcome(possg,whoseAI,preMax,preMin);
-				return worst;
-			}		
-			else {*/
-			//System.out.println("Sending to findnBestOutcome with max: "+preMax+" min: "+preMin);
 			// Check if there will be no possible gamestate
-			if (possg.isEmpty()) {
-				if (whoseTurn.equals("Black")) {
+			if (possg.isEmpty())
+			{
+				if (whoseTurn.equals("Black"))
+				{
 					return preMin;
 				}
-				else {
+				else
+				{
 					return preMax;
 				}
 			}
 
 			int best = findBestOutcome(possg, whoseTurn, preMax, preMin);
 			return best;
-			//}
 
 		}
-		else {
+		else
+		{
 			//once again possg contains all the possible moves of the the current player's turn
 			int temp;
 			int worst, best;
@@ -284,398 +300,373 @@ public class AI
 
 			//sets whoseTurnNext for the next recursion of explorePaths, need this for the turns to be swapped properly in recursion
 			//cannot change whoseTurn because it's used to decide whether to min or max
-			if(whoseTurn.equals("Black")) {
-				whoseTurnNext="White";
+			if (whoseTurn.equals("Black"))
+			{
+				whoseTurnNext = "White";
 			}
-			else {
-				whoseTurnNext="Black";
+			else
+			{
+				whoseTurnNext = "Black";
 			}
 
 			long funcStartTime = System.currentTimeMillis();
 			long funcTimeout = 300;
-			if (whoseTurn.equals("White")) {
+			if (whoseTurn.equals("White"))
+			{
 				worst = Integer.MIN_VALUE;
 				//the higher the worse (for black)
-				for (int i=0;i<possg.size();i++) {
+				for (int i = 0; i < possg.size(); i++)
+				{
 					// Create a new chess board details to account powerup usage
 					BoardDetails newBoard = new BoardDetails(possg.get(i));
 					newBoard.setPowerUps("white", new ArrayList<String>(board.getPowerUps("white")));
 					newBoard.setPowerUps("black", new ArrayList<String>(board.getPowerUps("black")));
 					int usedPowerup = possgWithPwr.get(newBoard.getGamestate());
-					if (usedPowerup > -1) {
+					if (usedPowerup > -1)
+					{
 						newBoard.getPowerUps(whoseTurn).remove(usedPowerup);
 					}
 
-					//System.out.println("Sending with preMin of "+worst+" as white (to next black layer)");
-					temp = explorePaths(newBoard, (curr_depth+1),max_depth,whoseAI,whoseTurnNext,Integer.MAX_VALUE,worst);
+					temp = explorePaths(newBoard, (curr_depth + 1), max_depth, whoseAI, whoseTurnNext, Integer.MAX_VALUE, worst);
 					//if the path explored is too big for black to choose it in the previous layer cancel (alpha beta pruning)
-					if(temp>preMax) {
-						//System.out.println("\nStopping early as "+temp+" > "+preMax+" on White's turn\n");
-						return temp; 
+					if (temp > preMax)
+					{
+						return temp;
 						//temp will suffice as it's too large to be chosen and will be ignored via the if statement
 					}
 
-					if(temp>worst) {
+					if (temp > worst)
+					{
 						//worst becomes the worst outcome of all possg branches
-						worst=temp;
+						worst = temp;
 					}
 
-					if ((System.currentTimeMillis() - funcStartTime) >= funcTimeout) {
+					if ((System.currentTimeMillis() - funcStartTime) >= funcTimeout)
+					{
 						break;
 					}
 				}
 				//return worst up the tree
-				//System.out.println("\nSearched the whole branch (no alpha beta)\n");
 				return worst;
 			}
 			//but if it's black's turn we choose the best (max) outcome as black controls the outcome
-			else {
+			else
+			{
 				best = Integer.MAX_VALUE;
 				//lower the better for black so start at highest
-				for (int i=0;i<possg.size();i++) {
+				for (int i = 0; i < possg.size(); i++)
+				{
 					// Create a new chess board details to account powerup usage
 					BoardDetails newBoard = new BoardDetails(possg.get(i));
 					newBoard.setPowerUps("white", new ArrayList<String>(board.getPowerUps("white")));
 					newBoard.setPowerUps("black", new ArrayList<String>(board.getPowerUps("black")));
 					int usedPowerup = possgWithPwr.get(newBoard.getGamestate());
-					if (usedPowerup > -1) {
+					if (usedPowerup > -1)
+					{
 						newBoard.getPowerUps(whoseTurn).remove(usedPowerup);
 					}
 
-					//System.out.println("Sending with preMax of "+best+" as black (to next white layer)");
-					temp = explorePaths(newBoard,(curr_depth+1),max_depth,whoseAI,whoseTurnNext,best,Integer.MIN_VALUE);
+					temp = explorePaths(newBoard, (curr_depth + 1), max_depth, whoseAI, whoseTurnNext, best, Integer.MIN_VALUE);
 
-					if(temp<preMin) {
+					if (temp < preMin)
+					{
 						//if too small for earlier white optimal layer to choose this branch stop searching and return
-						//System.out.println("\nStopping early as "+temp+" < "+preMin+" on Black's turn\n");
 						return temp;
 					}
 
-					if (temp<best) {
+					if (temp < best)
+					{
 						//the lower the possibility the better the outcome, so max as black will choose lower
-						best=temp;
+						best = temp;
 					}
 
-					if ((System.currentTimeMillis() - funcStartTime) >= funcTimeout) {
+					if ((System.currentTimeMillis() - funcStartTime) >= funcTimeout)
+					{
 						break;
 					}
 				}
-				//System.out.println("\nNo pruning, whole tree searched\n");
 				return best;
 			}
-			/*}
-			//if white is AI
-			else {
-				//if white is AI it must assume black will choose the worst (lowest) outcome -- the min part of minmax
-				if (whoseTurn.equals("Black")) {
-					worst = Integer.MAX_VALUE;
-					//lower the worse for white
-					for (int i=0;i<possg.size();i++) {
-						temp = explorePaths(possg.get(i),(curr_depth+1),max_depth,whoseAI,whoseTurnNext);
-						if (temp<worst) {
-							//same for worst as above except higher the worse
-							worst = temp;
-						}
-					}
-					return worst;
-				}
-				else {
-					//if white is the AI chooses best/highest outcome (max)
-					best = Integer.MIN_VALUE;
-					//higher the better for white
-					for (int i=0;i<possg.size();i++) {
-						temp = explorePaths(possg.get(i),(curr_depth+1),max_depth,whoseAI,whoseTurnNext);
-						if (temp>best) {
-							//stores highest outcome
-							best=temp;
-						}
-					}
-					return best;
-				}
 
-			}
-			 */
 		}
 	}
 
 	//boards is the result of possiblenextgamestates method
 	/**
 	 * 
-	 * @param boards         ArrayList of gamestates to be evaluated
-	 * @param whoseTurn      color the current turn
-	 * @param preMax         previous maximum value of the gamestate (used for pruning)
-	 * @param preMin         previous minimum value of the gamestate (used for pruning)	 
-	 * @return               the gamestate value of of the best outcome
+	 * @param boards
+	 *            ArrayList of gamestates to be evaluated
+	 * @param whoseTurn
+	 *            color the current turn
+	 * @param preMax
+	 *            previous maximum value of the gamestate (used for pruning)
+	 * @param preMin
+	 *            previous minimum value of the gamestate (used for pruning)
+	 * @return the gamestate value of of the best outcome
 	 */
-	public int findBestOutcome (ArrayList<AbstractPiece[][]> boards, String whoseTurn,int preMax,int preMin) {
+	public int findBestOutcome(ArrayList<AbstractPiece[][]> boards, String whoseTurn, int preMax, int preMin)
+	{
 
 		int currentBoardVal;
 
 		int highest = evaluateBoard(boards.get(0), whoseTurn);
 		int lowest = highest;
 
-		for (int i=1; i < boards.size(); i++) {
+		for (int i = 1; i < boards.size(); i++)
+		{
 			currentBoardVal = evaluateBoard(boards.get(i), whoseTurn);
 			//check if it violates preMin or preMax (if the layer before won't accept this branch's findbestoutcome stop searching now
-			if (currentBoardVal>preMax||currentBoardVal<preMin) {
-				//System.out.println("Pruned out in findBestOutcome to values: current="+currentBoardVal+" preMax="+preMax+" preMin:"+preMin);
+			if (currentBoardVal > preMax || currentBoardVal < preMin)
+			{
 				return currentBoardVal;
 			}
-			//System.out.println("shouldnt show up after pruned out statment");
 			//statement above didnt show up after pruning so pruning definitely works in this layer
-			if (currentBoardVal<lowest) {
+			if (currentBoardVal < lowest)
+			{
 				lowest = currentBoardVal;
 			}
-			else if (currentBoardVal>highest) {
+			else if (currentBoardVal > highest)
+			{
 				highest = currentBoardVal;
 			}
 		}
-		//System.out.println("No pruning performed in findBestOutcome on "+whoseTurn+"'s turn");
-		if (whoseTurn.equals("Black")) {
+		if (whoseTurn.equals("Black"))
+		{
 			return lowest;
 		}
-		else {
+		else
+		{
 			return highest;
 		}
 	}
 
-	//not a necessary function, unless we expand to have easier difficulty ai
-	/*	
-public int findBestOutcome (ArrayList <AbstractPiece[][]> boards, String whoseTurn) {
-		//if already at leaf nodes of decision tree (end of recursive calls)
-		//if(depth==max_depth) {
-		int currentBoardVal;
-		int best = evaluateBoard(boards.get(0));
-		AbstractPiece[][] bestBoard = boards.get(0);
-
-		//System.out.println("Starting worst board is:");
-		//utils.printGameState(boards.get(0));
-
-		if (whoseTurn=="Black") {
-			//System.out.println("blacks turn, all poss boards and vals:");
-			//black is negative (more negative is good for black) white is positive
-			for (int i=1;i<boards.size();i++) {
-				currentBoardVal=evaluateBoard(boards.get(i));
-
-
-				//utils.printGameState(boards.get(i));
-				//System.out.println("bval for above is: "+currentBoardVal);
-
-
-				//if the value for this board is higher that means black is in a worse position so worst = currentBoardVal
-				if (currentBoardVal<   best) {
-					//System.out.println("new worst board for black is: ");
-					//utils.printGameState(boards.get(i));
-					best = currentBoardVal;
-					bestBoard = boards.get(i);
-				}
-			}
-		}
-		else {
-			//vice versa for white
-			//System.out.println("whites turn");
-			for (int i=1;i<boards.size();i++) {
-				currentBoardVal=evaluateBoard(boards.get(i));
-				if (currentBoardVal>best) {
-					best = currentBoardVal;
-					bestBoard = boards.get(i);
-				}
-			}
-		}
-
-		return best;
-		//}
-		//else {
-		//its not max depth yet
-		//HERE RECURSIVELY CALL THE SAME FUNCTION, THEN CHOOSE THE LOWEST/HIGHEST VALUE AS RETURN THAT
-		//got to account for turn changes
-
-		//}
-	}
+	/**
+	 * Piece values (positive for white, negative for black) pawn = 1 knight = 3 bishop = 3 rook = 5 queen = 9 king = 0 (don't factor king
+	 * into this, theres no point if you have no king)
+	 * 
+	 * @param piece
+	 *            piece to be evaluated
+	 * @param whoseTurn
+	 *            color of the current turn
+	 * @return the value for the inputed piece
 	 */
-
-/**
-	* Piece values (positive for white, negative for black)
-	* pawn = 1
-	* knight = 3
-	* bishop = 3
-	* rook = 5
-	* queen = 9
-	 * king = 0 (don't factor king into this, theres no point if you have no king)
- * @param piece          piece to be evaluated
- * @param whoseTurn      color of the current turn
- * @return               the value for the inputed piece
- */
-	public int valuePiece(AbstractPiece piece, String whoseTurn) {
-		//System.out.println("piece is "+piece+" in string is "+piece.toString());
-		if (piece instanceof Pawn){
-			if (piece.getColor()=="Black") {
-				//System.out.println("black pawn");
+	public int valuePiece(AbstractPiece piece, String whoseTurn)
+	{
+		if (piece instanceof Pawn)
+		{
+			if (piece.getColor() == "Black")
+			{
 				return -1;
 			}
-			else {
-				//System.out.println("white pawn");
+			else
+			{
 				return 1;
 			}
 		}
-		else if (piece instanceof Rook){
-			if (piece.getColor()=="Black") {
-				//System.out.println("black rook");
+		else if (piece instanceof Rook)
+		{
+			if (piece.getColor() == "Black")
+			{
 				return -5;
 			}
-			else {
-				//System.out.println("white rook");
+			else
+			{
 				return 5;
 			}
 		}
-		else if (piece instanceof Bishop){
-			if (piece.getColor()=="Black") {
-				//System.out.println("black bishop");
+		else if (piece instanceof Bishop)
+		{
+			if (piece.getColor() == "Black")
+			{
 				return -3;
 			}
-			else {
-				//System.out.println("white bishop");
+			else
+			{
 				return 3;
 			}
 		}
-		else if (piece instanceof King){
-			if (piece.getColor()=="Black") {
-				//System.out.println("black pawn");
+		else if (piece instanceof King)
+		{
+			if (piece.getColor() == "Black")
+			{
 				return -100;
 			}
-			else {
-				//System.out.println("white pawn");
+			else
+			{
 				return 100;
 			}
 		}
-		else if (piece instanceof Queen){
-			if (piece.getColor()=="Black") {
-				//System.out.println("black queen");
+		else if (piece instanceof Queen)
+		{
+			if (piece.getColor() == "Black")
+			{
 				return -9;
 			}
-			else {
-				//System.out.println("white queen");
+			else
+			{
 				return 9;
 			}
 		}
-		else if (piece instanceof Knight){
-			if (piece.getColor()=="Black") {
-				//System.out.println("black knight");
+		else if (piece instanceof Knight)
+		{
+			if (piece.getColor() == "Black")
+			{
 				return -3;
 			}
-			else {
-				//System.out.println("white knight");
+			else
+			{
 				return 3;
 			}
 		}
-		else if (piece instanceof Powerup) {
-			if (whoseTurn.equalsIgnoreCase("white")) {
-				//System.out.println("black knight");
+		else if (piece instanceof Powerup)
+		{
+			if (whoseTurn.equalsIgnoreCase("white"))
+			{
 				return -2;
 			}
-			else {
-				//System.out.println("white knight");
+			else
+			{
 				return 2;
 			}
-		}else if (piece.getColor().equalsIgnoreCase("blank")) {
+		}
+		else if (piece.getColor().equalsIgnoreCase("blank"))
+		{
 			return 0;
 		}
 		System.out.println("valuePiece function very broken to reach here");
 		System.out.println(piece.getColor());
 		return 999;
 	}
+
 	/**
 	 * Evaluates a gamestate
-	 * @param board         gamestate to be evaluated
-	 * @param whoseTurn     color of the curent turn
-	 * @return              a value for the inputed gamestate
+	 * 
+	 * @param board
+	 *            gamestate to be evaluated
+	 * @param whoseTurn
+	 *            color of the curent turn
+	 * @return a value for the inputed gamestate
 	 */
-	public int evaluateBoard (AbstractPiece[][] board, String whoseTurn) {
+	public int evaluateBoard(AbstractPiece[][] board, String whoseTurn)
+	{
 		ExtraChecksAndTools ect = new ExtraChecksAndTools();
 		ArrayList<AbstractPiece> pieces = ect.gamestateToPieceArrayList(board);
 
 		int value = 0;
-		for (AbstractPiece p: pieces) {
+		for (AbstractPiece p : pieces)
+		{
 			value += valuePiece(p, whoseTurn);
 		}
 
-		//System.out.println("current value is "+value);
 		return value;
 	}
+
 	/**
-	 * A class to hold information about the game to be used
-	 * by the AI.
+	 * A class to hold information about the game to be used by the AI.
 	 *
 	 */
-	class BoardDetails {
-		AbstractPiece[][] gamestate;
-		ArrayList<String> whitePowerUps;
-		ArrayList<String> blackPowerUps;
-		int usedPowerup = -1; //indicates if a power up is used during a move, -1 means it is not used,
-						
-		
+	class BoardDetails
+	{
+		AbstractPiece[][]	gamestate;
+		ArrayList<String>	whitePowerUps;
+		ArrayList<String>	blackPowerUps;
+		int					usedPowerup	= -1;	//indicates if a power up is used during a move, -1 means it is not used,
+
 		/**
 		 * A constructor for the BoardDetails class
-		 * @param gamestate       current gamestate
+		 * 
+		 * @param gamestate
+		 *            current gamestate
 		 */
-		public BoardDetails(AbstractPiece[][] gamestate) {
+		public BoardDetails(AbstractPiece[][] gamestate)
+		{
 			this.gamestate = gamestate;
 		}
-		
+
 		/**
 		 * A constructor for the BoardDetails class, that takes powerups into account
-		 * @param gamestate           current gamestate
-		 * @param whitePowerUps       PowerUps that white has
-		 * @param blackPowerUps       PowerUps that black has
+		 * 
+		 * @param gamestate
+		 *            current gamestate
+		 * @param whitePowerUps
+		 *            PowerUps that white has
+		 * @param blackPowerUps
+		 *            PowerUps that black has
 		 */
-		public BoardDetails(AbstractPiece[][] gamestate, ArrayList<String> whitePowerUps, ArrayList<String> blackPowerUps) {
+		public BoardDetails(AbstractPiece[][] gamestate, ArrayList<String> whitePowerUps, ArrayList<String> blackPowerUps)
+		{
 			this.gamestate = gamestate;
 			this.whitePowerUps = whitePowerUps;
 			this.blackPowerUps = blackPowerUps;
 		}
-/**
- * Gets the gamestate from this BoardDetails object
- * @return  gamestate store in this object
- */
-		public AbstractPiece[][] getGamestate() {
+
+		/**
+		 * Gets the gamestate from this BoardDetails object
+		 * 
+		 * @return gamestate store in this object
+		 */
+		public AbstractPiece[][] getGamestate()
+		{
 			return this.gamestate;
 		}
-/**
- * Get powerups of a player from this BoardDetails object
- * @param player   color of the player
- * @return         an ArrayList of powerups
- */
-		public ArrayList<String> getPowerUps(String player){
-			if(player.equalsIgnoreCase("black")){
+
+		/**
+		 * Get powerups of a player from this BoardDetails object
+		 * 
+		 * @param player
+		 *            color of the player
+		 * @return an ArrayList of powerups
+		 */
+		public ArrayList<String> getPowerUps(String player)
+		{
+			if (player.equalsIgnoreCase("black"))
+			{
 				return blackPowerUps;
-			}else{
+			}
+			else
+			{
 				return whitePowerUps;
 			}
 		}
-/**
- * Sets the powerup list in this BoardDetails object for a player of certain color
- * @param player      color of the player
- * @param powerups    ArrayList of power ups you want to use
- */
-		public void setPowerUps(String player, ArrayList<String> powerups){
-			if(player.equalsIgnoreCase("black")){
+
+		/**
+		 * Sets the powerup list in this BoardDetails object for a player of certain color
+		 * 
+		 * @param player
+		 *            color of the player
+		 * @param powerups
+		 *            ArrayList of power ups you want to use
+		 */
+		public void setPowerUps(String player, ArrayList<String> powerups)
+		{
+			if (player.equalsIgnoreCase("black"))
+			{
 				this.blackPowerUps = powerups;
-			}else{
+			}
+			else
+			{
 				this.whitePowerUps = powerups;
 			}
 		}
-/**
- * Gets the value of usedPowerup
- * @return the index of the powerup that was used by the AI
- */
-		public int getUsedPowerup() {
+
+		/**
+		 * Gets the value of usedPowerup
+		 * 
+		 * @return the index of the powerup that was used by the AI
+		 */
+		public int getUsedPowerup()
+		{
 			return this.usedPowerup;
 		}
-/**
- * Sets the value of usedPowerup
- * @param powerupIndex      new value (-1 - powerup not used, 0-x - index of the powerup) 
- */
-		public void setUsedPowerup(int powerupIndex) {
+
+		/**
+		 * Sets the value of usedPowerup
+		 * 
+		 * @param powerupIndex
+		 *            new value (-1 - powerup not used, 0-x - index of the powerup)
+		 */
+		public void setUsedPowerup(int powerupIndex)
+		{
 			this.usedPowerup = powerupIndex;
 		}
 	}
