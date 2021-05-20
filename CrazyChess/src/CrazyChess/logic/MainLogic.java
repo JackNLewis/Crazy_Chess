@@ -280,15 +280,17 @@ public class MainLogic
 		else{
 			currentTurn = "White";
 			turnNo++;
-			
-			if(rulechange1) {
-				ecat.updateRuleChange1();
-			}
-			if(rulechange2) {
-				ecat.updateRuleChange2();
-			}
-			if(rulechange3) {
-				ecat.updateRuleChange3();
+
+			if(turnNo > 6) {
+				if(rulechange1) {
+					ecat.updateRuleChange1();
+				}
+				if(rulechange2) {
+					ecat.updateRuleChange2();
+				}
+				if(rulechange3) {
+					ecat.updateRuleChange3();
+				}
 			}
 			
 			System.out.println("brswitch " + ecat.getBrs());

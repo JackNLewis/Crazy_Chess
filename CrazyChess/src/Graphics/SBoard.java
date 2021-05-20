@@ -327,6 +327,7 @@ public class SBoard {
                             System.out.println("Player " + game.getTurn() + "Wins!!!!!!");
                             System.out.println("==============================================");
                             SGameScreen.setInfoMessage("Player " + game.getTurn() + "Wins!!");
+                            sound.turnOff();
                         }
 
                         //check if the player is starting there go in check
@@ -405,6 +406,7 @@ public class SBoard {
             SGameScreen.setInfoMessage(game.getTurn() + " wins!");
             promoteWait=true; //just so board cant be used
             SGameScreen.showEndScreen();
+            sound.turnOff();
             System.out.println(oppColor + " is in check mate");
             askForDraw.hide();
         }
