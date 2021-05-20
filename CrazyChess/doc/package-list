@@ -1,3 +1,7 @@
 CrazyChess
 CrazyChess.logic
+CrazyChess.logic.StageHazards
+CrazyChess.logic.powerups
+CrazyChess.logic.savegamestate
 CrazyChess.pieces
+Graphics

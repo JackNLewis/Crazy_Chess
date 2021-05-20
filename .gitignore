@@ -3,9 +3,18 @@
 ### Intellij ###
 .idea/
 CrazyChess.iml
+CrazyChess/out/
 
+### Out ###
+CrazyChess/bin/
 
 # OS created files
 
 ### MacOS ###
 .DS_Store
+**/.DS_STORE
+
+# Compiled code
+
+CrazyChess/out/
+CrazyChess/coverage/

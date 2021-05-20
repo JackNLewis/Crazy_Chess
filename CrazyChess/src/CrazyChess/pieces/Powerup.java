@@ -5,7 +5,6 @@ import CrazyChess.logic.Position;
 /**
  * Class that represents the Bishop in game
  * 
- * @author Darius
  *
  */
 public class Powerup extends AbstractPiece
@@ -13,21 +12,30 @@ public class Powerup extends AbstractPiece
 	/**
 	 * Constructor by coordinates
 	 *
-	 * @param color     color of the bishop
-	 * @param xCoord    x coordinate
-	 * @param yCoord    y coordinate
+	 * @param xCoord
+	 *            x coordinate
+	 * @param yCoord
+	 *            y coordinate
+	 * @param Type
+	 *            the type of piece
 	 */
-	public Powerup ( int xCoord, int yCoord){
-		super("Powerup", xCoord, yCoord);
+	public Powerup(int xCoord, int yCoord, String Type)
+	{
+		super("Powerup", xCoord, yCoord, Type);
+		Type = "Normal";
 	}
-	
+
 	/**
 	 * Constructor by position class
 	 *
-	 * @param color      color of the bishop
-	 * @param position   position object to set initial position
+	 * @param position
+	 *            position object to set initial position
+	 * @param Type
+	 *            the type of piece
 	 */
-	public Powerup( Position position){
-		super("Powerup", position);
+	public Powerup(Position position, String Type)
+	{
+		super("Powerup", position, Type);
+		Type = "Normal";
 	}
 }
