@@ -1,12 +1,12 @@
-/**
- * This class represents a blank unoccupied square on the board
- */
-
 
 package CrazyChess.pieces;
 
 import CrazyChess.logic.Position;
-
+/**
+ * The class for blank pieces (basically empty tiles
+ * on the board)
+ *
+ */
 public class BlankPiece extends AbstractPiece
 {
 	/**
